@@ -40,6 +40,19 @@ for lang, name in [('en', 'docs/SECURITY_COVERAGE.md'), ('ko', 'docs/SECURITY_CO
             raise ValueError(name + ': missing vendor CVE ' + row['cve_id'])
     if 'COVERAGE_COUNTS: ' + json.dumps(counts, sort_keys=True) not in text:
         raise ValueError(name + ': stale rendered counts')
+# Kit references are available even without the optional prepared source.
+# Catch a stale build-profile proof in the fast/default check as well as CI.
+for name, proof in ledger['source_files'].items():
+    if proof['root'] != 'kit':
+        continue
+    target = root / name
+    if target.is_symlink():
+        raise ValueError('source evidence symlink rejected: ' + name)
+    data = target.read_bytes()
+    if hashlib.sha256(data).hexdigest() != proof['sha256']:
+        raise ValueError('source evidence hash differs: ' + name)
+    if len(data.splitlines()) != proof['line_count']:
+        raise ValueError('source evidence line count differs: ' + name)
 if args.source:
     source = args.source.resolve()
     if tree_digest(source, normalized=True) != ledger['candidate_source_sha256']:

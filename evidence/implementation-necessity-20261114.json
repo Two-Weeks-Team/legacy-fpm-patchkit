@@ -37,8 +37,8 @@
     },
     "scripts/build.sh": {
       "root": "kit",
-      "sha256": "30284720bb87295c1636452484be56fe3074e372cdbc5df035a0af4b4d91e1e9",
-      "line_count": 91
+      "sha256": "ed9266e903b9c653ac9fddce289812aeda21ef9c9da4d7ad6826b9b37b2c4ce6",
+      "line_count": 94
     },
     "ext/filter/sanitizing_filters.c": {
       "root": "prepared-source",
@@ -341,7 +341,7 @@
         "main/fastcgi.c:1345",
         "main/fastcgi.c:1351",
         "main/fastcgi.c:1412",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-62xp-839h-2637",
@@ -367,7 +367,7 @@
         "ext/filter/sanitizing_filters.c:76",
         "ext/filter/sanitizing_filters.c:81",
         "ext/filter/sanitizing_filters.c:240",
-        "scripts/build.sh:73"
+        "scripts/build.sh:76"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-ch8v-r6jh-4vvr",
@@ -397,7 +397,7 @@
         "ext/openssl/openssl.c:5733",
         "ext/openssl/openssl.c:5737",
         "ext/openssl/openssl.c:5742",
-        "scripts/build.sh:77"
+        "scripts/build.sh:80"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-7jrw-539f-x6vr",
@@ -427,7 +427,7 @@
         "ext/standard/http_fopen_wrapper.c:468",
         "ext/standard/http_fopen_wrapper.c:509",
         "ext/standard/http_fopen_wrapper.c:937",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-fpwc-w8rq-cr92",
@@ -456,8 +456,8 @@
         "ext/soap/php_xml.c:307",
         "ext/soap/php_encoding.c:530",
         "ext/soap/soap.c:1641",
-        "scripts/build.sh:71",
-        "scripts/build.sh:77"
+        "scripts/build.sh:74",
+        "scripts/build.sh:80"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-rgrp-mwpx-f6rm",
@@ -489,7 +489,7 @@
         "ext/pgsql/pgsql.c:6883",
         "ext/pgsql/pgsql.c:6975",
         "ext/pgsql/pgsql.c:7107",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-7qpv-r5mr-78m4",
@@ -518,7 +518,7 @@
         "ext/openssl/xp_ssl.c:395",
         "ext/openssl/xp_ssl.c:428",
         "ext/openssl/xp_ssl.c:558",
-        "scripts/build.sh:77"
+        "scripts/build.sh:80"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-xr7j-rvgx-xq5p",
@@ -546,7 +546,7 @@
         "ext/soap/php_encoding.c:2758",
         "ext/soap/php_encoding.c:2759",
         "ext/soap/php_encoding.c:2766",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-hmxp-6pc4-f3vv",
@@ -574,7 +574,7 @@
         "ext/soap/soap.c:1842",
         "ext/soap/soap.c:1848",
         "ext/soap/soap.c:1866",
-        "scripts/build.sh:73"
+        "scripts/build.sh:76"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-m33r-qmcv-p97q",
@@ -601,7 +601,7 @@
         "ext/soap/php_encoding.c:384",
         "ext/soap/php_encoding.c:2769",
         "ext/soap/php_encoding.c:3475",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-85c2-q967-79q5",
@@ -629,7 +629,7 @@
         "ext/standard/url.c:539",
         "ext/standard/url.c:630",
         "ext/standard/url.c:631",
-        "scripts/build.sh:48"
+        "scripts/build.sh:51"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-m8rr-4c36-8gq4",
@@ -685,7 +685,7 @@
         "ext/phar/util.c:64",
         "ext/phar/util.c:79",
         "ext/phar/util.c:93",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-vc5h-9ppw-p5f3",
@@ -712,7 +712,7 @@
         "ext/openssl/xp_ssl.c:402",
         "ext/openssl/xp_ssl.c:556",
         "ext/openssl/xp_ssl.c:558",
-        "scripts/build.sh:77"
+        "scripts/build.sh:80"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-vvx9-73fr-5jjx",
@@ -740,7 +740,7 @@
         "ext/phar/tar.c:266",
         "ext/phar/tar.c:567",
         "ext/phar/tar.c:569",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-j3wh-g957-2m85",
@@ -770,7 +770,7 @@
         "ext/standard/filters.c:1320",
         "ext/standard/filters.c:1372",
         "ext/standard/filters.c:1395",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-88hq-2827-7pg6",
@@ -798,7 +798,7 @@
         "sapi/fpm/fpm/fpm_status.c:140",
         "sapi/fpm/fpm/fpm_status.c:424",
         "sapi/fpm/fpm/fpm_status.c:452",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "official_sources": [
         "https://github.com/php/php-src/security/advisories/GHSA-7qg2-v9fj-4mwv",
@@ -879,8 +879,8 @@
         "Resolve Firebird API zero-length SQL semantics and PHP 7 old parser/quoter behavior before claiming the exact SQL-injection path."
       ],
       "candidate_evidence": [
-        "scripts/build.sh:71",
-        "scripts/build.sh:77",
+        "scripts/build.sh:74",
+        "scripts/build.sh:80",
         "ext/pdo_firebird/firebird_driver.c:296",
         "ext/pdo_firebird/firebird_driver.c:311",
         "ext/pdo_firebird/firebird_driver.c:432",
@@ -909,7 +909,7 @@
         "Resource limits allow the relevant response accumulation."
       ],
       "candidate_evidence": [
-        "scripts/build.sh:72",
+        "scripts/build.sh:75",
         "ext/soap/php_http.c:1067",
         "ext/soap/php_http.c:1378",
         "ext/soap/php_http.c:1408",
@@ -938,7 +938,7 @@
         "Application creates SoapVar with an exceptionally long externally influenced name and sufficient memory is permitted."
       ],
       "candidate_evidence": [
-        "scripts/build.sh:72",
+        "scripts/build.sh:75",
         "ext/soap/php_encoding.c:454",
         "ext/soap/php_encoding.c:456",
         "ext/soap/soap.c:4468",
@@ -993,7 +993,7 @@
         "Inspect exact linked libpq; PostgreSQL library-side fixes alone do not supply PHP error propagation."
       ],
       "candidate_evidence": [
-        "scripts/build.sh:72",
+        "scripts/build.sh:75",
         "ext/pgsql/pgsql.c:824",
         "ext/pgsql/pgsql.c:4360",
         "ext/pgsql/pgsql.c:5541",
@@ -1079,7 +1079,7 @@
         "Application uses xml_parse_into_struct() with XML_OPTION_SKIP_TAGSTART larger than an encountered tag name."
       ],
       "candidate_evidence": [
-        "scripts/build.sh:72",
+        "scripts/build.sh:75",
         "ext/xml/xml.c:73",
         "ext/xml/xml.c:765",
         "ext/xml/xml.c:835",
@@ -1133,7 +1133,7 @@
         "A malicious/compromised database peer can influence protocol responses."
       ],
       "candidate_evidence": [
-        "scripts/build.sh:72",
+        "scripts/build.sh:75",
         "ext/mysqlnd/config9.m4:19",
         "ext/mysqlnd/mysqlnd_wireprotocol.c:63",
         "ext/mysqlnd/mysqlnd_wireprotocol.c:129",
@@ -1189,8 +1189,8 @@
         "Consecutive requests reuse request_info with a missing Content-Type after a prior value."
       ],
       "candidate_evidence": [
-        "scripts/build.sh:71",
-        "scripts/build.sh:86",
+        "scripts/build.sh:74",
+        "scripts/build.sh:89",
         "sapi/cli/php_cli_server.c:1816",
         "sapi/cli/php_cli_server.c:1827",
         "sapi/cli/php_cli_server.c:1828",
@@ -1246,8 +1246,8 @@
         "32-bit address/size arithmetic is especially relevant; xenial-amd64 fixes the profile at 64-bit but does not repair source."
       ],
       "candidate_evidence": [
-        "scripts/build.sh:72",
-        "scripts/build.sh:79",
+        "scripts/build.sh:75",
+        "scripts/build.sh:82",
         "ext/pdo_firebird/firebird_driver.c:283",
         "ext/pdo_firebird/firebird_driver.c:296",
         "ext/pdo_firebird/firebird_driver.c:298",
@@ -1306,7 +1306,7 @@
         "ldap_escape on lengths large enough to cross arithmetic/index bounds; official advisory emphasizes 32-bit builds"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:70",
+        "scripts/build.sh:73",
         "ext/ldap/config.m4:87",
         "ext/ldap/ldap.c:2726",
         "ext/ldap/ldap.c:2731",
@@ -1334,7 +1334,7 @@
         "Application connects to a server whose metadata bytes must be treated as untrusted"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:70",
+        "scripts/build.sh:73",
         "ext/mysqlnd/config9.m4:18",
         "ext/mysqlnd/mysqlnd_result_meta.c:75",
         "ext/mysqlnd/mysqlnd_wireprotocol.c:1330",
@@ -1389,7 +1389,7 @@
         "Application calls fsockopen/pfsockopen or relevant socket transport with a supplied hostname"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:70",
+        "scripts/build.sh:73",
         "ext/standard/config.m4:614",
         "ext/standard/fsock.c:54",
         "ext/standard/fsock.c:59",
@@ -1445,7 +1445,7 @@
         "Windows command-line/codepage conversion and applicable query-to-argv handling"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:70",
+        "scripts/build.sh:73",
         "sapi/cgi/cgi_main.c:1789",
         "sapi/cgi/cgi_main.c:1808",
         "sapi/cgi/cgi_main.c:1816",
@@ -1472,7 +1472,7 @@
         "cgi.force_redirect enabled and server/environment mapping relevant to redirect trust"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:70",
+        "scripts/build.sh:73",
         "sapi/cgi/cgi_main.c:1907",
         "sapi/cgi/cgi_main.c:1914",
         "sapi/cgi/cgi_main.c:1915"
@@ -1497,7 +1497,7 @@
         "Application uses FILTER_VALIDATE_URL as an input-validity boundary"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:72",
+        "scripts/build.sh:75",
         "ext/filter/logical_filters.c:517",
         "ext/filter/logical_filters.c:549",
         "ext/filter/logical_filters.c:551",
@@ -1525,7 +1525,7 @@
         "Applicable Windows best-fit/codepage conversion and CGI query-to-argv mapping"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:70",
+        "scripts/build.sh:73",
         "sapi/cgi/cgi_main.c:1789",
         "sapi/cgi/cgi_main.c:1812",
         "sapi/cgi/cgi_main.c:1816",
@@ -1609,7 +1609,7 @@
         "Exact linked OpenSSL implementation/engine lacks appropriate implicit rejection or equivalent side-channel protection"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:77",
+        "scripts/build.sh:80",
         "ext/openssl/openssl.c:5011",
         "ext/openssl/openssl.c:5035",
         "ext/openssl/openssl.c:5040",
@@ -1638,8 +1638,8 @@
         "Library and SAPI state permit the inherited-default behavior; the advisory did not reproduce it on FPM"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:70",
-        "scripts/build.sh:77",
+        "scripts/build.sh:73",
+        "scripts/build.sh:80",
         "ext/libxml/libxml.c:70",
         "ext/dom/config.m4:5",
         "ext/simplexml/config.m4:4",
@@ -1671,7 +1671,7 @@
         "Application opens and enumerates a Phar directory"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:70",
+        "scripts/build.sh:73",
         "ext/phar/config.m4:4",
         "ext/phar/dirstream.c:93",
         "ext/phar/dirstream.c:105",
@@ -1699,7 +1699,7 @@
         "SOAP client HTTP Digest authentication selected"
       ],
       "candidate_evidence": [
-        "scripts/build.sh:70",
+        "scripts/build.sh:73",
         "ext/soap/config.m4:4",
         "ext/soap/php_http.c:646",
         "ext/soap/php_http.c:653",
@@ -1736,7 +1736,7 @@
         "ext/standard/crypt_blowfish.c:380",
         "ext/standard/crypt_blowfish.c:412",
         "ext/standard/crypt_blowfish.c:777",
-        "scripts/build.sh:71",
+        "scripts/build.sh:74",
         "evidence/xenial-build-20261114.json:1",
         "evidence/xenial-crypt-backend-20261114.json:1"
       ],
@@ -1774,6 +1774,18 @@
       "official_fix_comparison": "Observed 716de0 adds max_multipart_body_parts INI default -1, derives its default from max_input_vars + upload count, decrements for parsed content-disposition parts and jumps to cleanup after a single limit warning. Candidate initializes only upload_cnt and continues warning when that count is exhausted; no corresponding total counter exists.",
       "next_verification": "Source proof suffices. Port setting/default/counter/cleanup with checked arithmetic, then inspect ordinary mixed file/field requests, explicit limits/default resolution and single-warning behavior without a DoS request.",
       "priority": "P1"
+    }
+  ],
+  "kit_reference_history": [
+    {
+      "path": "scripts/build.sh",
+      "prior": {
+        "root": "kit",
+        "sha256": "30284720bb87295c1636452484be56fe3074e372cdbc5df035a0af4b4d91e1e9",
+        "line_count": 91
+      },
+      "reason": "Named variant integration changed the driver; unchanged configure profile and all referenced source lines were revalidated and relinked. No security status or PHP source identity changed.",
+      "validation_failure_run": 43592617045
     }
   ]
 }

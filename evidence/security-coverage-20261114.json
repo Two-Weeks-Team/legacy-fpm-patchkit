@@ -261,7 +261,7 @@
         "ext/soap/php_encoding.c:2758",
         "ext/soap/php_encoding.c:2759",
         "ext/soap/php_encoding.c:2766",
-        "scripts/build.sh:71"
+        "scripts/build.sh:74"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-hmxp-6pc4-f3vv",
       "planned_action_ko": "공식 xmlValue 누락값 검사부터 이식하고 일반 Map 동작을 검증한다. 관찰되지 않은 두 번째 범용 decoder 포인터 검사를 이 공지의 공식 수정으로 합치지 않는다.",
@@ -653,7 +653,7 @@
       "reason_ko": "실제 공식 수정 지점은 soap.c serialize_zval()의 NULL xmlParam/name 검사다. 후보는 SoapVar enc_name을 xmlNodeSetName()에 전달한 뒤 soap.c에서 name을 무검사 strcmp한다. SOAP와 libxml2<2.13 및 대용량 이름 조건이 필요하다.",
       "reason_en": "The actual fix site is serialize_zval() in soap.c, not a post-call repair in php_encoding.c. Candidate SoapVar names reach xmlNodeSetName(), then serialize_zval() dereferences name without the official NULL guards. Requires SOAP and libxml2 older than 2.13.",
       "source_evidence": [
-        "scripts/build.sh:72",
+        "scripts/build.sh:75",
         "ext/soap/php_encoding.c:454",
         "ext/soap/php_encoding.c:456",
         "ext/soap/soap.c:4468",
@@ -2436,8 +2436,8 @@
     },
     "scripts/build.sh": {
       "root": "kit",
-      "sha256": "30284720bb87295c1636452484be56fe3074e372cdbc5df035a0af4b4d91e1e9",
-      "line_count": 91
+      "sha256": "ed9266e903b9c653ac9fddce289812aeda21ef9c9da4d7ad6826b9b37b2c4ce6",
+      "line_count": 94
     },
     "evidence/xenial-build-20261114.json": {
       "root": "kit",
@@ -2454,5 +2454,17 @@
   "vendor_followup_notes": {
     "CVE-2019-11035": "Initial pointer arithmetic and pasted call are corrected by active -2/-3 follow-ups; final source retains typed arithmetic and the corrected length argument.",
     "CVE-2019-9023": "The -2 clamp is superseded by -3 SAFE_ENC_LEN; the final safe-length mechanism is retained."
-  }
+  },
+  "kit_reference_history": [
+    {
+      "path": "scripts/build.sh",
+      "prior": {
+        "root": "kit",
+        "sha256": "30284720bb87295c1636452484be56fe3074e372cdbc5df035a0af4b4d91e1e9",
+        "line_count": 91
+      },
+      "reason": "Named variant integration changed the driver; unchanged configure profile and all referenced source lines were revalidated and relinked. No security status or PHP source identity changed.",
+      "validation_failure_run": 43592617045
+    }
+  ]
 }
