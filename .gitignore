@@ -4,3 +4,7 @@ __pycache__/
 dist/
 .venv/
 .superpowers/
+node_modules/
+.wrangler/
+.dev.vars
+.dev.vars.*
