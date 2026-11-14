@@ -8,11 +8,13 @@ import subprocess
 import sys
 
 root = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(root))
+from patchkit.environment import libc_version
 output = Path(sys.argv[1])
 profile = sys.argv[2]
 digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
 record = {'schema': 1, 'profile': profile, 'system': platform.system(), 'machine': platform.machine(),
-          'libc': list(platform.libc_ver()), 'os_release': Path('/etc/os-release').read_text(),
+          'libc': libc_version(), 'os_release': Path('/etc/os-release').read_text(),
           'patch_sha256': digest(root / 'patches/build007.patch'),
           'normalized_source_sha256': json.loads((root / 'provenance/inputs.json').read_text())['normalized_candidate_sha256'],
           'binaries': {name: digest(output / name) for name in ['php', 'php-fpm']},

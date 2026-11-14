@@ -15,7 +15,7 @@ import time
 import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from patchkit import fcgi, reporting
+from patchkit import fcgi, reporting, environment
 
 FIXTURE = r'''<?php
 ob_start();
@@ -187,7 +187,7 @@ def main():
     except ValueError as error:
         parser.error(str(error))
     report = {'schema': 1, 'scope': 'benign isolated local regression; not exploit or application acceptance',
-              'machine': platform.machine(), 'libc': list(platform.libc_ver()), 'campaigns': [],
+              'machine': platform.machine(), 'libc': environment.libc_version(), 'campaigns': [],
               'external_modules': 'NOT_TESTED', 'production': 'NOT_ACCESSED'}
     try:
         for name, binary in [('fpm', args.fpm), ('cli', args.cli)]:
