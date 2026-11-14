@@ -1,0 +1,15 @@
+{
+  "base_variant": "fpm-log-20261114",
+  "baseline_patch_sha256": "7d14a93cad6c8bb85d2e7f9072811fdaee6ed2206662f6eb373f3324ce6bd342",
+  "baseline_source_sha256": "8333986efe3729d072ea4330c34a329eb7d3585fc8d86aabaca265fd98ba65cc",
+  "candidate_source_sha256": "bda4070f11710a5dd71251517ba816dbd5099930708c45e9d9878eb4e1b61fcb",
+  "changed": {
+    "ext/standard/filters.c": {
+      "after": "744e520793f12a168c16f78f05f22f1d0d1f8ea1cc85e9083c2cc333862291d8",
+      "before": "d6735a7044c40e5cf0fdb5138fb0ea425e3b1c6905fe4333ac0a710f4816b6fa"
+    }
+  },
+  "patch_sha256": "d2ec2a36482d67570d4a6ee3917f6fc2c46219339680000ef67b535a7452fcc8",
+  "schema": 1,
+  "variant": "stream-filters-20261115"
+}

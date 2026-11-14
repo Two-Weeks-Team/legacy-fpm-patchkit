@@ -11,7 +11,8 @@ DEFAULT = 'build007'
 PINNED_VARIANTS = {'acl-filter-20261114': 'e75f242ee002c1aebe29cf031541d2c80a69ecead94252780491f6c814d11f44',
                    'multipart-20261114': 'ceb74f54416dd9d4ffe3f668e5c1b7651565d7d7ac0bf69e6d17640a8e1ad2f4',
                    'cookie-20261114': '73fe27ba703a6770b5e3959e4c76ef72580609eb809ed02743aa9c2c9f0e7629',
-                   'fpm-log-20261114': '5c92b7ac32f3bb93255d65997969923d3a3a29112185c9faf1e427a88a003651'}
+                   'fpm-log-20261114': '5c92b7ac32f3bb93255d65997969923d3a3a29112185c9faf1e427a88a003651',
+                   'stream-filters-20261115': '21259b936db799a62b21b10052b77738490c96bc1d3fbc6053e2a1143a14d8ab'}
 
 
 def manifest(variant):
@@ -27,7 +28,7 @@ def manifest(variant):
         base = json.loads((sources.ROOT / 'provenance/inputs.json').read_text())
         old = json.loads((sources.ROOT / 'provenance/build007-source.json').read_text())
         base_source, base_patch = base['normalized_candidate_sha256'], old['patch_sha256']
-    elif (variant, base_name) in (('multipart-20261114', 'acl-filter-20261114'), ('cookie-20261114', 'multipart-20261114'), ('fpm-log-20261114', 'cookie-20261114')):
+    elif (variant, base_name) in (('multipart-20261114', 'acl-filter-20261114'), ('cookie-20261114', 'multipart-20261114'), ('fpm-log-20261114', 'cookie-20261114'), ('stream-filters-20261115', 'fpm-log-20261114')):
         parent = manifest(base_name)
         base_source, base_patch = parent['candidate_source_sha256'], parent['patch_sha256']
     else:
