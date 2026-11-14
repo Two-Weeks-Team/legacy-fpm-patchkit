@@ -54,6 +54,7 @@ jobs:
             .work/build-*/php
             .work/build-*/php-fpm
             .work/build-*/build.json
+            .work/build-*/json-generation*.json
             .work/build-*/source-identity.json
             .work/build-*/*.log
             .work/build-*/toolchain.txt

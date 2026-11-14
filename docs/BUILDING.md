@@ -17,7 +17,11 @@ Typical build-tool packages on an isolated Debian/Ubuntu machine are `build-esse
 
 The Xenial profile preserves the relevant original feature choices but uses a deliberate public prefix and clean configure invocation. It removes the old private configure cache. Different compilers/libraries/generator versions can produce different binaries; the project claims **source/procedure reproducibility**, not bit-for-bit agreement with the historical deployed build007.
 
-The unchanged Bison grammars use their SHA-verified release-generated C/header files. Build-copy timestamps are adjusted so a modern Bison skeleton does not regenerate incompatible PHP 7.0 parser helpers. Patched re2c inputs are explicitly regenerated. No compiler error check is disabled for this compatibility step; changing a grammar requires a separately reviewed generated-source update.
+The unchanged Zend Bison grammars use their SHA-verified release-generated C/header files. Build-copy timestamps for those Zend parsers are adjusted so a modern Bison skeleton does not regenerate incompatible PHP 7.0 parser helpers. Patched re2c inputs are explicitly regenerated. No compiler error check is disabled for this compatibility step; changing a grammar requires a separately reviewed generated-source update.
+
+JSON lexer/grammar inputs and their generated C/companion headers use a fixed, content-verified six-file tuple (`patchkit/json_generation.py`). Only after all six hashes match does make receive two selective `--old-file` arguments. Copy timestamps cannot select a different JSON generator output. A lexer/grammar change requires a reviewed update of its input and generated C/header hashes together; there is no caller hash override. Missing or changed tuple members fail before make. The four patched standard/date lexer inputs are still regenerated explicitly.
+
+`json-generation-plan.json` records the verified pre-build hashes and two selected targets. After make, `json-generation.json` rechecks all six hashes and binds them to the original prepared-source SHA. `build.json` embeds this receipt and its file SHA; `SHA256SUMS` includes both JSON records. These are the actual JSON compiler-input hashes, not a claim that the entire generated working tree equals the prepared source. Keep these records with build artifacts.
 
 ## Commands
 

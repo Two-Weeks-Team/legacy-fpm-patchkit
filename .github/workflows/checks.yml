@@ -85,6 +85,7 @@ jobs:
             .work/*.preparation.json
             .work/native-result.json
             .work/build/build.json
+            .work/build/json-generation*.json
             .work/build/*.log
             .work/build/toolchain.txt
             .work/build/configure-arguments.txt

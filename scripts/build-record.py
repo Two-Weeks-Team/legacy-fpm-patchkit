@@ -10,7 +10,7 @@ import sys
 root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root))
 from patchkit.environment import libc_version
-from patchkit import variants
+from patchkit import variants, json_generation
 output = Path(sys.argv[1])
 profile = sys.argv[2]
 variant = sys.argv[3] if len(sys.argv) > 3 else 'build007'
@@ -34,10 +34,14 @@ record = {'schema': 1, 'profile': profile, 'system': platform.system(), 'machine
           'DEB_HOST_MULTIARCH': __import__('os').environ.get('DEB_HOST_MULTIARCH'),
           'result': 'BUILT_NOT_RUNTIME_VERIFIED', 'external_module_compatibility': 'NOT_TESTED',
           'historical_build007_binary_equivalence': 'NOT_CLAIMED'}
-if (output / 'build.json').exists() or (output / 'SHA256SUMS').exists():
+if any((output / name).exists() or (output / name).is_symlink() for name in ['build.json', 'SHA256SUMS', 'json-generation.json']):
     raise SystemExit('build records must be new')
+generation = json_generation.finish(output / 'source', output / 'json-generation-plan.json', identity['normalized_source_sha256'])
+json_generation.write_new(output / 'json-generation.json', generation)
+record['json_generation'] = generation
+record['json_generation_receipt_sha256'] = digest(output / 'json-generation.json')
 with (output / 'build.json').open('x') as stream:
     stream.write(json.dumps(record, indent=2, sort_keys=True) + '\n')
 with (output / 'SHA256SUMS').open('x') as stream:
-    stream.write(''.join(digest(output/name) + '  ' + name + '\n' for name in ['php', 'php-fpm', 'build.json']))
+    stream.write(''.join(digest(output/name) + '  ' + name + '\n' for name in ['php', 'php-fpm', 'build.json', 'json-generation-plan.json', 'json-generation.json']))
 print(json.dumps({'result': record['result'], 'profile': profile, 'binaries': record['binaries']}))

@@ -40,6 +40,10 @@ trap failure_logs ERR
 # The prepared input remains immutable. All generators/buildconf run on this copy.
 cp -R "$source_dir" "$output/source"
 src="$output/source"
+# Content verification precedes selective reuse; timestamps never select JSON bytes.
+json_make_options=$(python3 "$kit/patchkit/json_generation.py" "$src" "$output/json-generation-plan.json")
+json_make_args=()
+while IFS= read -r option; do json_make_args+=("$option"); done <<< "$json_make_options"
 export PHP_INI_SCAN_DIR=
 if command -v dpkg-architecture >/dev/null 2>&1; then
   export DEB_HOST_MULTIARCH
@@ -85,7 +89,7 @@ else
 fi
 printf '%s\n' "${args[@]}" > "$output/configure-arguments.txt"
 "$src/configure" "${args[@]}" > "$output/configure.log" 2>&1
-make -j"${JOBS:-2}" EXTRA_CFLAGS='-Werror=implicit-function-declaration -Werror=int-conversion' > "$output/make.log" 2>&1
+make "${json_make_args[@]}" -j"${JOBS:-2}" EXTRA_CFLAGS='-Werror=implicit-function-declaration -Werror=int-conversion' > "$output/make.log" 2>&1
 cp sapi/cli/php "$output/php"
 cp sapi/fpm/php-fpm "$output/php-fpm"
 readelf -h "$output/php-fpm" > "$output/elf-header.txt"
