@@ -1,0 +1,47 @@
+{
+  "CFLAGS": "-O2 -g -fPIE -fstack-protector-strong -Wformat -Werror=format-security -fno-strict-aliasing -fsigned-char",
+  "CPPFLAGS": "-D_FORTIFY_SOURCE=2",
+  "DEB_HOST_MULTIARCH": "x86_64-linux-gnu",
+  "LDFLAGS": "-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now -Wl,--as-needed",
+  "binaries": {
+    "php": "d1b3cc8f7c092d4498a025653e4be346252f456c519a3638ddd2f5d14de5f038",
+    "php-fpm": "6f28b2dd8ca41108bca126e53b9cda476ee0f3c57cb4a01d1dd006583819e7ee"
+  },
+  "configure": [
+    "--prefix=/opt/legacy-fpm-patchkit",
+    "--enable-fpm",
+    "--enable-cli",
+    "--disable-cgi",
+    "--disable-phpdbg",
+    "--disable-all",
+    "--disable-debug",
+    "--disable-rpath",
+    "--disable-static",
+    "--with-pic",
+    "--without-pear",
+    "--enable-filter",
+    "--enable-hash",
+    "--enable-session",
+    "--with-config-file-path=/etc/php/7.0/fpm",
+    "--with-config-file-scan-dir=/etc/php/7.0/fpm/conf.d",
+    "--with-fpm-user=www-data",
+    "--with-fpm-group=www-data",
+    "--without-libxml",
+    "--enable-json"
+  ],
+  "external_module_compatibility": "NOT_TESTED",
+  "historical_build007_binary_equivalence": "NOT_CLAIMED",
+  "libc": [
+    "glibc",
+    "2.35"
+  ],
+  "machine": "x86_64",
+  "normalized_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+  "os_release": "PRETTY_NAME=\"Ubuntu 22.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"22.04\"\nVERSION=\"22.04.5 LTS (Jammy Jellyfish)\"\nVERSION_CODENAME=jammy\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=jammy\n",
+  "patch_sha256": "a7db5d018d5f7cef41c726b61eccd794356c5d06bb1bb4322027dde88fbd108c",
+  "profile": "portable",
+  "result": "BUILT_NOT_RUNTIME_VERIFIED",
+  "schema": 1,
+  "system": "Linux",
+  "toolchain": "Linux x86_64\ncc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0\nautoconf (GNU Autoconf) 2.71\nre2c 3.0\n"
+}

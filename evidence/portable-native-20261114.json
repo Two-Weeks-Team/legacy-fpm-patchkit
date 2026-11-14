@@ -1,0 +1,119 @@
+{
+  "campaigns": [
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php_binary",
+        "different-handler rejection: php_serialize",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n[14-Nov-2026 03:38:59] NOTICE: fpm is running, pid 45924\n[14-Nov-2026 03:38:59] NOTICE: ready to handle connections\n",
+        "process.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n"
+      },
+      "progress": true,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php_binary",
+        "different-handler rejection: php_serialize",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n[14-Nov-2026 03:38:59] NOTICE: fpm is running, pid 45926\n[14-Nov-2026 03:38:59] NOTICE: ready to handle connections\n",
+        "process.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n"
+      },
+      "progress": false,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php",
+        "different-handler rejection: php_serialize",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php_binary",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n[14-Nov-2026 03:38:59] NOTICE: fpm is running, pid 45928\n[14-Nov-2026 03:38:59] NOTICE: ready to handle connections\n",
+        "process.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n"
+      },
+      "progress": true,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php",
+        "different-handler rejection: php_serialize",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php_binary",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n[14-Nov-2026 03:38:59] NOTICE: fpm is running, pid 45930\n[14-Nov-2026 03:38:59] NOTICE: ready to handle connections\n",
+        "process.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n"
+      },
+      "progress": false,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php",
+        "different-handler rejection: php_binary",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php_serialize",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n[14-Nov-2026 03:38:59] NOTICE: fpm is running, pid 45932\n[14-Nov-2026 03:38:59] NOTICE: ready to handle connections\n",
+        "process.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n"
+      },
+      "progress": true,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php",
+        "different-handler rejection: php_binary",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php_serialize",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n[14-Nov-2026 03:38:59] NOTICE: fpm is running, pid 45934\n[14-Nov-2026 03:38:59] NOTICE: ready to handle connections\n",
+        "process.log": "[14-Nov-2026 03:38:59] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n"
+      },
+      "progress": false,
+      "result": "PASS"
+    }
+  ],
+  "cli_sha256": "d1b3cc8f7c092d4498a025653e4be346252f456c519a3638ddd2f5d14de5f038",
+  "external_modules": "NOT_TESTED",
+  "fpm_sha256": "6f28b2dd8ca41108bca126e53b9cda476ee0f3c57cb4a01d1dd006583819e7ee",
+  "libc": [
+    "glibc",
+    "2.35"
+  ],
+  "machine": "x86_64",
+  "php_version": "7.0.33",
+  "production": "NOT_ACCESSED",
+  "result": "BENIGN_RUNTIME_PASS",
+  "schema": 1,
+  "scope": "benign isolated local regression; not exploit or application acceptance"
+}

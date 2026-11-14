@@ -12,8 +12,8 @@ root = Path(__file__).resolve().parents[1]
 files = subprocess.check_output(['git', 'ls-files', '-z'], cwd=root).decode().split('\0')
 files = [root / f for f in files if f]
 failures = []
-private = [re.compile(x) for x in [r'/Users/[A-Za-z0-9_-]+/', r'49\.247\.2\.(?:205|211)',
-           r'APPROVE DDENGLE-', r'-----BEGIN (?:OPENSSH |RSA |EC )?PRIVATE KEY-----', r'gh[pousr]_[A-Za-z0-9]{30,}']]
+private = [re.compile(x) for x in [r'/Users/[A-Za-z0-9_-]+/',
+           r'\bAPPROVE [A-Z][A-Z0-9_-]+ [A-Z0-9_]+', r'-----BEGIN (?:OPENSSH |RSA |EC )?PRIVATE KEY-----', r'gh[pousr]_[A-Za-z0-9]{30,}']]
 for path in files:
     if path.is_symlink():
         failures.append(str(path.relative_to(root)) + ': symlink not allowed')

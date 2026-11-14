@@ -60,7 +60,7 @@ def checked_response(result):
     return values
 
 
-def check_logs(root):
+def collect_logs(root):
     diagnostics = {}
     for name in ['fpm.log', 'process.log']:
         path = root / name
@@ -68,9 +68,26 @@ def check_logs(root):
             continue
         text = path.read_text()[-32768:].replace(str(root), '<test-root>')
         diagnostics[name] = text
+    return diagnostics
+
+
+def check_logs(root):
+    diagnostics = collect_logs(root)
+    for text in diagnostics.values():
         if re.search(r'PHP (?:Warning|Fatal|Parse|Notice|Deprecated)|\b(?:WARNING|ERROR|ALERT|EMERGENCY):', text):
             raise ValueError('unexpected FPM diagnostic: ' + text)
     return diagnostics
+
+
+def stop_process(process, grace=10):
+    if process.poll() is None:
+        process.terminate()
+        try:
+            process.wait(timeout=grace)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=5)
+            raise ValueError('test FPM required forced cleanup; inspect worker cleanup before retrying')
 
 
 def campaign(binary, codec, progress):
@@ -126,39 +143,35 @@ php_value[session.upload_progress.enabled] = {progress}
                     return checked_response(result)
                 checks = []
                 first = ask('action=session&target=' + codec)
-                assert first['handler'] == codec and first['switch'] == 'allowed' and first['started'] == 'yes'
+                assert first['handler'] == codec and first['switch'] == 'allowed' and first['started'] == 'yes', 'same-handler session assignment failed'
                 checks.append('same-handler assignment/session start')
                 again = ask('action=session&target=' + codec)
-                assert again['previous'] == 'patchkit-value'
-                assert first['pid'] == again['pid']
+                assert again['previous'] == 'patchkit-value', 'plain session value did not persist'
+                assert first['pid'] == again['pid'], 'worker changed during session round trip'
                 checks.append('same-worker plain session persistence')
                 for target in ['php', 'php_binary', 'php_serialize']:
                     if target != codec:
                         response = ask('action=session&target=' + target)
-                        assert response['switch'] == 'blocked' and response['handler'] == codec
-                        assert response['started'] == 'yes' and response['previous'] == 'patchkit-value'
+                        assert response['switch'] == 'blocked' and response['handler'] == codec, 'different-handler switch was not rejected: ' + codec + ' -> ' + target
+                        assert response['started'] == 'yes' and response['previous'] == 'patchkit-value', 'session data changed after rejected codec switch'
                         checks.append('different-handler rejection: ' + target)
                 boundary = 'patchkit' + uuid.uuid4().hex
                 data = b'ordinary-upload\n' * 32
                 body = ('--' + boundary + '\r\nContent-Disposition: form-data; name="PHP_SESSION_UPLOAD_PROGRESS"\r\n\r\nproof\r\n--' + boundary + '\r\nContent-Disposition: form-data; name="attachment"; filename="sample.txt"\r\nContent-Type: text/plain\r\n\r\n').encode() + data + ('\r\n--' + boundary + '--\r\n').encode()
                 uploaded = ask('action=upload', body, 'multipart/form-data; boundary=' + boundary)
-                assert uploaded['upload'] == 'yes' and int(uploaded['bytes']) == len(data)
-                assert uploaded['digest'] == hashlib.sha256(data).hexdigest()
-                assert not list((root / 'uploads').iterdir())
+                assert uploaded['upload'] == 'yes' and int(uploaded['bytes']) == len(data), 'ordinary multipart upload failed'
+                assert uploaded['digest'] == hashlib.sha256(data).hexdigest(), 'upload content digest mismatch'
+                assert not list((root / 'uploads').iterdir()), 'uploaded temporary file remained after request'
                 checks.append('ordinary multipart upload/digest/temp cleanup')
                 final = ask('action=session&target=' + codec)
-                assert final['pid'] == first['pid'] and final['previous'] == 'patchkit-value'
+                assert final['pid'] == first['pid'] and final['previous'] == 'patchkit-value', 'same-worker/session continuity failed after upload'
                 checks.append('same-worker continuity after upload')
                 return {'codec': codec, 'progress': progress, 'checks': checks,
                         'diagnostics': check_logs(root), 'result': 'PASS'}
+            except Exception as error:
+                raise ValueError(type(error).__name__ + ': ' + str(error) + '; diagnostics=' + json.dumps(collect_logs(root)))
             finally:
-                if process.poll() is None:
-                    process.terminate()
-                    try:
-                        process.wait(timeout=10)
-                    except subprocess.TimeoutExpired:
-                        process.kill()
-                        process.wait(timeout=5)
+                stop_process(process)
 
 
 def main():
