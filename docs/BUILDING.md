@@ -17,6 +17,8 @@ Typical build-tool packages on an isolated Debian/Ubuntu machine are `build-esse
 
 The Xenial profile preserves the relevant original feature choices but uses a deliberate public prefix and clean configure invocation. It removes the old private configure cache. Different compilers/libraries/generator versions can produce different binaries; the project claims **source/procedure reproducibility**, not bit-for-bit agreement with the historical deployed build007.
 
+The unchanged Bison grammars use their SHA-verified release-generated C/header files. Build-copy timestamps are adjusted so a modern Bison skeleton does not regenerate incompatible PHP 7.0 parser helpers. Patched re2c inputs are explicitly regenerated. No compiler error check is disabled for this compatibility step; changing a grammar requires a separately reviewed generated-source update.
+
 ## Commands
 
 ```sh

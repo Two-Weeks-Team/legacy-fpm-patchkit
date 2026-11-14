@@ -60,6 +60,12 @@ re2c -d -b -o ext/date/lib/parse_date.c ext/date/lib/parse_date.re
 re2c -d -b -o ext/date/lib/parse_iso_intervals.c ext/date/lib/parse_iso_intervals.re
 [ ! -f ext/ext_skel ] || mv ext/ext_skel ext/ext_skel.in
 ./buildconf --force > "$output/buildconf.log" 2>&1
+# The verified release already contains Bison-generated parsers for its unchanged
+# grammars. Copy/extraction timestamps must not force Bison 3.8 to regenerate
+# PHP 7.0 code that expects the older skeleton's yystrlen/yystpcpy helpers.
+# Keep those hashed release C/header bytes; never relax compiler error checks.
+touch Zend/zend_language_parser.c Zend/zend_language_parser.h \
+      Zend/zend_ini_parser.c Zend/zend_ini_parser.h
 mkdir "$output/objects"
 cd "$output/objects"
 args=(--prefix=/opt/legacy-fpm-patchkit --enable-fpm --enable-cli --disable-cgi
