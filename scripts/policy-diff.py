@@ -16,7 +16,7 @@ import uuid
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from patchkit import fcgi, reporting
-spec = importlib.util.spec_from_file_location('native_check', ROOT / 'scripts/native-check.py')
+spec = importlib.util.spec_from_file_location('native_check', str(ROOT / 'scripts/native-check.py'))
 native = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(native)
 
