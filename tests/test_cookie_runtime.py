@@ -1,5 +1,10 @@
 """Decisions about local evidence, not a PHP runtime acceptance claim."""
 from pathlib import Path
+import ast
+import copy
+from contextlib import contextmanager
+import inspect
+import json
 import tempfile
 import unittest
 
@@ -55,3 +60,38 @@ class CookieRuntimeTests(unittest.TestCase):
         self.assertEqual(len(self.runtime.check_cli(valid,'candidate')),19)
         for broken in [valid.rsplit('END=',1)[0],valid+valid,valid.replace('BEGIN=dot-host','BEGIN=unknown',1)]:
             with self.assertRaises(ValueError):self.runtime.check_cli(broken,'candidate')
+
+    def test_actual_case_loop_preserves_mixed_key_fixture_evidence(self):
+        # The real loop records every literal case before each pair of mocked
+        # responses. This is an evidence/decision test, not PHP/FPM execution.
+        r=self.runtime
+        tree=ast.parse(inspect.getsource(r.main))
+        loop=next(n for n in ast.walk(tree) if isinstance(n,ast.For) and isinstance(n.target,ast.Name) and n.target.id=='case')
+        code=compile(ast.fix_missing_locations(ast.Module(body=[copy.deepcopy(loop)],type_ignores=[])),'actual-cookie-loop','exec')
+        for side in ('parent','candidate'):
+            with self.subTest(side=side),tempfile.TemporaryDirectory() as temporary:
+                directory=Path(temporary);observed={'cases':{}};sent=[]
+                @contextmanager
+                def workspace(output):yield output
+                @contextmanager
+                def instance(binary,root,budget):
+                    root.mkdir();yield
+                def request(work,case,budget):
+                    sent.append(case['name']);body='PID=123\n'
+                    for kind in ('C','G','P'):
+                        body+=''.join(kind+'|'+k+'='+v+'\n' for k,v in r.flatten(case[side][kind]).items())
+                    return {'body':(body+'COMPLETE=yes\n').encode(),'stderr':b''}
+                ns=dict(r.__dict__,directory=directory,observed=observed,side=side,fpm=Path('NOT_EXECUTED'),
+                        budget=lambda:30,case_workspace=workspace,instance=instance,request=request)
+                exec(code,ns)
+                self.assertEqual(len(observed['cases']),19)
+                self.assertEqual(len(sent),38)
+                record=json.loads((directory/'normal-array'/'fixture.json').read_text())
+                self.assertEqual(record['expected_map_encoding'],'typed-path-v1')
+                for expected_side in ('parent','candidate'):
+                    for kind in ('C','G','P'):
+                        self.assertEqual(record[expected_side][kind]['S6e756d/S3031'],'V70')
+                        self.assertEqual(record[expected_side][kind]['S6e756d/I0'],'V7a')
+                source=next(c for c in r.cases() if c['name']=='normal-array')
+                self.assertEqual(record['cookie'],source['cookie'])
+                self.assertEqual(record['form'],source['form'])

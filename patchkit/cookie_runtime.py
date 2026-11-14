@@ -191,7 +191,12 @@ def main(argv=None):
                 output=directory/case['name'];offsets={};responses=[];whole={}
                 with case_workspace(output) as work:
                     with instance(fpm,work,budget):
-                        common.write_new(work/'fixture.json',case)
+                        # Keep the request/checking maps typed in memory; only
+                        # their evidence representation needs JSON string keys.
+                        fixture=dict(case,expected_map_encoding='typed-path-v1')
+                        for expected_side in ('parent','candidate'):
+                            fixture[expected_side]={kind:flatten(value) for kind,value in case[expected_side].items()}
+                        common.write_new(work/'fixture.json',fixture)
                         for trial in range(2):
                             response=request(work,case,budget);text=response['body'].decode('ascii')
                             (work/('response-'+str(trial)+'.txt')).write_text(text)
