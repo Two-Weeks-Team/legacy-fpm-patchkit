@@ -1,0 +1,1491 @@
+{
+  "advisory_credit_added": 0,
+  "builds": {
+    "candidate": {
+      "build_record": {
+        "CFLAGS": "-O2 -g -fPIE -fstack-protector-strong -Wformat -Werror=format-security -fno-strict-aliasing -fsigned-char",
+        "CPPFLAGS": "-D_FORTIFY_SOURCE=2",
+        "DEB_HOST_MULTIARCH": "x86_64-linux-gnu",
+        "LDFLAGS": "-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now -Wl,--as-needed",
+        "binaries": {
+          "php": "614b132a3e7978e231791d54c931e8d4e9c2ea514ec57f5d9f906e4fd0ca4f4f",
+          "php-fpm": "b08bca8801ae2988a502cd8d7f9739ede2e68090db4690178b4b7ba86035d7f0"
+        },
+        "configure": [
+          "--prefix=/opt/legacy-fpm-patchkit",
+          "--enable-fpm",
+          "--enable-cli",
+          "--disable-cgi",
+          "--disable-phpdbg",
+          "--disable-all",
+          "--disable-debug",
+          "--disable-rpath",
+          "--disable-static",
+          "--with-pic",
+          "--without-pear",
+          "--enable-filter",
+          "--enable-hash",
+          "--enable-session",
+          "--with-config-file-path=/etc/php/7.0/fpm",
+          "--with-config-file-scan-dir=/etc/php/7.0/fpm/conf.d",
+          "--with-fpm-user=www-data",
+          "--with-fpm-group=www-data",
+          "--without-libxml",
+          "--enable-json"
+        ],
+        "external_module_compatibility": "NOT_TESTED",
+        "historical_build007_binary_equivalence": "NOT_CLAIMED",
+        "json_generation": {
+          "after": {
+            "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+            "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+            "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+            "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+            "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+            "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+          },
+          "before": {
+            "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+            "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+            "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+            "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+            "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+            "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+          },
+          "bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+          "mode": "pregenerated",
+          "prepared_source_sha256": "8333986efe3729d072ea4330c34a329eb7d3585fc8d86aabaca265fd98ba65cc",
+          "schema": 1,
+          "targets": [
+            "ext/json/json_scanner.c",
+            "ext/json/json_parser.tab.c"
+          ]
+        },
+        "json_generation_receipt_sha256": "b48a1ba4698bdd44fc7895b70fea5bcbc3a8d162ca459afa8427933925096245",
+        "libc": [
+          "glibc",
+          "2.35"
+        ],
+        "machine": "x86_64",
+        "normalized_source_sha256": "8333986efe3729d072ea4330c34a329eb7d3585fc8d86aabaca265fd98ba65cc",
+        "os_release": "PRETTY_NAME=\"Ubuntu 22.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"22.04\"\nVERSION=\"22.04.5 LTS (Jammy Jellyfish)\"\nVERSION_CODENAME=jammy\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=jammy\n",
+        "patch_sha256": "7d14a93cad6c8bb85d2e7f9072811fdaee6ed2206662f6eb373f3324ce6bd342",
+        "profile": "portable",
+        "result": "BUILT_NOT_RUNTIME_VERIFIED",
+        "schema": 1,
+        "source_identity": {
+          "baseline_patch_sha256": "f72477d7b5183622fa8b785175dcc1bac9cd53fb1e869559fbdfbfa30b7f61f4",
+          "baseline_source_sha256": "f5f6b9f4263bce9e4de03b7fba315490e6d08bcc9862cd7d048a52929f756fe5",
+          "baseline_variant": "cookie-20261114",
+          "changed": {
+            "sapi/fpm/fpm/fpm_stdio.c": {
+              "after": "0bc33e15470153082e740e466e7a7e33cbb07482418dc1131590173b9256134f",
+              "before": "38357eeaf12995026277e3ee1ad580d98901371c8661887fbdb4762d14adccc2"
+            }
+          },
+          "normalized_source_sha256": "8333986efe3729d072ea4330c34a329eb7d3585fc8d86aabaca265fd98ba65cc",
+          "patch_sha256": "7d14a93cad6c8bb85d2e7f9072811fdaee6ed2206662f6eb373f3324ce6bd342",
+          "result": "SOURCE_VERIFIED",
+          "variant": "fpm-log-20261114",
+          "variant_manifest_sha256": "5c92b7ac32f3bb93255d65997969923d3a3a29112185c9faf1e427a88a003651"
+        },
+        "system": "Linux",
+        "toolchain": "Linux x86_64\ncc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0\nautoconf (GNU Autoconf) 2.71\nre2c 3.0\n",
+        "variant": "fpm-log-20261114"
+      },
+      "bundle_hash_evidence_level": "Recorded working-copy guard before/after hashes independently reconciled to the reviewed six-file tuple; generated C files are not included in this artifact",
+      "checksum_verification": {
+        "binary_files_absent_from_original_artifact": false,
+        "binary_linkage": "SHA256SUMS == build.json.binaries == native result cli_sha256/fpm_sha256",
+        "direct_original_file_bytes_verified": [
+          "php",
+          "php-fpm",
+          "build.json",
+          "json-generation-plan.json",
+          "json-generation.json"
+        ],
+        "public_bundle_excludes_binaries": true,
+        "record_linkage_only": [],
+        "sha256sums_entries": {
+          "build.json": "45d708f99d7494c3a1965d57d96c97d7be8363e3148e088308dcb0e820e0ec7c",
+          "json-generation-plan.json": "f77932d866a945fc92cb0c64873da833d7867ce64f408f9a0fb4276822dbb457",
+          "json-generation.json": "b48a1ba4698bdd44fc7895b70fea5bcbc3a8d162ca459afa8427933925096245",
+          "php": "614b132a3e7978e231791d54c931e8d4e9c2ea514ec57f5d9f906e4fd0ca4f4f",
+          "php-fpm": "b08bca8801ae2988a502cd8d7f9739ede2e68090db4690178b4b7ba86035d7f0"
+        }
+      },
+      "compiler_warnings": [
+        {
+          "line": 110,
+          "text": "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build-log/source/ext/session/mod_files.c:315:9: warning: \u2018readdir_r\u2019 is deprecated [-Wdeprecated-declarations]"
+        },
+        {
+          "line": 164,
+          "text": "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build-log/source/ext/standard/browscap.c:260:16: warning: function may return address of local variable [-Wreturn-local-addr]"
+        },
+        {
+          "line": 311,
+          "text": "main/php_config.h:2532: warning: \"_GNU_SOURCE\" redefined"
+        },
+        {
+          "line": 322,
+          "text": "main/php_config.h:2532: warning: \"_GNU_SOURCE\" redefined"
+        },
+        {
+          "line": 375,
+          "text": "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build-log/source/main/streams/plain_wrapper.c:908:9: warning: \u2018readdir_r\u2019 is deprecated [-Wdeprecated-declarations]"
+        },
+        {
+          "line": 474,
+          "text": "Zend/../main/php_config.h:2532: warning: \"_GNU_SOURCE\" redefined"
+        }
+      ],
+      "generation_plan": {
+        "before": {
+          "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+          "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+          "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+          "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+          "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+          "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+        },
+        "bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+        "mode": "pregenerated",
+        "schema": 1,
+        "targets": [
+          "ext/json/json_scanner.c",
+          "ext/json/json_parser.tab.c"
+        ]
+      },
+      "generation_receipt": {
+        "after": {
+          "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+          "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+          "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+          "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+          "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+          "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+        },
+        "before": {
+          "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+          "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+          "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+          "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+          "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+          "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+        },
+        "bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+        "mode": "pregenerated",
+        "prepared_source_sha256": "8333986efe3729d072ea4330c34a329eb7d3585fc8d86aabaca265fd98ba65cc",
+        "schema": 1,
+        "targets": [
+          "ext/json/json_scanner.c",
+          "ext/json/json_parser.tab.c"
+        ]
+      },
+      "json_c_compile_lines": {
+        "json_parser.tab.c": [
+          98
+        ],
+        "json_scanner.c": [
+          101
+        ]
+      },
+      "json_make_generator_commands": [],
+      "normal_checks": 36,
+      "preparation_record": {
+        "member": "paired/source-log.preparation.json",
+        "patch_sha256": "7d14a93cad6c8bb85d2e7f9072811fdaee6ed2206662f6eb373f3324ce6bd342",
+        "prepared_source_sha256": "8333986efe3729d072ea4330c34a329eb7d3585fc8d86aabaca265fd98ba65cc",
+        "result": "SOURCE_VERIFIED",
+        "sha256": "655201c27ddd9430fd11637ef227e30bedcb6e80dd86e07553b2853a288fe59c"
+      },
+      "raw_prefix": "paired/build-log",
+      "record_file_sha256": {
+        "SHA256SUMS": "5ecf608a97f814d0f3d02507c872143da1a647b1db4b249ab6418d70979587c4",
+        "build.json": "45d708f99d7494c3a1965d57d96c97d7be8363e3148e088308dcb0e820e0ec7c",
+        "json-generation-plan.json": "f77932d866a945fc92cb0c64873da833d7867ce64f408f9a0fb4276822dbb457",
+        "json-generation.json": "b48a1ba4698bdd44fc7895b70fea5bcbc3a8d162ca459afa8427933925096245"
+      }
+    },
+    "default": {
+      "build_record": {
+        "CFLAGS": "-O2 -g -fPIE -fstack-protector-strong -Wformat -Werror=format-security -fno-strict-aliasing -fsigned-char",
+        "CPPFLAGS": "-D_FORTIFY_SOURCE=2",
+        "DEB_HOST_MULTIARCH": "x86_64-linux-gnu",
+        "LDFLAGS": "-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now -Wl,--as-needed",
+        "binaries": {
+          "php": "5f7a1340ce88656b121699a294afa4b9e91743389f117392c601a30d97636c7c",
+          "php-fpm": "e717716a7f11d572d652ea70176b54420dd83f601326ec2840a3af10b4f95dec"
+        },
+        "configure": [
+          "--prefix=/opt/legacy-fpm-patchkit",
+          "--enable-fpm",
+          "--enable-cli",
+          "--disable-cgi",
+          "--disable-phpdbg",
+          "--disable-all",
+          "--disable-debug",
+          "--disable-rpath",
+          "--disable-static",
+          "--with-pic",
+          "--without-pear",
+          "--enable-filter",
+          "--enable-hash",
+          "--enable-session",
+          "--with-config-file-path=/etc/php/7.0/fpm",
+          "--with-config-file-scan-dir=/etc/php/7.0/fpm/conf.d",
+          "--with-fpm-user=www-data",
+          "--with-fpm-group=www-data",
+          "--without-libxml",
+          "--enable-json"
+        ],
+        "external_module_compatibility": "NOT_TESTED",
+        "historical_build007_binary_equivalence": "NOT_CLAIMED",
+        "json_generation": {
+          "after": {
+            "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+            "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+            "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+            "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+            "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+            "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+          },
+          "before": {
+            "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+            "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+            "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+            "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+            "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+            "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+          },
+          "bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+          "mode": "pregenerated",
+          "prepared_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+          "schema": 1,
+          "targets": [
+            "ext/json/json_scanner.c",
+            "ext/json/json_parser.tab.c"
+          ]
+        },
+        "json_generation_receipt_sha256": "4fab8610519ce38abe016e2110c9a54b3c4f061376abe9ad5ee999c74dca625a",
+        "libc": [
+          "glibc",
+          "2.35"
+        ],
+        "machine": "x86_64",
+        "normalized_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+        "os_release": "PRETTY_NAME=\"Ubuntu 22.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"22.04\"\nVERSION=\"22.04.5 LTS (Jammy Jellyfish)\"\nVERSION_CODENAME=jammy\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=jammy\n",
+        "patch_sha256": "a7db5d018d5f7cef41c726b61eccd794356c5d06bb1bb4322027dde88fbd108c",
+        "profile": "portable",
+        "result": "BUILT_NOT_RUNTIME_VERIFIED",
+        "schema": 1,
+        "source_identity": {
+          "normalized_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+          "patch_sha256": "a7db5d018d5f7cef41c726b61eccd794356c5d06bb1bb4322027dde88fbd108c",
+          "result": "SOURCE_VERIFIED",
+          "variant": "build007"
+        },
+        "system": "Linux",
+        "toolchain": "Linux x86_64\ncc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0\nautoconf (GNU Autoconf) 2.71\nre2c 3.0\n",
+        "variant": "build007"
+      },
+      "bundle_hash_evidence_level": "Recorded working-copy guard before/after hashes independently reconciled to the reviewed six-file tuple; generated C files are not included in this artifact",
+      "checksum_verification": {
+        "binary_files_absent_from_original_artifact": true,
+        "binary_linkage": "SHA256SUMS == build.json.binaries == native result cli_sha256/fpm_sha256",
+        "direct_original_file_bytes_verified": [
+          "build.json",
+          "json-generation-plan.json",
+          "json-generation.json"
+        ],
+        "public_bundle_excludes_binaries": true,
+        "record_linkage_only": [
+          "php",
+          "php-fpm"
+        ],
+        "sha256sums_entries": {
+          "build.json": "adcdf3798aea72e54a9532bb09880b919bb894c3b4b1d58ce64427ac42dc74cf",
+          "json-generation-plan.json": "f77932d866a945fc92cb0c64873da833d7867ce64f408f9a0fb4276822dbb457",
+          "json-generation.json": "4fab8610519ce38abe016e2110c9a54b3c4f061376abe9ad5ee999c74dca625a",
+          "php": "5f7a1340ce88656b121699a294afa4b9e91743389f117392c601a30d97636c7c",
+          "php-fpm": "e717716a7f11d572d652ea70176b54420dd83f601326ec2840a3af10b4f95dec"
+        }
+      },
+      "compiler_warnings": [
+        {
+          "line": 110,
+          "text": "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build/source/ext/session/mod_files.c:315:9: warning: \u2018readdir_r\u2019 is deprecated [-Wdeprecated-declarations]"
+        },
+        {
+          "line": 164,
+          "text": "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build/source/ext/standard/browscap.c:260:16: warning: function may return address of local variable [-Wreturn-local-addr]"
+        },
+        {
+          "line": 311,
+          "text": "main/php_config.h:2532: warning: \"_GNU_SOURCE\" redefined"
+        },
+        {
+          "line": 321,
+          "text": "main/php_config.h:2532: warning: \"_GNU_SOURCE\" redefined"
+        },
+        {
+          "line": 374,
+          "text": "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build/source/main/streams/plain_wrapper.c:908:9: warning: \u2018readdir_r\u2019 is deprecated [-Wdeprecated-declarations]"
+        },
+        {
+          "line": 473,
+          "text": "Zend/../main/php_config.h:2532: warning: \"_GNU_SOURCE\" redefined"
+        }
+      ],
+      "generation_plan": {
+        "before": {
+          "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+          "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+          "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+          "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+          "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+          "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+        },
+        "bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+        "mode": "pregenerated",
+        "schema": 1,
+        "targets": [
+          "ext/json/json_scanner.c",
+          "ext/json/json_parser.tab.c"
+        ]
+      },
+      "generation_receipt": {
+        "after": {
+          "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+          "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+          "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+          "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+          "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+          "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+        },
+        "before": {
+          "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+          "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+          "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+          "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+          "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+          "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+        },
+        "bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+        "mode": "pregenerated",
+        "prepared_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+        "schema": 1,
+        "targets": [
+          "ext/json/json_scanner.c",
+          "ext/json/json_parser.tab.c"
+        ]
+      },
+      "json_c_compile_lines": {
+        "json_parser.tab.c": [
+          98
+        ],
+        "json_scanner.c": [
+          101
+        ]
+      },
+      "json_make_generator_commands": [],
+      "normal_checks": 36,
+      "preparation_record": {
+        "member": "checks/source.preparation.json",
+        "patch_sha256": "a7db5d018d5f7cef41c726b61eccd794356c5d06bb1bb4322027dde88fbd108c",
+        "prepared_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+        "result": "SOURCE_VERIFIED",
+        "sha256": "1738078a33773e116c0a6c9f5fe55738db3bb0dea2a2f129de946751b2b26adb"
+      },
+      "raw_prefix": "checks/build",
+      "record_file_sha256": {
+        "SHA256SUMS": "2c34c8aaae382a5ed02e34dbcdd6fa85863c0b19bba00ac37375fccd498f16ab",
+        "build.json": "adcdf3798aea72e54a9532bb09880b919bb894c3b4b1d58ce64427ac42dc74cf",
+        "json-generation-plan.json": "f77932d866a945fc92cb0c64873da833d7867ce64f408f9a0fb4276822dbb457",
+        "json-generation.json": "4fab8610519ce38abe016e2110c9a54b3c4f061376abe9ad5ee999c74dca625a"
+      }
+    },
+    "parent": {
+      "build_record": {
+        "CFLAGS": "-O2 -g -fPIE -fstack-protector-strong -Wformat -Werror=format-security -fno-strict-aliasing -fsigned-char",
+        "CPPFLAGS": "-D_FORTIFY_SOURCE=2",
+        "DEB_HOST_MULTIARCH": "x86_64-linux-gnu",
+        "LDFLAGS": "-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now -Wl,--as-needed",
+        "binaries": {
+          "php": "9b9ef818aa885091a1889b9dfb3d8d673d2ed60eb52788d3087b3427fbf6389f",
+          "php-fpm": "d9116e323a30e3f0dd337c776d99881c7f9ada846f295647dd61c9a999ae5d1a"
+        },
+        "configure": [
+          "--prefix=/opt/legacy-fpm-patchkit",
+          "--enable-fpm",
+          "--enable-cli",
+          "--disable-cgi",
+          "--disable-phpdbg",
+          "--disable-all",
+          "--disable-debug",
+          "--disable-rpath",
+          "--disable-static",
+          "--with-pic",
+          "--without-pear",
+          "--enable-filter",
+          "--enable-hash",
+          "--enable-session",
+          "--with-config-file-path=/etc/php/7.0/fpm",
+          "--with-config-file-scan-dir=/etc/php/7.0/fpm/conf.d",
+          "--with-fpm-user=www-data",
+          "--with-fpm-group=www-data",
+          "--without-libxml",
+          "--enable-json"
+        ],
+        "external_module_compatibility": "NOT_TESTED",
+        "historical_build007_binary_equivalence": "NOT_CLAIMED",
+        "json_generation": {
+          "after": {
+            "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+            "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+            "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+            "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+            "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+            "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+          },
+          "before": {
+            "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+            "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+            "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+            "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+            "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+            "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+          },
+          "bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+          "mode": "pregenerated",
+          "prepared_source_sha256": "f5f6b9f4263bce9e4de03b7fba315490e6d08bcc9862cd7d048a52929f756fe5",
+          "schema": 1,
+          "targets": [
+            "ext/json/json_scanner.c",
+            "ext/json/json_parser.tab.c"
+          ]
+        },
+        "json_generation_receipt_sha256": "af96dfd8ea59b615fa9a7f5237e12675130361f48db83a664aab073f3c76a456",
+        "libc": [
+          "glibc",
+          "2.35"
+        ],
+        "machine": "x86_64",
+        "normalized_source_sha256": "f5f6b9f4263bce9e4de03b7fba315490e6d08bcc9862cd7d048a52929f756fe5",
+        "os_release": "PRETTY_NAME=\"Ubuntu 22.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"22.04\"\nVERSION=\"22.04.5 LTS (Jammy Jellyfish)\"\nVERSION_CODENAME=jammy\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=jammy\n",
+        "patch_sha256": "f72477d7b5183622fa8b785175dcc1bac9cd53fb1e869559fbdfbfa30b7f61f4",
+        "profile": "portable",
+        "result": "BUILT_NOT_RUNTIME_VERIFIED",
+        "schema": 1,
+        "source_identity": {
+          "baseline_patch_sha256": "7425b8dea681c404399a97d8267c926298131612ec21187cb9aa9be00a75c71b",
+          "baseline_source_sha256": "01ea416605986b1169674caf904bb51ef7a7626456f8e259fd7653c436fefb85",
+          "baseline_variant": "multipart-20261114",
+          "changed": {
+            "main/php_variables.c": {
+              "after": "ae0f7038a2dbb395c126f26cd269827169617595f04d44847163aca6a77ff365",
+              "before": "e006666300c59e3aa0c46ce272f2b1af836b51bf3ce1547927d6064ea36b35a6"
+            }
+          },
+          "normalized_source_sha256": "f5f6b9f4263bce9e4de03b7fba315490e6d08bcc9862cd7d048a52929f756fe5",
+          "patch_sha256": "f72477d7b5183622fa8b785175dcc1bac9cd53fb1e869559fbdfbfa30b7f61f4",
+          "result": "SOURCE_VERIFIED",
+          "variant": "cookie-20261114",
+          "variant_manifest_sha256": "73fe27ba703a6770b5e3959e4c76ef72580609eb809ed02743aa9c2c9f0e7629"
+        },
+        "system": "Linux",
+        "toolchain": "Linux x86_64\ncc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0\nautoconf (GNU Autoconf) 2.71\nre2c 3.0\n",
+        "variant": "cookie-20261114"
+      },
+      "bundle_hash_evidence_level": "Recorded working-copy guard before/after hashes independently reconciled to the reviewed six-file tuple; generated C files are not included in this artifact",
+      "checksum_verification": {
+        "binary_files_absent_from_original_artifact": false,
+        "binary_linkage": "SHA256SUMS == build.json.binaries == native result cli_sha256/fpm_sha256",
+        "direct_original_file_bytes_verified": [
+          "php",
+          "php-fpm",
+          "build.json",
+          "json-generation-plan.json",
+          "json-generation.json"
+        ],
+        "public_bundle_excludes_binaries": true,
+        "record_linkage_only": [],
+        "sha256sums_entries": {
+          "build.json": "32cb3b050fd5f9a68a37465f09d4c5fc5d4f34d6e9f255cace2b09880b9ed724",
+          "json-generation-plan.json": "f77932d866a945fc92cb0c64873da833d7867ce64f408f9a0fb4276822dbb457",
+          "json-generation.json": "af96dfd8ea59b615fa9a7f5237e12675130361f48db83a664aab073f3c76a456",
+          "php": "9b9ef818aa885091a1889b9dfb3d8d673d2ed60eb52788d3087b3427fbf6389f",
+          "php-fpm": "d9116e323a30e3f0dd337c776d99881c7f9ada846f295647dd61c9a999ae5d1a"
+        }
+      },
+      "compiler_warnings": [
+        {
+          "line": 110,
+          "text": "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build-parent/source/ext/session/mod_files.c:315:9: warning: \u2018readdir_r\u2019 is deprecated [-Wdeprecated-declarations]"
+        },
+        {
+          "line": 164,
+          "text": "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build-parent/source/ext/standard/browscap.c:260:16: warning: function may return address of local variable [-Wreturn-local-addr]"
+        },
+        {
+          "line": 311,
+          "text": "main/php_config.h:2532: warning: \"_GNU_SOURCE\" redefined"
+        },
+        {
+          "line": 322,
+          "text": "main/php_config.h:2532: warning: \"_GNU_SOURCE\" redefined"
+        },
+        {
+          "line": 375,
+          "text": "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build-parent/source/main/streams/plain_wrapper.c:908:9: warning: \u2018readdir_r\u2019 is deprecated [-Wdeprecated-declarations]"
+        },
+        {
+          "line": 475,
+          "text": "Zend/../main/php_config.h:2532: warning: \"_GNU_SOURCE\" redefined"
+        }
+      ],
+      "generation_plan": {
+        "before": {
+          "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+          "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+          "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+          "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+          "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+          "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+        },
+        "bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+        "mode": "pregenerated",
+        "schema": 1,
+        "targets": [
+          "ext/json/json_scanner.c",
+          "ext/json/json_parser.tab.c"
+        ]
+      },
+      "generation_receipt": {
+        "after": {
+          "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+          "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+          "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+          "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+          "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+          "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+        },
+        "before": {
+          "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+          "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+          "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+          "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+          "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+          "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+        },
+        "bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+        "mode": "pregenerated",
+        "prepared_source_sha256": "f5f6b9f4263bce9e4de03b7fba315490e6d08bcc9862cd7d048a52929f756fe5",
+        "schema": 1,
+        "targets": [
+          "ext/json/json_scanner.c",
+          "ext/json/json_parser.tab.c"
+        ]
+      },
+      "json_c_compile_lines": {
+        "json_parser.tab.c": [
+          98
+        ],
+        "json_scanner.c": [
+          101
+        ]
+      },
+      "json_make_generator_commands": [],
+      "normal_checks": 36,
+      "preparation_record": {
+        "member": "paired/source-parent.preparation.json",
+        "patch_sha256": "f72477d7b5183622fa8b785175dcc1bac9cd53fb1e869559fbdfbfa30b7f61f4",
+        "prepared_source_sha256": "f5f6b9f4263bce9e4de03b7fba315490e6d08bcc9862cd7d048a52929f756fe5",
+        "result": "SOURCE_VERIFIED",
+        "sha256": "70dd117c5d84e66beed7cc00b0556f6e5e1181586c88632b49a9832aa947423b"
+      },
+      "raw_prefix": "paired/build-parent",
+      "record_file_sha256": {
+        "SHA256SUMS": "99cdba8a0c0270efa33dd8c619d1e44a465b8a5f94f253b65ab8a27f4f25671b",
+        "build.json": "32cb3b050fd5f9a68a37465f09d4c5fc5d4f34d6e9f255cace2b09880b9ed724",
+        "json-generation-plan.json": "f77932d866a945fc92cb0c64873da833d7867ce64f408f9a0fb4276822dbb457",
+        "json-generation.json": "af96dfd8ea59b615fa9a7f5237e12675130361f48db83a664aab073f3c76a456"
+      }
+    }
+  },
+  "catalog_counts": {
+    "cumulative": {
+      "implemented": 7,
+      "mechanism_absent": 14,
+      "planned": 45
+    },
+    "default_build007": {
+      "implemented": 2,
+      "mechanism_absent": 14,
+      "planned": 50
+    }
+  },
+  "existing_standard_date_lexers": {
+    "build_driver_sha256": "1057d02d0945fedb35faafc6fd9ec989065098f5655a474cae9fae585152106a",
+    "build_driver_url": "https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/blob/9cd1fe002e9e3976bec7635356c8398071732835/scripts/build.sh",
+    "direct_generated_hash_verification": false,
+    "evidence_level": "Indirect script sequence under set -e plus successful later compilation; no post-generation C hashes were retained",
+    "names": [
+      "var_unserializer",
+      "url_scanner_ex",
+      "parse_date",
+      "parse_iso_intervals"
+    ],
+    "script_commands": [
+      {
+        "command": "re2c --no-generation-date -b -o ext/standard/var_unserializer.c ext/standard/var_unserializer.re",
+        "line": 64
+      },
+      {
+        "command": "re2c --no-generation-date -b -o ext/standard/url_scanner_ex.c ext/standard/url_scanner_ex.re",
+        "line": 65
+      },
+      {
+        "command": "re2c -d -b -o ext/date/lib/parse_date.c ext/date/lib/parse_date.re",
+        "line": 66
+      },
+      {
+        "command": "re2c -d -b -o ext/date/lib/parse_iso_intervals.c ext/date/lib/parse_iso_intervals.re",
+        "line": 67
+      }
+    ]
+  },
+  "head_sha": "9cd1fe002e9e3976bec7635356c8398071732835",
+  "json_bundle_sha256": "bfa25ae262a65b6f158cf34581e82b40dc0f33c681f752bb9ed34ba937de55ce",
+  "json_tuple": {
+    "ext/json/json_parser.tab.c": "7d86ed19b08af1c0a3cf2b453bc1abce11175a1fdd99127476bd8f87d79edc12",
+    "ext/json/json_parser.tab.h": "aacdf9a63d795eff57a2107c0d80a4d2cdb2df80e89391eee00b7c3baaad28dc",
+    "ext/json/json_parser.y": "113704af638aeb80d9285a90b2c49a760724a8e148a76245c959f54463765ca1",
+    "ext/json/json_scanner.c": "997803e6bf02068f61db344bfd2ea0dd077c7701359ba48fd8979f3d40ecf5c1",
+    "ext/json/json_scanner.re": "9bbd7c18de5e56abf9359193f47112ce254ac106fe06671841c1257d6ef620e9",
+    "ext/json/php_json_scanner_defs.h": "10abc51aba2e43d9d75edf2506bd5af3f8b16953559c89a946c3d670ee9f922d"
+  },
+  "limitations": [
+    "Existing Linux runs only; no new collector runtime execution",
+    "Default Checks binaries were not present: three metadata files direct-hashed, two binary hashes linked through SHA256SUMS/build/native records only",
+    "Paired binary files were directly verified during collection but are excluded from this public data archive",
+    "JSON C/header bytes are not retained; guard-recorded per-file values are reconciled to the fixed tuple",
+    "No post-generation hashes for the four standard/date lexer outputs",
+    "Synthetic single-write parent allowlist; no arbitrary scheduling/concurrency claim",
+    "No syslog delivery, whole CVE-2024-9026 resolution, Xenial/module/site or production acceptance"
+  ],
+  "previous_campaign_comparison": {
+    "behavior_result_equal_excluding_source_and_binary_hashes": true,
+    "binary_causality": "No claim that JSON generation is the sole cause of other binary differences or that all builds are bit reproducible",
+    "compared_fields": "stream, payload bytes, frame boundaries and close suffix; exclude PID/timestamps",
+    "parent_binary_direct_byte_comparison": {
+      "php": true,
+      "php-fpm": true
+    },
+    "producer_program_bytes_equal": true,
+    "record_sequence_differences": 0,
+    "run_id": 43606021097,
+    "trials_compared": 48
+  },
+  "privacy_scan": {
+    "classifications": [
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/candidate/expansion-stderr/barrier-0.bin",
+        "member_line": 2,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "3e935eebbc52f24d02a71ccd60a173f807b44afc38af9361d00f11676d0f44e4"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/candidate/expansion-stderr/barrier-1.bin",
+        "member_line": 2,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "281b4317d77bd53e7ac4e2df0b01ea268414d172b0dc5208fd7f7893bb713739"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/candidate/expansion-stderr/response-0.bin",
+        "member_line": 2,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "3e935eebbc52f24d02a71ccd60a173f807b44afc38af9361d00f11676d0f44e4"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/candidate/expansion-stderr/response-1.bin",
+        "member_line": 2,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "281b4317d77bd53e7ac4e2df0b01ea268414d172b0dc5208fd7f7893bb713739"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/candidate/expansion-stderr/trial-0.json",
+        "member_line": 5,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "d1e899d5c68edf1b27247b9d6e5c3eca708a76a6ee4a2da5f8c6dbb975ad37f2"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/candidate/expansion-stderr/trial-1.json",
+        "member_line": 5,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "3b31bc6f11722e9e49c1c67fdec2989a1c13437611517b07652ff1722f04d83d"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/parent/expansion-stderr/barrier-0.bin",
+        "member_line": 2,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "3e935eebbc52f24d02a71ccd60a173f807b44afc38af9361d00f11676d0f44e4"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/parent/expansion-stderr/barrier-1.bin",
+        "member_line": 2,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "281b4317d77bd53e7ac4e2df0b01ea268414d172b0dc5208fd7f7893bb713739"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/parent/expansion-stderr/response-0.bin",
+        "member_line": 2,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "3e935eebbc52f24d02a71ccd60a173f807b44afc38af9361d00f11676d0f44e4"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/parent/expansion-stderr/response-1.bin",
+        "member_line": 2,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "281b4317d77bd53e7ac4e2df0b01ea268414d172b0dc5208fd7f7893bb713739"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/parent/expansion-stderr/trial-0.json",
+        "member_line": 5,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "d1e899d5c68edf1b27247b9d6e5c3eca708a76a6ee4a2da5f8c6dbb975ad37f2"
+      },
+      {
+        "classification": "exact public expansion-stderr fixture correlation line",
+        "member": "paired/fpm-log-result/parent/expansion-stderr/trial-1.json",
+        "member_line": 5,
+        "rule_id": "generic-api-key",
+        "whole_line_sha256": "3b31bc6f11722e9e49c1c67fdec2989a1c13437611517b07652ff1722f04d83d"
+      }
+    ],
+    "classified_public_fixture_lines": 12,
+    "findings": 12,
+    "raw_bytes_changed": false,
+    "scanner": "gitleaks stdin --redact",
+    "scanner_exit_code": 1,
+    "unclassified_findings": 0
+  },
+  "record_type": "retained-json-generation-linux-evidence",
+  "retained_raw": {
+    "archive": "evidence/json-generation-20261115/raw.tar.gz",
+    "archive_sha256": "a24f8be647c1ee84bbfafb84c17182d889d101d1c50a297d9aba680eb50fb682",
+    "binaries_included": false,
+    "files": 556,
+    "index": "evidence/json-generation-20261115/raw-files.json",
+    "index_sha256": "731baeed4e539d1402b262e4d7e7240841e298cbc692f7774d135e31f3674f92",
+    "uncompressed_bytes": 2756346
+  },
+  "runtime_campaign": {
+    "barrier_requests": 48,
+    "cleanup": [
+      {
+        "before_stop": null,
+        "case": "backslash-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "backslash-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "controls-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "controls-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "expansion-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "expansion-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "normal-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "normal-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "nul-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "nul-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "tail-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "tail-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "parent"
+      },
+      {
+        "before_stop": null,
+        "case": "backslash-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "backslash-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "controls-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "controls-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "expansion-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "expansion-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "normal-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "normal-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "nul-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "nul-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "tail-stderr",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      },
+      {
+        "before_stop": null,
+        "case": "tail-stdout",
+        "forced_cleanup": false,
+        "reaped": true,
+        "returncode": 0,
+        "side": "candidate"
+      }
+    ],
+    "forced_cleanup": 0,
+    "fpm_requests": 96,
+    "normal_checks_per_side": 36,
+    "owned_instances": 24,
+    "producer_phpt_per_side": "PASS",
+    "producer_requests": 48,
+    "production": "NOT_ACCESSED",
+    "run_id": 43607944104,
+    "runner_result": "PAIRED_LEGACY_LOG_RUNTIME_PASS",
+    "syslog_transport": "NOT_RUN",
+    "trial_results": [
+      {
+        "case": "backslash-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "backslash-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "backslash-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "backslash-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "controls-stderr",
+        "frames": 6,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "controls-stderr",
+        "frames": 6,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "controls-stdout",
+        "frames": 6,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "controls-stdout",
+        "frames": 6,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "expansion-stderr",
+        "frames": 8,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "expansion-stderr",
+        "frames": 8,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "expansion-stdout",
+        "frames": 8,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "expansion-stdout",
+        "frames": 8,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "normal-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "normal-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "normal-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "normal-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "nul-stderr",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "nul-stderr",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "nul-stdout",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "nul-stdout",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "tail-stderr",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "tail-stderr",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "tail-stdout",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 0
+      },
+      {
+        "case": "tail-stdout",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "KNOWN_LEGACY_LOSS",
+        "side": "parent",
+        "trial": 1
+      },
+      {
+        "case": "backslash-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "backslash-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "backslash-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "backslash-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "controls-stderr",
+        "frames": 6,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "controls-stderr",
+        "frames": 6,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "controls-stdout",
+        "frames": 6,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "controls-stdout",
+        "frames": 6,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "expansion-stderr",
+        "frames": 15,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "expansion-stderr",
+        "frames": 15,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "expansion-stdout",
+        "frames": 15,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "expansion-stdout",
+        "frames": 15,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "normal-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "normal-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "normal-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "normal-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "nul-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "nul-stderr",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "nul-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "nul-stdout",
+        "frames": 7,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "tail-stderr",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "tail-stderr",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      },
+      {
+        "case": "tail-stdout",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 0
+      },
+      {
+        "case": "tail-stdout",
+        "frames": 4,
+        "previous_record_sequence_equal": true,
+        "result": "BYTES_VERIFIED",
+        "side": "candidate",
+        "trial": 1
+      }
+    ],
+    "trials": 48,
+    "worker_log_frames": 328
+  },
+  "schema": 1,
+  "selected_json_targets": [
+    "ext/json/json_scanner.c",
+    "ext/json/json_parser.tab.c"
+  ],
+  "verification_label": "RETAINED_JSON_GENERATION_EVIDENCE_RECONCILED",
+  "verification_label_scope": "Offline reconciliation of retained results; this is not a runner result or a newly executed campaign",
+  "workflow_runs": {
+    "checks": {
+      "artifact": {
+        "archive_download_url": "https://api.github.com/repos/Two-Weeks-Team/legacy-fpm-patchkit/actions/artifacts/14119580635/zip",
+        "created_at": "2026-11-14T15:03:26Z",
+        "digest": "sha256:678aba245741953f573c88d47b5433869470ac2704f58c5c8fbea55cdfe3e49e",
+        "expired": false,
+        "expires_at": "2027-02-12T15:01:56Z",
+        "id": 14119580635,
+        "name": "portable-build-evidence",
+        "node_id": "MDg6QXJ0aWZhY3QxNDExOTU4MDYzNQ==",
+        "size_in_bytes": 32141,
+        "updated_at": "2026-11-14T15:03:26Z",
+        "url": "https://api.github.com/repos/Two-Weeks-Team/legacy-fpm-patchkit/actions/artifacts/14119580635",
+        "workflow_run": {
+          "head_branch": "main",
+          "head_repository_id": 1457343854,
+          "head_sha": "9cd1fe002e9e3976bec7635356c8398071732835",
+          "id": 43607943962,
+          "repository_id": 1457343854
+        }
+      },
+      "conclusion": "success",
+      "created_at": "2026-11-14T15:01:56Z",
+      "event": "push",
+      "execution_scope": "Default build007 portable build/native36 and repository Checks; separate from paired log proof",
+      "head_sha": "9cd1fe002e9e3976bec7635356c8398071732835",
+      "jobs": [
+        {
+          "conclusion": "success",
+          "name": "Advisory batch / Worker runtime"
+        },
+        {
+          "conclusion": "success",
+          "name": "Unit / Python 3.12"
+        },
+        {
+          "conclusion": "success",
+          "name": "Fresh source / portable Linux FPM"
+        },
+        {
+          "conclusion": "success",
+          "name": "Unit / Python 3.10"
+        }
+      ],
+      "repository_unit_evidence": {
+        "evidence_level": "Existing Checks logs; not a new collector execution",
+        "python_versions": [
+          "3.10",
+          "3.12"
+        ],
+        "tests_per_job": 131
+      },
+      "run_id": 43607943962,
+      "updated_at": "2026-11-14T15:03:29Z",
+      "url": "https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43607943962"
+    },
+    "paired": {
+      "artifact": {
+        "archive_download_url": "https://api.github.com/repos/Two-Weeks-Team/legacy-fpm-patchkit/actions/artifacts/14118738912/zip",
+        "created_at": "2026-11-14T15:07:44Z",
+        "digest": "sha256:7c68291b0476d62cc1a082340e36bbd3917e6603e3f40a63aec50e83046f9387",
+        "expired": false,
+        "expires_at": "2027-02-12T15:01:58Z",
+        "id": 14118738912,
+        "name": "fpm-log-paired-native",
+        "node_id": "MDg6QXJ0aWZhY3QxNDExODczODkxMg==",
+        "size_in_bytes": 31194968,
+        "updated_at": "2026-11-14T15:07:44Z",
+        "url": "https://api.github.com/repos/Two-Weeks-Team/legacy-fpm-patchkit/actions/artifacts/14118738912",
+        "workflow_run": {
+          "head_branch": "main",
+          "head_repository_id": 1457343854,
+          "head_sha": "9cd1fe002e9e3976bec7635356c8398071732835",
+          "id": 43607944104,
+          "repository_id": 1457343854
+        }
+      },
+      "conclusion": "success",
+      "created_at": "2026-11-14T15:01:56Z",
+      "event": "workflow_dispatch",
+      "execution_scope": "Paired cookie/FPM-log portable builds and 96 file-log requests",
+      "head_sha": "9cd1fe002e9e3976bec7635356c8398071732835",
+      "jobs": [
+        {
+          "conclusion": "success",
+          "name": "paired-native"
+        }
+      ],
+      "run_id": 43607944104,
+      "updated_at": "2026-11-14T15:07:47Z",
+      "url": "https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43607944104"
+    }
+  }
+}
