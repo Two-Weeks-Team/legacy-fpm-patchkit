@@ -3,6 +3,7 @@ import { runBatch } from './batch.ts';
 import { readView, payload, backlogMarkdown, statusFor, KINDS } from './export.ts';
 import type { Kind } from './export.ts';
 import seed from './seed.ts';
+type WorkerEnv = Env & { GITHUB_READ_TOKEN?: string };
 
 async function authorized(request: Request, secret: string): Promise<boolean> {
   if (!secret || secret.length < 32) return false;
@@ -23,7 +24,7 @@ export default {
       if (!env.SYNC_TOKEN || env.SYNC_TOKEN.length < 32) return json({error:'Sync control is not configured'},503);
       if (!await authorized(request,env.SYNC_TOKEN)) return json({error:'Unauthorized'},401);
       try {
-        const report = await runBatch(new D1Store(env.DB),seed,{trigger:'manual'});
+        const report = await runBatch(new D1Store(env.DB),seed,{trigger:'manual', githubToken:env.GITHUB_READ_TOKEN});
         console.log(JSON.stringify({event:'advisory_sync',...report}));
         return json({report},report.status==='SUCCESS'?200:report.status==='BUSY'?409:502);
       } catch { console.error(JSON.stringify({event:'advisory_sync_storage_failure'})); return json({error:'Sync storage unavailable'},503); }
@@ -45,9 +46,9 @@ export default {
   },
   scheduled(controller,env,ctx): void {
     ctx.waitUntil((async()=>{
-      const report=await runBatch(new D1Store(env.DB),seed,{trigger:'cron:'+controller.cron});
+      const report=await runBatch(new D1Store(env.DB),seed,{trigger:'cron:'+controller.cron, githubToken:env.GITHUB_READ_TOKEN});
       console.log(JSON.stringify({event:'advisory_sync',...report}));
       if(report.status==='FAILED') throw new Error('Scheduled advisory collection failed');
     })());
   },
-} satisfies ExportedHandler<Env>;
+} satisfies ExportedHandler<WorkerEnv>;

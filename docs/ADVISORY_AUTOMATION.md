@@ -15,6 +15,18 @@ This optional service collects public PHP repository security advisories and pro
 
 The reviewed seed dated 2026-11-14 contains **66 advisories: 2 source implementations, 13 specific mechanisms absent and 51 planned protections**. These labels apply to the pinned source, not arbitrary PHP installations. Vendor-patch coverage is separately documented in the matrix. Raw advisory descriptions, exploit payloads and operational records are excluded.
 
+### Shared GitHub quota and optional authentication
+
+GitHub permits public advisory reads without authentication, but anonymous quota is shared by outgoing IP. A deployed Worker encountered a real **403 with remaining quota 0** on 2026-11-14; local API success did not establish cloud success. [GitHub's rate-limit guidance](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api) explains the distinction. Refusal reports include numeric limit/reset/Retry-After headers, never the response body. A recorded future reset suppresses further calls in that credential mode until it expires.
+
+For reliable scheduled use, configure a **dedicated fine-grained token for public read access**, without private-repository or write permissions. The [endpoint's official permission contract](https://docs.github.com/en/rest/security-advisories/repository-advisories#list-repository-security-advisories) allows public-resource reads without additional repository permissions. Store it as the optional Worker secret `GITHUB_READ_TOKEN` (or the identically named local environment variable). Do not copy a broad personal CLI credential automatically. The collector sends it only to the validated official API origin/path and refuses redirects/foreign pagination.
+
+```sh
+npx wrangler secret put GITHUB_READ_TOKEN --config .work/wrangler.deploy.json
+```
+
+Enter the token only at Wrangler's secure prompt, never in chat or public files. If you later deploy with `--secrets-file`, preserve the already configured optional secret; do not replace it with a placeholder. Successful authentication is a normal access setup, not permission to ignore a further refusal. Investigate any subsequent 401/403 before retrying.
+
 ## Shared local batch
 
 Node **24** is required. From `automation/advisory-sync`:

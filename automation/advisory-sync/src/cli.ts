@@ -15,7 +15,7 @@ try {
     if (!KINDS.includes(values.kind as Kind) || !['json','markdown'].includes(values.format)) throw new Error('Unknown export kind or format');
     const store = new FileStore(values['state-dir']);
     if ((positionals[0] ?? 'sync') === 'sync') {
-      const result = await runBatch(store, seed, { trigger: 'cli' }); console.log(JSON.stringify(result, null, 2));
+      const result = await runBatch(store, seed, { trigger: 'cli', githubToken: process.env.GITHUB_READ_TOKEN }); console.log(JSON.stringify(result, null, 2));
       process.exitCode = result.status === 'SUCCESS' ? 0 : result.status === 'BUSY' ? 2 : 1;
     } else {
       const view = await readView(store);

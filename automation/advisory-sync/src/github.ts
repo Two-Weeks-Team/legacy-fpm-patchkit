@@ -1,7 +1,10 @@
 import { normalize } from './core.ts';
 import type { Advisory, Fetcher } from './types.ts';
 export const API_URL = 'https://api.github.com/repos/php/php-src/security-advisories?state=published&per_page=100';
-export interface CollectionLimits { timeoutMs?: number; maxPageBytes?: number; maxTotalBytes?: number; maxPages?: number }
+export interface CollectionLimits { timeoutMs?: number; maxPageBytes?: number; maxTotalBytes?: number; maxPages?: number; token?: string }
+export class GithubRefusal extends Error {
+  constructor(message: string, readonly retryAt: string | undefined, readonly upstreamAuth: 'anonymous' | 'token') { super(message); }
+}
 function nextLink(header: string | null): string | undefined {
   if (!header) return undefined;
   let next: string | undefined;
@@ -19,6 +22,8 @@ function nextLink(header: string | null): string | undefined {
   return next;
 }
 export async function collectGithub(fetcher: Fetcher = (url, init) => fetch(url, init), limits: CollectionLimits = {}): Promise<Advisory[]> {
+  const token = limits.token;
+  if (token && (!/^[A-Za-z0-9_.-]{20,512}$/.test(token))) throw new Error('Invalid GitHub read credential format');
   const deadline = Date.now() + (limits.timeoutMs ?? 60_000);
   const maxPage = limits.maxPageBytes ?? 4 * 1024 * 1024;
   const maxTotal = limits.maxTotalBytes ?? 16 * 1024 * 1024;
@@ -41,7 +46,7 @@ export async function collectGithub(fetcher: Fetcher = (url, init) => fetch(url,
       if (seenUrls.has(url)) throw new Error('Pagination cycle');
       if (seenUrls.size >= maxPages) throw new Error('Pagination page budget exceeded');
       seenUrls.add(url);
-      const response = await within(fetcher(url, { headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'legacy-fpm-advisory-sync' },
+      const response = await within(fetcher(url, { headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'legacy-fpm-advisory-sync', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
         redirect: 'manual', signal: abort.signal }));
       if (!response.ok) {
         void response.body?.cancel().catch(() => {});
@@ -50,7 +55,11 @@ export async function collectGithub(fetcher: Fetcher = (url, init) => fetch(url,
           const value = response.headers.get(header);
           return value && /^\d{1,16}$/.test(value) ? [label + '=' + value] : [];
         });
-        throw new Error('GitHub HTTP ' + response.status + (diagnostics.length ? ' (' + diagnostics.join(', ') + ')' : ''));
+        const reset = response.headers.get('x-ratelimit-reset'); const retry = response.headers.get('retry-after');
+        const waitUntil = response.headers.get('x-ratelimit-remaining') === '0' && reset && /^\d{1,12}$/.test(reset) ? Number(reset)*1000 :
+          (response.status === 429 || response.status === 403) && retry && /^\d{1,8}$/.test(retry) ? Date.now()+Number(retry)*1000 : 0;
+        const retryAt = waitUntil > Date.now() && waitUntil < Date.now()+86400_000 ? new Date(waitUntil).toISOString() : undefined;
+        throw new GithubRefusal('GitHub HTTP ' + response.status + (diagnostics.length ? ' (' + diagnostics.join(', ') + ')' : ''), retryAt, token ? 'token' : 'anonymous');
       }
       const length = Number(response.headers.get('content-length'));
       if (Number.isFinite(length) && length > maxPage) { void response.body?.cancel().catch(() => {}); throw new Error('Response byte budget exceeded'); }

@@ -42,3 +42,19 @@ test('unchanged scheduled collection advances success time without reporting con
   assert.equal(second.status, 'SUCCESS'); assert.equal(second.changed, false);
   assert.deepEqual(second.changes, { added: [], updated: [], withdrawn: [], missing: [] });
 });
+
+
+test('known quota reset suppresses repeated anonymous requests until the deadline', async () => {
+  const store=new MemoryStore(); const seed=await fixture(); let calls=0;
+  const fetcher=async()=>{ calls++; return new Response('limited',{status:403,headers:{
+    'x-ratelimit-remaining':'0', 'x-ratelimit-reset':String(Math.ceil(Date.now()/1000)+120),
+  }}); };
+  const first=await runBatch(store,seed,{trigger:'test',fetcher});
+  assert.ok(first.retryAt);
+  const second=await runBatch(store,seed,{trigger:'test',fetcher});
+  assert.equal(second.status,'FAILED'); assert.match(second.error!,/cooldown/); assert.equal(calls,1);
+  assert.equal(second.retryAt,first.retryAt);
+  const authenticated=await runBatch(store,seed,{trigger:'test',githubToken:'github_pat_readonly_fixture_value',
+    fetcher:async()=>new Response(JSON.stringify([raw()]))});
+  assert.equal(authenticated.status,'SUCCESS');
+});

@@ -68,3 +68,15 @@ test('upstream refusal preserves bounded rate-limit diagnostics and makes no ret
   });
   assert.equal(calls,1);
 });
+
+
+test('optional read credential is sent only to validated official API pages', async () => {
+  const token='github_pat_local_readonly_fixture'; let calls=0;
+  await assert.rejects(collectGithub(async (url,init)=>{
+    calls++;
+    assert.equal(new Headers(init.headers).get('Authorization'),'Bearer '+token);
+    assert.equal(new URL(url).origin,'https://api.github.com');
+    return page([raw()],'<https://evil.example/api>; rel="next"');
+  },{token}), /pagination/);
+  assert.equal(calls,1);
+});

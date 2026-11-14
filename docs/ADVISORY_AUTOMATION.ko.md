@@ -47,6 +47,8 @@ Cloudflare 전용 Worker와 D1을 사용합니다. 사이트 도메인이 같은
 
 읽기는 공개되어 있으며 수집을 실행하지 않습니다. 수동 수집은 비밀 토큰을 사용하는 POST `/internal/sync`만 허용합니다. 계정·D1 UUID·토큰은 공개 저장소에 넣지 않습니다. [영문 배포 절차](ADVISORY_AUTOMATION.md#cloudflare-deployment)에 계정 선택·마이그레이션·비밀값과 함께 배포하는 방법을 정리했습니다. 요금제는 자동 변경하지 않습니다.
 
+실제 Workers 실행에서는 GitHub 미인증 발신 IP의 잔여 한도가 0이어서 403이 발생했습니다. 안정적인 예약 실행에는 비공개 저장소·쓰기 권한이 없는 **전용 공개 읽기 토큰**을 선택적으로 `GITHUB_READ_TOKEN` 비밀값에 연결할 수 있습니다. 기존 CLI의 광범위한 토큰은 자동 복사하지 않습니다. [설정 방법과 공식 권한 근거](ADVISORY_AUTOMATION.md#shared-github-quota-and-optional-authentication)를 확인하세요. 토큰은 채팅에 보내지 않습니다. 제한 초기화 시각이 기록되면 그때까지 같은 인증 방식의 재호출을 억제합니다.
+
 상태는 초기 자료만 있는 `NEVER_SYNCED`, 정상 `HEALTHY`, 성공 후 150분 초과 `STALE`, 최근 실패 `FAILED`입니다. 수집 실패 후에도 이전 정상 자료는 상태·시각과 함께 읽을 수 있습니다. 저장 자료 손상은 오류로 표시합니다.
 
 ## 이후 구현과 근거

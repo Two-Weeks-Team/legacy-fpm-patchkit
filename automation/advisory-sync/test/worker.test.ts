@@ -12,9 +12,10 @@ before(async () => {
   assert.equal(build.status, 0, build.stderr);
   mf = new Miniflare(convertV4MiniflareOptions({ cf:false, modules:true, scriptPath:resolve('.work/test-bundle/worker.js'),
     compatibilityDate:'2026-11-14', compatibilityFlags:['nodejs_compat'],
-    d1Databases:{DB:'worker-http-test'}, d1Persist:false, bindings:{SYNC_TOKEN:TOKEN},
+    d1Databases:{DB:'worker-http-test'}, d1Persist:false, bindings:{SYNC_TOKEN:TOKEN,GITHUB_READ_TOKEN:'github_pat_readonly_fixture_value'},
     outboundService: async (request) => {
-      assert.equal(new URL(request.url).hostname, 'api.github.com'); outboundCalls++;
+      assert.equal(new URL(request.url).hostname, 'api.github.com');
+      assert.equal(request.headers.get('Authorization'),'Bearer github_pat_readonly_fixture_value'); outboundCalls++;
       return failing ? new MFResponse('limited',{status:429}) : new MFResponse(JSON.stringify(seed.catalog));
     },
   }));

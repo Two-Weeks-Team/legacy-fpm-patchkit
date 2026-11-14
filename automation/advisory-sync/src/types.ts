@@ -28,7 +28,7 @@ export interface Snapshot {
 export interface BatchReport {
   runId: string; status: 'SUCCESS' | 'FAILED' | 'BUSY'; trigger: string;
   startedAt: string; finishedAt: string; revision?: string; changed?: boolean;
-  observedCount?: number; retainedCount?: number; changes?: Changes; error?: string; cleanupWarning?: string;
+  observedCount?: number; retainedCount?: number; changes?: Changes; error?: string; cleanupWarning?: string; retryAt?: string; upstreamAuth?: 'anonymous' | 'token';
 }
 export interface StoredView { snapshot: Snapshot | null; lastSuccessAt: string | null; lastAttempt: BatchReport | null; lastSuccessReport?: BatchReport | null; origin: 'seed' | 'collected' }
 export interface Store {
