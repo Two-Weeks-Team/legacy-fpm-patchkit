@@ -1,5 +1,7 @@
 # Contributing
 
+For advisory coverage changes, update the reviewed ledger in `evidence/security-coverage-20261114.json`, retain official/source evidence, and run `python3 scripts/render-coverage.py`, `python3 scripts/check-coverage.py` and `python3 scripts/render-coverage.py --check`. Recheck the prepared tree with `--source .work/source` before crediting a fix. Do not move a planned item to resolved solely because a test was omitted, a module was disabled or an affected-version table excludes an unsupported branch.
+
 Useful contributions include reproducible source/build fixes, narrowly scoped regression cases, accurate translations, documentation improvements and independently measured compatibility reports.
 
 1. Read [SUPPORT.md](SUPPORT.md) and [SECURITY.md](SECURITY.md).

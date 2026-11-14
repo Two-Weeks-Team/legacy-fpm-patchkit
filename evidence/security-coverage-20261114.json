@@ -1,0 +1,2362 @@
+{
+  "schema": 1,
+  "as_of": "2026-11-14",
+  "baseline": "7.0.33-0ubuntu0.16.04.16",
+  "patch_sha256": "a7db5d018d5f7cef41c726b61eccd794356c5d06bb1bb4322027dde88fbd108c",
+  "candidate_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+  "catalog_sha256": "b942176c69b171f6e7efb470593a7f49df5fb0b91b35baf6925acea79c0c5748",
+  "vendor_cve_count": 31,
+  "status_policy": "RESOLVED = protection implementation present, not an exploit-validation claim; NOT_APPLICABLE = specific mechanism absent; PLANNED = no protection credited and concrete investigation/port/regression work required. Source review is separate from runtime validation.",
+  "entries": [
+    {
+      "ghsa_id": "GHSA-7875-c8px-7q5f",
+      "cve_id": "CVE-2026-93682",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/standard HTTP redirect",
+      "reason_ko": "공지의 도입 조건은 CVE-2025-1861 수정 뒤의 location_len+1 힙 버퍼다. PHP 7.0 소스는 고정 크기 location 배열을 사용하며 빈 문자열이면 상대 경로 처리에 진입하지 않는다. 두 번째 바이트 읽기는 배열 범위 안이다. 이는 기존 7.0 구조의 비해당 판정이며 최신 HTTP 헤더 수정 전체가 이식됐다는 뜻은 아니다.",
+      "reason_en": "The reported one-byte heap allocation was introduced by the later CVE-2025-1861 fix. This source uses a fixed-size Location array and excludes an empty value before redirect resolution; the reported heap over-read mechanism is absent.",
+      "source_evidence": [
+        "ext/standard/http_fopen_wrapper.c:125 — char location[HTTP_HEADER_BLOCK_SIZE]",
+        "ext/standard/http_fopen_wrapper.c:865 — nonempty Location gates resolution",
+        "ext/standard/http_fopen_wrapper.c:877 — second-byte read remains inside fixed array"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-7875-c8px-7q5f",
+      "planned_action_ko": "",
+      "planned_action_en": "",
+      "validation": "not-applicable",
+      "upstream_fix_url": "https://github.com/php/php-src/pull/23521",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/pull/23467",
+        "https://github.com/php/php-src/blob/a66f30d78e10773048720b4b5f279136fdd0a433/ext/standard/http_fopen_wrapper.c#L295",
+        "https://github.com/php/php-src/blob/php-7.0.33/ext/standard/http_fopen_wrapper.c"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-w8hw-w9fx-j79w",
+      "cve_id": "CVE-2026-109618",
+      "status": "RESOLVED",
+      "component": "Zend allocator / VM OOM lifecycle",
+      "reason_ko": "PHP 7.0용 독립 백포트가 실제 소스에 존재한다. 할당기 안 즉시 bailout 대신 지연 OOM 상태를 기록하고 soft/hard 한도를 분리하며 hard OOM은 _exit(137), soft OOM은 VM 안전 지점의 내부 unwind로 처리한다. 여기서 RESOLVED는 대응 구현층 판정이다. 모든 할당 실패·확장 경로의 동등성 또는 실제 FPM 공격 차단 완전 검증은 하지 않았다.",
+      "reason_en": "An independent PHP 7.0 backport is present: delayed OOM recording, separate soft/hard limits, immediate hard-OOM exit, and VM safe-point unwind. RESOLVED describes implementation presence only; complete FPM exploit blocking and exhaustive allocator/extension equivalence are not validated.",
+      "source_evidence": [
+        "Zend/zend_alloc.c:417 — allocator records delayed OOM instead of unwinding in allocation",
+        "Zend/zend_alloc.c:498 — hard limit exits with _exit(137)",
+        "Zend/zend_alloc.c:506 — soft/hard allocation-limit policy",
+        "Zend/zend_alloc.c:3196 — safe-point delayed OOM handler",
+        "Zend/zend_execute.c:2673 — explicit PHP 7.0 VM safe points"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w",
+      "planned_action_ko": "추가 이식 필요 항목으로 분류하지 않는다. 별도 검증 범위에서 allocator 실패 종류·VM 경계·확장별 benign 회귀 및 반복 FPM 요청의 종료 상태를 검증해야 하며 본 판정을 공격 차단 PASS로 쓰지 않는다.",
+      "planned_action_en": "No missing-port item is asserted here. Separately validate allocator failures, VM boundaries, extension benign regressions, and repeated FPM request cleanup; do not present this as an exploit-blocking PASS.",
+      "validation": "source-only",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-6wmf-4rv5-p3rp",
+      "cve_id": "CVE-2026-109619",
+      "status": "RESOLVED",
+      "component": "request lifecycle / executor / session / serialization",
+      "reason_ko": "PHP 7.0용 독립 상태 수명 백포트가 있다. executor 종료 시 handler·예외·object store 포인터를 무효화하고, 늦은 종료 진단 뒤 last_error를 다시 비우며, SAPI 활성화 전 serializer 전역을 초기화한다. multipart 시작 시 session 전역 초기화와 early serializer 모드가 있다. 8.5 fatal_error_backtraces 전용 경로와 7.0 공통 상태 경로를 구분한다. RESOLVED는 이 구현 존재를 뜻하며 전체 producer/consumer 경로의 완전 차단을 검증한 결과가 아니다.",
+      "reason_en": "Independent PHP 7.0 lifecycle changes reset executor handlers/exceptions/object-store pointers, clear late error state, initialize serializer globals before SAPI activation, and isolate early upload-progress/session serialization. RESOLVED is implementation-level coverage, not exhaustive producer/consumer or exploit-blocking validation.",
+      "source_evidence": [
+        "Zend/zend_execute_API.c:411 — shutdown invalidates handlers, exceptions and object-store pointers",
+        "main/main.c:1893 — late last_error clear before heap release",
+        "main/main.c:1625 — basic early initialization before sapi_activate",
+        "ext/standard/basic_functions.c:3730 — early serializer state reset",
+        "ext/session/session.c:3001 — session globals initialized at multipart start",
+        "ext/session/session.c:2939 — early serialization mode for upload progress"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp",
+      "planned_action_ko": "추가 이식 누락으로 판정하지 않는다. 별도 benign 요청쌍·fatal 종료·늦은 진단·upload progress 회귀로 보호 동작과 호환성을 확인하고 실제 공격 차단 완전 검증과 구분한다.",
+      "planned_action_en": "No missing-port claim is made. Separately check benign request pairs, fatal cleanup, late diagnostics and upload-progress compatibility; keep these distinct from complete exploit-blocking verification.",
+      "validation": "source-only",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-62xp-839h-2637",
+      "cve_id": "CVE-2026-91768",
+      "status": "PLANNED",
+      "component": "main/fastcgi IPv6 ACL",
+      "reason_ko": "HAVE_IPV6 분기에 전체 IPv6 주소를 12바이트만 비교하는 공지의 메커니즘이 그대로 있다. IPv4-mapped 주소의 12바이트 오프셋과 혼동하면 안 된다. Linux FPM 대상이며 실제 listen 주소·허용 목록·네트워크 도달성은 조사하지 않았다.",
+      "reason_en": "The IPv6 ACL still compares only 12 of 16 bytes. This is distinct from the legitimate IPv4-mapped offset. Linux FPM is in scope; actual listener exposure and allowlist configuration were not inspected.",
+      "source_evidence": [
+        "main/fastcgi.c:1345 — plain IPv6 comparison uses length 12",
+        "main/fastcgi.c:1351 — separate mapped-IPv4 offset"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-62xp-839h-2637",
+      "planned_action_ko": "전체 in6_addr 크기 비교로 이식하고 정확 일치·마지막 32비트 차이·IPv4-mapped 정상 주소 회귀를 검증한다.",
+      "planned_action_en": "Port full in6_addr comparison; verify exact matches, differing final 32 bits, and benign IPv4-mapped cases.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-ch8v-r6jh-4vvr",
+      "cve_id": null,
+      "status": "PLANNED",
+      "component": "ext/filter FILTER_SANITIZE_ENCODED",
+      "reason_ko": "공식 GHSA에는 CVE 번호가 없다. tmp[256]를 sizeof(tmp)-1만 초기화하여 0xFF 테이블 항목이 초기화되지 않는 코드가 존재한다. OOM 관련 별도 편집이 있어도 이 초기화 누락은 남아 있다.",
+      "reason_en": "The official GHSA has no CVE identifier. Its 256-byte lookup table is initialized with sizeof(tmp)-1, leaving the 0xFF entry uninitialized; unrelated OOM edits do not fix this.",
+      "source_evidence": [
+        "ext/filter/sanitizing_filters.c:76 — 256-entry table",
+        "ext/filter/sanitizing_filters.c:81 — only sizeof(tmp)-1 bytes initialized"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-ch8v-r6jh-4vvr",
+      "planned_action_ko": "전체 테이블 초기화 수정과 256개 모든 바이트에 대한 결정적 정상 동작 회귀를 추가한다.",
+      "planned_action_en": "Initialize the entire table and add deterministic benign coverage across all 256 byte values.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-7jrw-539f-x6vr",
+      "cve_id": "CVE-2026-14355",
+      "status": "PLANNED",
+      "component": "ext/openssl openssl_encrypt AES-WRAP-PAD",
+      "reason_ko": "출력 버퍼가 data_len+EVP_CIPHER_block_size로 할당되고 EVP_EncryptUpdate/Final이 뒤따른다. 공지의 RFC5649 확장 전용 여유 공간 보호는 없다. PHP 7.0과 연결 OpenSSL의 wrap cipher 노출·수락 여부는 확인하지 않았으므로 피해 확정이 아니라 보호 미제공 coverage 항목이다.",
+      "reason_en": "Encryption output is allocated as input length plus cipher block size, with no RFC 5649 wrap-padding expansion guard. Whether this PHP 7.0/OpenSSL combination exposes and accepts wrap ciphers remains unverified; PLANNED records missing protection rather than proven exploitability.",
+      "source_evidence": [
+        "ext/openssl/openssl.c:5730 — generic output-size formula",
+        "ext/openssl/openssl.c:5742 — EVP writes into that buffer",
+        "ext/openssl/openssl.c:5745 — final output appended"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-7jrw-539f-x6vr",
+      "planned_action_ko": "선행 조사로 PHP7/OpenSSL 버전별 wrap cipher 가용성과 API 요구를 확인한 뒤 안전한 용량 산정 또는 명시적 미지원 처리를 이식한다. 정상 암호 round-trip·경계 길이·오류 반환 회귀를 검증한다.",
+      "planned_action_en": "First establish PHP 7/OpenSSL wrap-cipher availability and API requirements; then port safe sizing or explicit rejection and validate benign round trips, length boundaries and errors.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-fpwc-w8rq-cr92",
+      "cve_id": "CVE-2026-91766",
+      "status": "PLANNED",
+      "component": "ext/standard HTTP redirect credentials",
+      "reason_ko": "리디렉션에서 content-length/type만 제거하고 동일 context를 재귀 호출에 전달한다. 출발/목적 scheme·host·port 비교 및 sticky 자격 증명 제거 보호가 없다. HTTPS 프록시의 Proxy-Authorization 개별 제거는 cross-origin 보호를 대체하지 않는다.",
+      "reason_en": "Redirects strip content headers but reuse the context without effective-origin comparison or sticky credential stripping. The separate HTTPS proxy-authorization handling does not provide cross-origin redirect protection.",
+      "source_evidence": [
+        "ext/standard/http_fopen_wrapper.c:468 — redirect strips only POST content headers",
+        "ext/standard/http_fopen_wrapper.c:509 — proxy-specific handling",
+        "ext/standard/http_fopen_wrapper.c:937 — recursive redirect reuses context"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-fpwc-w8rq-cr92",
+      "planned_action_ko": "origin 비교와 Authorization/Cookie/Proxy-Authorization의 sticky 제거, 반복·folded 헤더 처리 수정 이식 후 로컬 benign origin/리디렉션·307/308 본문 호환 회귀를 검증한다.",
+      "planned_action_en": "Port effective-origin comparison, sticky credential stripping and robust header removal; validate benign redirect origins and 307/308 body compatibility.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-rgrp-mwpx-f6rm",
+      "cve_id": "CVE-2026-91765",
+      "status": "PLANNED",
+      "component": "ext/soap XML traversal / decoder recursion",
+      "reason_ko": "cleanup_xml_node와 WSDL 검색이 깊이/순환 제한 없이 재귀 호출한다. php://input 파일 파싱 경로는 XML_PARSE_HUGE와 cleanup 호출을 포함한다. SOAP decode 전역 깊이 보호도 없다. 최신 버전 기능이 아니라 7.0의 기존 traversal/decoder 문제다.",
+      "reason_en": "XML cleanup and WSDL search recurse without depth/cycle bounds; the input-file parser enables XML_PARSE_HUGE and invokes cleanup. No SOAP decoder-depth protection is present. These mechanisms already exist in PHP 7.0.",
+      "source_evidence": [
+        "ext/soap/php_xml.c:42 — recursive cleanup function",
+        "ext/soap/php_xml.c:62 — unbounded recursive descent",
+        "ext/soap/php_xml.c:104 — file parser enables XML_PARSE_HUGE",
+        "ext/soap/php_xml.c:129 — cleanup invoked after file parsing",
+        "ext/soap/php_xml.c:307 — recursive WSDL search",
+        "ext/soap/php_encoding.c:530 — decoder has no depth parameter/entry guard"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-rgrp-mwpx-f6rm",
+      "planned_action_ko": "반복 traversal·XML/decode 최대 깊이·href 순환 차단을 PHP7 API에 맞게 이식하고 정상 SOAP/WSDL 문서 및 허용 경계 회귀를 검증한다.",
+      "planned_action_en": "Port iterative traversal, XML/decode depth limits and href-cycle rejection for PHP 7 APIs; validate benign SOAP/WSDL documents and supported boundaries.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-7qpv-r5mr-78m4",
+      "cve_id": "CVE-2026-17543",
+      "status": "PLANNED",
+      "component": "ext/pgsql conversion quoting",
+      "reason_ko": "php_pgsql_convert에서 PQescapeStringConn 결과를 php_pgsql_add_quotes가 E 접두 문자열 상수로 감싼다. 공지의 standard_conforming_strings 설정과 불일치하는 메커니즘이 그대로 있다. pgsql을 프로필에서 빌드하지 않는다는 이유로 배포 소스 coverage에서 제외하지 않는다.",
+      "reason_en": "php_pgsql_convert wraps PQescapeStringConn output in E-prefixed literals, retaining the reported mismatch under standard_conforming_strings. A profile that omits pgsql does not remove this source coverage gap.",
+      "source_evidence": [
+        "ext/pgsql/pgsql.c:5774 — quote helper prepends E",
+        "ext/pgsql/pgsql.c:6055 — PQescapeStringConn conversion",
+        "ext/pgsql/pgsql.c:6058 — escaped result passed to quote helper"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-7qpv-r5mr-78m4",
+      "planned_action_ko": "비 escape 문자열 상수/버전별 libpq 계약을 확인해 적절히 이식하고 standard_conforming_strings on/off 정상 문자열 round-trip 및 pg_insert/update/select/delete 회귀를 검증한다.",
+      "planned_action_en": "Port ordinary-literal quoting with the applicable libpq contract; verify benign string round trips under both standard_conforming_strings modes and all affected pg helpers.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-x692-q9x7-8c3f",
+      "cve_id": "CVE-2026-17544",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/bcmath str2num",
+      "reason_ko": "7.0 bc_str2num은 strscale=MIN(strscale,scale)로 할당한 뒤 동일 strscale 카운트만큼 fractional 바이트를 복사한다. 공지의 fractional_new_end로 할당 길이만 축소하고 fractional_end를 유지하는 새 최적화 코드·작은 arena·bc_copy_and_toggle_bcd가 없다. upstream 8.3.0에는 새 copy 함수가 없고 8.4.0에는 있으며, 결함의 추가 trim 코드는 8.4.23에서 확인했다.",
+      "reason_en": "PHP 7.0 allocates and copies with the same clamped strscale count. It lacks the newer fractional-end trimming/copy and arena mechanism. Official tag comparison finds the new copy engine in 8.4.0 but not 8.3.0, and the reported extra trimming in 8.4.23.",
+      "source_evidence": [
+        "ext/bcmath/libbcmath/src/str2num.c:70 — strscale is clamped once",
+        "ext/bcmath/libbcmath/src/str2num.c:76 — allocation uses the same strscale",
+        "ext/bcmath/libbcmath/src/str2num.c:105 — copy consumes exactly strscale"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-x692-q9x7-8c3f",
+      "planned_action_ko": "",
+      "planned_action_en": "",
+      "validation": "not-applicable",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/blob/php-8.3.0/ext/bcmath/libbcmath/src/str2num.c",
+        "https://github.com/php/php-src/blob/php-8.4.0/ext/bcmath/libbcmath/src/str2num.c",
+        "https://github.com/php/php-src/blob/php-8.4.23/ext/bcmath/libbcmath/src/str2num.c",
+        "https://github.com/php/php-src/blob/a480965c90b4f4948f211c8b139788371e031838/ext/bcmath/libbcmath/src/str2num.c#L169"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-mhmq-mmqj-2v39",
+      "cve_id": "CVE-2026-12184",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/standard proxy TLS cleanup",
+      "reason_ko": "공식 PR21031의 결함은 reset_ssl_peer_name 정리 블록이 TLS 실패 후 NULL stream에 PHP_STREAM_CONTEXT를 적용하는 코드다. 7.0 소스에는 그 reset 블록/상태가 없고 TLS 실패에서 stream=NULL 뒤 즉시 out으로 이동한다. peer_name 설정 자체는 존재하나 공지의 실패 후 NULL 정리 소비 경로는 없다.",
+      "reason_en": "Official PR 21031 fixes a reset_ssl_peer_name cleanup using a stream after TLS failure sets it to NULL. That reset state/block is absent here; a NULL stream goes directly to out. Existing peer-name setup does not create the reported cleanup path.",
+      "source_evidence": [
+        "ext/standard/http_fopen_wrapper.c:242 — peer_name setup exists",
+        "ext/standard/http_fopen_wrapper.c:335 — TLS failure branch",
+        "ext/standard/http_fopen_wrapper.c:339 — failed stream set to NULL",
+        "ext/standard/http_fopen_wrapper.c:344 — NULL stream jumps out without peer-name reset"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-mhmq-mmqj-2v39",
+      "planned_action_ko": "",
+      "planned_action_en": "",
+      "validation": "not-applicable",
+      "upstream_fix_url": "https://github.com/php/php-src/pull/21031",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/pull/21031/files",
+        "https://github.com/php/php-src/blob/php-7.0.33/ext/standard/http_fopen_wrapper.c"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-xr7j-rvgx-xq5p",
+      "cve_id": "CVE-2026-91767",
+      "status": "PLANNED",
+      "component": "ext/openssl wildcard hostname matching",
+      "reason_ko": "prefix_len이 ptrdiff_t이고 guard는 suffix_len만 검사한다. 이어 subject_len-suffix_len-prefix_len을 memchr 길이로 전달한다. 공지의 unsigned 길이 underflow 메커니즘이 PHP7 함수명 matches_wildcard_name에 그대로 존재한다.",
+      "reason_en": "The legacy matches_wildcard_name function retains the suffix-only bound and subtracts prefix and suffix lengths for memchr, preserving the reported unsigned-length underflow mechanism.",
+      "source_evidence": [
+        "ext/openssl/xp_ssl.c:370 — ptrdiff_t prefix_len",
+        "ext/openssl/xp_ssl.c:390 — only suffix length bounded",
+        "ext/openssl/xp_ssl.c:395 — unchecked combined subtraction"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-xr7j-rvgx-xq5p",
+      "planned_action_ko": "prefix를 size_t로 정규화하고 prefix+suffix<=subject 길이 guard를 이식한 뒤 정상 wildcard/비 wildcard 이름·경계 길이 회귀를 검증한다.",
+      "planned_action_en": "Port a size_t prefix and combined prefix-plus-suffix bound; verify benign wildcard/non-wildcard names and length boundaries.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-hmxp-6pc4-f3vv",
+      "cve_id": "CVE-2026-7262",
+      "status": "PLANNED",
+      "component": "ext/soap Apache Map null value",
+      "reason_ko": "xmlValue를 구한 직후 xmlKey를 다시 검사하는 오타와, typemap 경로의 data->properties 무조건 접근이 모두 있다. 누락 value가 NULL로 decoder에 전달될 수 있는 공지와 같은 구조다.",
+      "reason_en": "Both reported defects are present: the missing-value check rechecks xmlKey, and the typemap decoder dereferences data->properties without a NULL guard.",
+      "source_evidence": [
+        "ext/soap/php_encoding.c:2758 — xmlValue lookup",
+        "ext/soap/php_encoding.c:2759 — wrong xmlKey check",
+        "ext/soap/php_encoding.c:2766 — xmlValue passed to decoder",
+        "ext/soap/php_encoding.c:548 — typemap accesses data->properties"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-hmxp-6pc4-f3vv",
+      "planned_action_ko": "xmlValue 검증과 decoder NULL 계약을 수정 이식하고 정상 Apache Map·typemap 및 누락 값의 통제된 오류 처리 회귀를 검증한다.",
+      "planned_action_en": "Port the xmlValue check and NULL-safe decoder contract; verify benign Apache Maps, typemaps and controlled missing-value errors.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-m33r-qmcv-p97q",
+      "cve_id": "CVE-2026-7261",
+      "status": "PLANNED",
+      "component": "ext/soap session-persisted SoapServer object",
+      "reason_ko": "헤더 fault/exception 두 실패 분기가 SOAP_PERSISTENCE_SESSION 여부 없이 soap_obj를 해제한다. 정상 호출 뒤에는 persistence 조건이 존재하여 공지의 두 누락 분기와 직접 대조된다.",
+      "reason_en": "Both header-fault/exception branches destroy soap_obj without the SOAP_PERSISTENCE_SESSION guard that is present in the normal call cleanup path.",
+      "source_evidence": [
+        "ext/soap/soap.c:1842 — header-fault cleanup lacks persistence guard",
+        "ext/soap/soap.c:1848 — exception cleanup lacks persistence guard",
+        "ext/soap/soap.c:1866 — normal cleanup checks session persistence"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-m33r-qmcv-p97q",
+      "planned_action_ko": "두 실패 분기에 session 소유권 조건을 이식하고 정상 header fault/exception 반환과 세션 객체 저장 수명 회귀를 검증한다.",
+      "planned_action_en": "Port persistence ownership guards in both failure branches; verify benign header faults/exceptions and session-object lifetime.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-85c2-q967-79q5",
+      "cve_id": "CVE-2026-6722",
+      "status": "PLANNED",
+      "component": "ext/soap XML reference map lifetime",
+      "reason_ko": "soap_add_xml_ref가 refcount 증가 없이 zval을 ref_map에 넣고 ref_map에는 destructor가 없다. Apache Map의 같은 key 갱신은 이전 값을 해제할 수 있고 soap_check_xml_ref가 나중에 보존되지 않은 값을 복사한다. 공지의 UAF 근본 수명 메커니즘이 존재한다.",
+      "reason_en": "The XML reference map stores zvals without retaining them and has no value destructor. Apache Map overwrites can release prior values before soap_check_xml_ref copies the stale entry, matching the reported lifetime mechanism.",
+      "source_evidence": [
+        "ext/soap/php_encoding.c:384 — map insertion without addref",
+        "ext/soap/php_encoding.c:3475 — ref_map initialized without destructor",
+        "ext/soap/php_encoding.c:2769 — Apache Map overwrites by key",
+        "ext/soap/php_encoding.c:373 — reference lookup copies stored zval"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-85c2-q967-79q5",
+      "planned_action_ko": "참조 보존과 map destructor를 PHP7 zval 소유권에 맞게 이식하고 정상 id/href 중복·Map overwrite 수명 및 누수 회귀를 검증한다.",
+      "planned_action_en": "Port retained references and a matching map destructor under PHP 7 zval ownership; verify benign id/href sharing, map overwrites and leak-free cleanup.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-m8rr-4c36-8gq4",
+      "cve_id": "CVE-2026-7258",
+      "status": "PLANNED",
+      "component": "ext/standard URL decoding ctype",
+      "reason_ko": "함수 이름은 php_url_decode이나 공지와 동일하게 signed char 값을 int로 직접 확장해 isxdigit에 전달한다. NetBSD crash 조건은 Linux와 다르지만 unsigned-char 계약 보호가 없는 배포 소스 문제이므로 PLANNED다. Linux에서 같은 crash가 검증됐다고 주장하지 않는다.",
+      "reason_en": "php_url_decode casts plain char directly to int for isxdigit, retaining the ctype contract violation. The reported NetBSD crash is platform-specific; the missing unsigned-char protection remains a source coverage item, without asserting a Linux crash.",
+      "source_evidence": [
+        "ext/standard/url.c:538 — plain-char to int passed to isxdigit",
+        "ext/standard/url.c:539 — same issue for second hex digit"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-m8rr-4c36-8gq4",
+      "planned_action_ko": "ctype 인수를 unsigned char로 정규화하고 256바이트 입력과 정상 percent decoding 회귀를 검증한다. NetBSD 실행 검증은 별도 플랫폼 범위로 명시한다.",
+      "planned_action_en": "Normalize ctype inputs to unsigned char and verify all byte values plus benign decoding; keep NetBSD runtime validation as a separate platform scope.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-9f67-6fw4-hpfp",
+      "cve_id": "CVE-2026-17545",
+      "status": "PLANNED",
+      "component": "Windows reserved device paths — Linux FPM runtime excluded",
+      "reason_ko": "Linux FPM 실행에는 Windows DOS 장치명 의미론이 없어 직접 대상이 아니다. 그러나 배포 소스 전체 기준에서 PHP7 Windows 경로는 최신 win32/ioutil 층과 다르며, plain file wrapper가 확장 경로를 open으로 전달하고 virtual_file_ex/virtual_open에도 공지의 예약 장치명 분류·거부 보호가 없다. Windows에서의 정확한 CRT 경로 도달성과 차단 가능성은 선행 조사 미완료이므로 피해 확정 대신 보호 미제공 coverage 정책으로 PLANNED다.",
+      "reason_en": "Linux FPM does not use Windows DOS-device semantics. At distributed-source scope, however, the PHP 7 path/CRT layer lacks the reported reserved-device classification/rejection protection. Exact Windows CRT reachability remains unverified, so PLANNED records missing protection and required investigation rather than proven exploitability.",
+      "source_evidence": [
+        "main/streams/plain_wrapper.c:1015 — expanded path passed to open()",
+        "Zend/zend_virtual_cwd.c:1282 — Windows path validation rejects wildcards, not device-name classification",
+        "Zend/zend_virtual_cwd.c:1637 — virtual_open expands the path before open()",
+        "Zend/zend_virtual_cwd.c:1656 — expanded path passed to platform open()"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-9f67-6fw4-hpfp",
+      "planned_action_ko": "선행 조사로 PHP7 Windows CRT/경로 API의 예약 장치명 도달성을 확정하고, 필요한 예약 component 분류·거부를 구형 경로 계층에 이식한다. 정상 Windows 경로·bare NUL 호환·예약 이름 변형 오류 처리 회귀를 검증한다. Linux FPM 런타임 비대상과 이 작업 큐를 분리한다.",
+      "planned_action_en": "First establish reserved-device reachability through PHP 7 Windows CRT/path APIs; port appropriate reserved-component classification/rejection into the legacy layer and validate benign paths, bare-NUL compatibility and device-name variants. Keep this separate from Linux FPM runtime applicability.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-vc5h-9ppw-p5f3",
+      "cve_id": "CVE-2026-7260",
+      "status": "PLANNED",
+      "component": "ext/phar symbolic link traversal",
+      "reason_ko": "phar_get_link_source가 depth 인자·방문 집합 없이 자신을 재귀 호출한다. 공지의 archive symlink 순환에 대한 보호가 없으며 Phar가 프로필에서 빠진 것과 배포 소스 보호는 별개다.",
+      "reason_en": "phar_get_link_source recursively follows links without a depth bound or visited set; the distributed source lacks the reported cycle protection regardless of profile module selection.",
+      "source_evidence": [
+        "ext/phar/util.c:64 — link resolver has no depth argument",
+        "ext/phar/util.c:79 — unbounded recursive link traversal"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-vc5h-9ppw-p5f3",
+      "planned_action_ko": "상한/순환 검출 수정을 이식하고 정상 symlink chain 및 정책 경계의 오류 처리 회귀를 검증한다.",
+      "planned_action_en": "Port bounded/cycle-aware resolution and verify benign link chains and controlled boundary errors.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-vvx9-73fr-5jjx",
+      "cve_id": "CVE-2026-91769",
+      "status": "PLANNED",
+      "component": "ext/openssl SAN/CN hostname policy",
+      "reason_ko": "matches_san_list가 일치 여부만 반환하며 SAN 불일치 시 matches_common_name으로 바로 fallback한다. DNS/URI/SRV 서비스 identity 존재를 구분하여 CN을 억제하는 수정이 없다.",
+      "reason_en": "SAN matching returns only match/no-match and immediately falls back to CN after mismatch. The source lacks service-identity tracking that suppresses CN fallback when a DNS/URI/SRV identity is present.",
+      "source_evidence": [
+        "ext/openssl/xp_ssl.c:402 — SAN helper reports only boolean match",
+        "ext/openssl/xp_ssl.c:556 — SAN check",
+        "ext/openssl/xp_ssl.c:558 — unconditional CN fallback after SAN mismatch"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-vvx9-73fr-5jjx",
+      "planned_action_ko": "서비스 identity 존재/불일치 정책을 이식하고 SAN 일치·불일치·SAN 없는 정상 CN·URI/SRV identity 인증서 회귀를 검증한다.",
+      "planned_action_en": "Port service-identity tracking and rejection policy; verify benign matching/mismatching SAN, CN-only, URI and SRV identity certificates.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-j3wh-g957-2m85",
+      "cve_id": "CVE-2026-6103",
+      "status": "PLANNED",
+      "component": "ext/phar TAR size parsing",
+      "reason_ko": "php_uint32 누적기에 범위 검사 없이 8진수를 누적하고 크기 필드에 사용한다. size+511 rounding과 일부 entry type만 data를 skip하는 코드도 남아 있다. 공지의 phar_tar_size/type_has_data 보호가 없다.",
+      "reason_en": "The TAR parser accumulates octal size into php_uint32 without overflow checks, rounds size+511, and skips data for only selected types. The reported checked-size and type-data protections are absent.",
+      "source_evidence": [
+        "ext/phar/tar.c:22 — 32-bit unchecked octal parser",
+        "ext/phar/tar.c:32 — unchecked multiplication/addition",
+        "ext/phar/tar.c:266 — parser supplies entry sizes",
+        "ext/phar/tar.c:567 — unchecked block rounding",
+        "ext/phar/tar.c:569 — limited data-carrying type handling"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-j3wh-g957-2m85",
+      "planned_action_ko": "64비트 checked size parse·전체 필드 검증·UINT32_MAX-511 상한·entry type data skip·미지원 long link 거부를 이식하고 정상 TAR/PharData 호환과 경계 오류 회귀를 검증한다.",
+      "planned_action_en": "Port checked 64-bit size parsing, full-field validation, rounding-safe limits, type-aware data skipping and long-link rejection; verify benign TAR/PharData compatibility and boundary errors.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-74r9-qxhc-fx53",
+      "cve_id": "CVE-2026-6104",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/mbstring encoding-name resolver",
+      "reason_ko": "공지의 mbfl_name2encoding_ex(name,name_len) 및 mime_name[name_len]/alias[name_len] 접근은 없다. 7.0은 NUL 종료 문자열을 strcasecmp로만 비교한다. 공식 태그 8.3.0에는 _ex 함수가 없고 8.4.0에 _ex 및 문제의 length indexing이 존재함을 대조했다. 이는 mbstring 전체 제외가 아니라 특정 새 길이 기반 메커니즘 부재다.",
+      "reason_en": "The source has no mbfl_name2encoding_ex or length-indexed MIME/alias reads; PHP 7.0 compares NUL-terminated names using strcasecmp. Official 8.3.0/8.4.0 tag comparison places the reported new mechanism in 8.4, not in this legacy resolver.",
+      "source_evidence": [
+        "ext/mbstring/libmbfl/mbfl/mbfl_encoding.c:226 — NUL-terminated resolver without name_len",
+        "ext/mbstring/libmbfl/mbfl/mbfl_encoding.c:246 — MIME comparison uses strcasecmp",
+        "ext/mbstring/libmbfl/mbfl/mbfl_encoding.c:258 — alias comparison uses strcasecmp"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-74r9-qxhc-fx53",
+      "planned_action_ko": "",
+      "planned_action_en": "",
+      "validation": "not-applicable",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/blob/php-8.3.0/ext/mbstring/libmbfl/mbfl/mbfl_encoding.c",
+        "https://github.com/php/php-src/blob/php-8.4.0/ext/mbstring/libmbfl/mbfl/mbfl_encoding.c#L314",
+        "https://github.com/php/php-src/blob/php-8.4.0/ext/mbstring/libmbfl/mbfl/mbfl_encoding.c#L352"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-4jhr-8w89-j733",
+      "cve_id": "CVE-2026-7263",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/dom C14N namespace relinking",
+      "reason_ko": "C14N 기능은 7.0에 있지만 공지의 dom_relink_ns_decls_element와 xmlns 속성을 임시 unlink/relink하는 경로는 없다. 7.0 canonicalization은 XPath nodeset을 만든 뒤 xmlC14NDocSaveTo를 호출한다. 공식 8.3.0·8.4.0 태그에는 문제 helper가 없고 8.4.20에는 잘못된 attr->prev 대입과 helper가 존재한다. 정확한 최초 도입 커밋은 확정하지 않았지만 7.0의 결함 메커니즘 부재는 직접 확인했다.",
+      "reason_en": "PHP 7.0 has C14N but lacks dom_relink_ns_decls_element and the temporary xmlns-attribute unlink/relink path. Its implementation uses an XPath nodeset and xmlC14NDocSaveTo. The offending helper is absent in official 8.3.0/8.4.0 and present in 8.4.20; the exact introducing commit was not established.",
+      "source_evidence": [
+        "ext/dom/node.c:1677 — legacy canonicalization implementation",
+        "ext/dom/node.c:1721 — XPath nodeset construction",
+        "ext/dom/node.c:1805 — direct xmlC14NDocSaveTo without namespace relinking"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-4jhr-8w89-j733",
+      "planned_action_ko": "",
+      "planned_action_en": "",
+      "validation": "not-applicable",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/blob/php-8.3.0/ext/dom/node.c",
+        "https://github.com/php/php-src/blob/php-8.4.0/ext/dom/node.c",
+        "https://github.com/php/php-src/blob/php-8.4.20/ext/dom/node.c",
+        "https://github.com/php/php-src/blob/f0f28b763c8696511c3b80fb8b25ae8765b2d94b/ext/dom/node.c#L2106"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-88hq-2827-7pg6",
+      "cve_id": "CVE-2026-92842",
+      "status": "PLANNED",
+      "component": "ext/standard stream convert filters",
+      "reason_ko": "세 생성자가 NUL 종료 pestrdup으로 복제하면서 원래 lbchars_len을 보존한다. 공지의 길이/할당 불일치 메커니즘이 7.0에도 존재하며 길이 기반 복제 수정은 없다. Linux FPM 공통 경로다.",
+      "reason_en": "All three constructors retain the original length but use NUL-terminated duplication; the upstream length-aware fix is absent.",
+      "source_evidence": [
+        "ext/standard/filters.c:365 pestrdup(lbchars, persistent) in base64 encoder",
+        "ext/standard/filters.c:974 pestrdup in quoted-printable encoder",
+        "ext/standard/filters.c:1187 pestrdup in quoted-printable decoder"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-88hq-2827-7pg6",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/b4e3397ec8f4f647e6e019dbf79870fc2f14ba78",
+      "planned_action_ko": "세 곳을 길이 기반 복제로 이식하고 NUL 포함 옵션과 일반 옵션의 출력/경계 회귀검증을 추가한다.",
+      "planned_action_en": "Backport length-aware duplication in all three constructors and validate ordinary and embedded-NUL option handling.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-7qg2-v9fj-4mwv",
+      "cve_id": "CVE-2026-6735",
+      "status": "PLANNED",
+      "component": "sapi/fpm status",
+      "reason_ko": "HTML 출력에서 encode가 켜져도 query_string만 escape하며 request_uri는 원문으로 full_syntax에 전달한다. XML 경로도 URI 출력의 별도 escaping이 없다. FPM 주대상에 직접 해당한다.",
+      "reason_en": "FPM status escapes query strings but emits request_uri directly in full HTML/XML status output.",
+      "source_evidence": [
+        "sapi/fpm/fpm/fpm_status.c:140 HTML enables encode",
+        "sapi/fpm/fpm/fpm_status.c:424 only query_string is HTML-escaped",
+        "sapi/fpm/fpm/fpm_status.c:452 raw request_uri is passed into output"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-7qg2-v9fj-4mwv",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/99a5ad7441de9914246c7863adb6997396008b9d",
+      "planned_action_ko": "공식 URI escaping 수정을 7.0 출력 모드에 맞게 이식하고 HTML/XML 정상 문자열·예약문자 처리 회귀검증을 추가한다.",
+      "planned_action_en": "Backport output-mode-appropriate URI escaping and validate HTML/XML output.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-96wq-48vp-hh57",
+      "cve_id": "CVE-2026-7568",
+      "status": "PLANNED",
+      "component": "ext/standard metaphone",
+      "reason_ko": "입력 길이는 size_t이지만 w_idx와 p_idx는 int이며 인덱스를 증가시킨다. 공지의 signed 인덱스 overflow 메커니즘이 존재하고 size_t 변환 수정은 없다.",
+      "reason_en": "The input length is size_t while both word and output indexes remain signed int; the index-width fix is absent.",
+      "source_evidence": [
+        "ext/standard/metaphone.c:168 size_t word_len",
+        "ext/standard/metaphone.c:170 int w_idx",
+        "ext/standard/metaphone.c:171 int p_idx",
+        "ext/standard/metaphone.c:269 w_idx increment loop"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-96wq-48vp-hh57",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/47def8ce1db1fdbffcfc1f5bb11877a0e22d4b32",
+      "planned_action_ko": "인덱스와 연산을 안전한 크기 형식으로 이식하고 크기 산술 정적 검토 및 일반 발음 변환 회귀검증을 추가한다.",
+      "planned_action_en": "Backport safe index types and validate size arithmetic and ordinary phonetic results.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-wm6j-2649-pv75",
+      "cve_id": "CVE-2026-7259",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/mbstring mbregex",
+      "reason_ko": "7.0 setter는 Oniguruma current_mbctype만 저장하며 공지의 current_mbctype_mbfl_encoding 필드·php_mb_check_encoding 호출이 없다. mb_ereg_search_init도 해당 NULL mbfl 포인터를 역참조하지 않는다. 공식 7.4 태그에는 검증 호출이 있으나 cached mbfl 필드는 없고 8.0 태그에 해당 필드가 존재한다. mbstring 전체가 없다는 판정이 아니라 이 CVE의 후대 메커니즘 부재다.",
+      "reason_en": "PHP 7.0 has neither the cached mbfl encoding pointer nor its dereference in search initialization; this specific later mechanism is absent.",
+      "source_evidence": [
+        "ext/mbstring/php_mbregex.c:406 setter validates/stores only OnigEncoding",
+        "ext/mbstring/php_mbregex.c:1315 search initialization has no php_mb_check_encoding call",
+        "ext/mbstring/php_mbregex.c:1343 compilation uses current_mbctype directly"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-wm6j-2649-pv75",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/79a054eae016c56409432e69aebc8ca908a88838",
+      "planned_action_ko": "해당 수정 이식 불필요. 향후 mbregex 검증 경로를 가져올 때 mbfl/Oniguruma 매핑 실패 검사도 함께 가져온다.",
+      "planned_action_en": "No backport for this mechanism; retain mapping-failure checks if later mbregex validation is imported.",
+      "validation": "not-applicable",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/blob/php-7.4.0/ext/mbstring/php_mbregex.c",
+        "https://github.com/php/php-src/blob/php-8.0.0/ext/mbstring/php_mbregex.c"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-3237-qqm7-mfv7",
+      "cve_id": "CVE-2025-14177",
+      "status": "PLANNED",
+      "component": "ext/standard getimagesize JPEG APPn",
+      "reason_ko": "공식 수정은 후대 php_read_stream_all_chunks의 buffer 이동 누락을 고친다. 그 helper는 7.0에 없지만, 7.0 php_read_APP는 읽기 결과가 양수이기만 하면 전체 length를 반환 문자열에 복사한다. stream read는 일반 wrapper에서 짧게 끝날 수 있어 초기화되지 않은 나머지를 배제하는 보호가 없다. 동일 CVE 트리거의 확정 주장이 아니라 보호 미제공 coverage 분류다.",
+      "reason_en": "The later broken helper is absent, but PHP 7.0 accepts a positive short APPn read and exposes the full allocation; equivalent confidentiality protection is missing.",
+      "source_evidence": [
+        "ext/standard/image.c:454 buffer allocated for full APPn length",
+        "ext/standard/image.c:456 read is checked only for <= 0",
+        "ext/standard/image.c:465 full length is exposed in APP info",
+        "main/streams/streams.c:761 non-plain wrappers may stop before the requested size is filled"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-3237-qqm7-mfv7",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/c5f28c7cf0a052f48e47877c7aa5c5bcc54f1cfc",
+      "planned_action_ko": "선행조사로 7.0 stream read 계약과 APPn의 모든 호출 경로를 확정한 뒤 정확한 길이 읽기/실패 처리 보호를 이식하고 정상 JPEG·정상 분할 읽기 paired 회귀검증을 추가한다.",
+      "planned_action_en": "Confirm PHP 7.0 short-read semantics, backport complete-read/failure handling, and add benign JPEG and split-read regression coverage.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-h96m-rvf9-jgm2",
+      "cve_id": "CVE-2025-14178",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/standard array_merge",
+      "reason_ko": "7.0은 입력 배열 원소 수의 최댓값만 init_size로 잡고 checked hash insertion으로 원소를 추가한다. 공지의 누적 count를 신뢰하는 packed fill 최적화가 없다. 공식 공지는 7.1 이후라고 설명하며 공식 7.1.0 소스에는 packed-fill 최적화가 있고 7.2.0에는 count 합산도 존재한다. 이 판정은 다른 대용량 배열 DoS의 부재를 뜻하지 않는다.",
+      "reason_en": "PHP 7.0 uses a maximum input size and checked hash insertion, without the later packed-fill/count-sum optimization underlying this overflow.",
+      "source_evidence": [
+        "ext/standard/array.c:3099 init_size starts at zero",
+        "ext/standard/array.c:3115 init_size is max(input size), not a sum",
+        "ext/standard/array.c:3187 numeric elements use zend_hash_next_index_insert_new"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-h96m-rvf9-jgm2",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/8b801151bd54b36aae4593ed6cfc096e8122b415",
+      "planned_action_ko": "이 CVE의 최적화 수정 이식 불필요. packed-fill 최적화를 도입하면 사전 count 상한 검사를 함께 적용한다.",
+      "planned_action_en": "No backport for the absent optimization; require checked counts before importing packed fill.",
+      "validation": "not-applicable",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/blob/php-7.1.0/ext/standard/array.c#L3188",
+        "https://github.com/php/php-src/blob/php-7.2.0/ext/standard/array.c"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-8xr5-qppj-gvwj",
+      "cve_id": "CVE-2025-14180",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/pdo parameter quoting",
+      "reason_ko": "7.0 plc->quoted는 char*와 별도 qlen이며, quoter의 성공/실패 반환값을 검사하고 실패 시 cleanup으로 간다. 공식 수정 대상인 zend_string* 반환 후 NULL을 검사하지 않고 ZSTR_LEN을 읽는 API는 없다. 공식 8.0 태그도 구 API이고 8.1 태그에는 새 zend_string 경로가 있다. PostgreSQL escaping 오류 미검사는 별도 CVE-2025-1735 PLANNED로 남는다.",
+      "reason_en": "The PHP 7.0 parser checks the old boolean quoter contract and tracks length separately; the later unchecked zend_string NULL dereference is absent.",
+      "source_evidence": [
+        "ext/pdo/pdo_sql_parser.re:223 quoter return checked for LOB",
+        "ext/pdo/pdo_sql_parser.re:266 ordinary quoter return checked before qlen use",
+        "ext/pdo/pdo_sql_parser.re:288 uses separate plc->qlen",
+        "ext/pdo_pgsql/pgsql_driver.c:352 old quoter allocates a char buffer and returns success"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-8xr5-qppj-gvwj",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/727a4ddc39ca9b78131e06b5537fe8b6c3dd6fe7",
+      "planned_action_ko": "이 NULL zend_string 경로의 이식 불필요. CVE-2025-1735의 실제 escaping 오류 처리 누락은 별도 이식한다.",
+      "planned_action_en": "No fix for the absent NULL-zend_string path; track escaping error handling under CVE-2025-1735.",
+      "validation": "not-applicable",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/blob/php-8.0.0/ext/pdo/pdo_sql_parser.re",
+        "https://github.com/php/php-src/blob/php-8.1.0/ext/pdo/pdo_sql_parser.re"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-w476-322c-wpvm",
+      "cve_id": "CVE-2025-14179",
+      "status": "PLANNED",
+      "component": "ext/pdo_firebird quoting/prepare",
+      "reason_ko": "7.0에는 공지의 token별 strncat preprocess는 없지만 quoter의 strchr/strncpy는 NUL에서 멈추며 prepare는 길이 0으로 C 문자열을 전달한다. 공식 수정이 다루는 NUL 안전 quoting과 명시적 query 길이 보호가 없다. 같은 SQL injection의 성립은 별도 조사해야 하며, 보호 미제공으로 보수적 PLANNED다. 빌드 프로필의 모듈 유무로 제외하지 않았다.",
+      "reason_en": "The newer token concatenator is absent, but NUL-terminated quoting and zero-length prepare remain without binary-safe protection; equivalent injection reachability needs investigation.",
+      "source_evidence": [
+        "ext/pdo_firebird/firebird_driver.c:296 quote counting stops at NUL via strchr",
+        "ext/pdo_firebird/firebird_driver.c:311 strncpy copies the quote remainder",
+        "ext/pdo_firebird/firebird_driver.c:462 old prepare loop copies individual bytes",
+        "ext/pdo_firebird/firebird_driver.c:466 isc_dsql_prepare receives length 0"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-w476-322c-wpvm",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/3f40b65323dd1b85e9bab6878237d3867e449d5c",
+      "planned_action_ko": "선행조사로 구 parser/quoter의 NUL 의미와 server API 계약을 확정하고 길이 기반 복사·명시적 길이 또는 NUL 거부 보호를 이식한 뒤 정상 quoting/parameter 회귀검증을 추가한다.",
+      "planned_action_en": "Audit the old parser and API contract, backport binary-safe lengths or explicit NUL rejection, and validate normal quoting and binding.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-cj93-vc83-wgqv",
+      "cve_id": "CVE-2025-14181",
+      "status": "PLANNED",
+      "component": "ext/soap HTTP client",
+      "reason_ko": "http_buf_size와 buf_size가 int이고 합이 음수인지 검사하는 signed-overflow 기반 보호가 그대로 있다. 공지의 UB와 realloc 크기 계산 메커니즘이 7.0에도 존재한다.",
+      "reason_en": "SOAP retains signed-int buffer sizes and a signed-overflow-dependent growth check, matching the upstream failure mechanism.",
+      "source_evidence": [
+        "ext/soap/php_http.c:1378 http_buf_size is int",
+        "ext/soap/php_http.c:1408 buf_size is int",
+        "ext/soap/php_http.c:1415 overflow-dependent negative-sum check",
+        "ext/soap/php_http.c:1423 unchecked sum passed to zend_string_realloc"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-cj93-vc83-wgqv",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/b11bd1d9390bb203684e3d4aa5e1104ea842de6f",
+      "planned_action_ko": "size_t 및 명시적 상한·safe allocation을 7.0 API에 맞게 이식하고 산술 경계 정적 검토와 정상 chunked SOAP 회귀검증을 추가한다.",
+      "planned_action_en": "Backport size_t bounds and safe allocation, then validate arithmetic boundaries and ordinary chunked SOAP responses.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-453j-q27h-5p8x",
+      "cve_id": "CVE-2025-6491",
+      "status": "PLANNED",
+      "component": "ext/soap libxml node names",
+      "reason_ko": "SoapVar enc_name을 제한 없이 xmlNodeSetName에 주며 호출 뒤 NULL name 복원 보호가 없다. libxml <2.13 의존 조건이므로 실제 linked libxml 버전별 영향은 별도 확인 대상이며, 소스 자체는 구 libxml 지원 보호를 제공하지 않는다.",
+      "reason_en": "SoapVar names reach xmlNodeSetName without the upstream NULL-name workaround; applicability depends on the linked libxml version.",
+      "source_evidence": [
+        "ext/soap/php_encoding.c:454 enc_name accepts a string",
+        "ext/soap/php_encoding.c:456 xmlNodeSetName called without post-call name repair"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-453j-q27h-5p8x",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/0298837252fda06e0f86be3dfe91f166f45e85d4",
+      "planned_action_ko": "의존 libxml 지원 범위를 먼저 확인하고 구 libxml용 sentinel name 복원 또는 입력 길이 보호를 이식한 뒤 정상 SoapVar 직렬화 회귀검증을 추가한다.",
+      "planned_action_en": "Confirm supported libxml versions, backport the old-libxml name workaround or length guard, and validate normal SoapVar serialization.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-www2-q4fc-65wf",
+      "cve_id": null,
+      "status": "PLANNED",
+      "component": "ext/standard DNS",
+      "reason_ko": "dns_get_record와 dns_check_record 등이 문자열 형식 s를 받아 resolver에 전달하며 embedded NUL 거부 검사가 없다. 공지의 NUL 종료에 의한 해석 차이를 막는 보호가 누락돼 있다.",
+      "reason_en": "DNS functions accept general strings without embedded-NUL rejection before passing hostnames to C resolver APIs.",
+      "source_evidence": [
+        "ext/standard/dns.c:375 dns_check_record uses s|s",
+        "ext/standard/dns.c:820 dns_get_record uses s|lz/!z/!b",
+        "ext/standard/dns.c:1051 dns_get_mx uses sz/|z/"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-www2-q4fc-65wf",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/ed70b1ea43a9b7ffa2f53b3e5d6ba403f37ae81c",
+      "planned_action_ko": "공식 hostname NUL 검증을 모든 관련 DNS 진입점과 플랫폼 분기에 맞게 이식하고 일반 hostname 및 입력 거부 회귀검증을 추가한다.",
+      "planned_action_en": "Backport hostname NUL validation across DNS entry points and platform branches, then validate normal names and rejection behavior.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-hrwm-9436-5mv3",
+      "cve_id": "CVE-2025-1735",
+      "status": "PLANNED",
+      "component": "ext/pgsql and ext/pdo_pgsql",
+      "reason_ko": "pgsql 및 PDO pgsql의 PQescapeStringConn이 error 인자로 NULL을 전달한다. 공식 수정의 escape 실패 검사 보호가 누락되어 있으며 실제 위험은 libpq 버전·encoding·응용 사용에 좌우된다.",
+      "reason_en": "Both pgsql and PDO pgsql discard PQescapeStringConn errors; the upstream escaping-error checks are absent.",
+      "source_evidence": [
+        "ext/pgsql/pgsql.c:4360 PQescapeStringConn error argument is NULL",
+        "ext/pgsql/pgsql.c:6055 another escape path discards errors",
+        "ext/pdo_pgsql/pgsql_driver.c:354 PDO quoter also discards errors"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-hrwm-9436-5mv3",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/a2cdff5583ad2bfe9a27fba71e2b1fc423296dc0",
+      "planned_action_ko": "libpq API별 호출을 전수 조사하고 오류 전달·NULL 결과 검사를 이식한 뒤 정상 다국어 escaping 및 오류 반환 회귀검증을 추가한다.",
+      "planned_action_en": "Audit all libpq escape calls, backport error/NULL checks, and validate ordinary multilingual escaping and error reporting.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-52jp-hrpf-2jff",
+      "cve_id": "CVE-2025-1861",
+      "status": "PLANNED",
+      "component": "ext/standard HTTP redirects",
+      "reason_ko": "location은 1024바이트 고정 배열이며 strlcpy를 사용한다. 헤더 읽기 자체도 긴 헤더를 소모 후 무시하는 분기가 있어 현대 공지의 잘림과 정확한 결과 차이는 있으나, 긴 Location의 보존 또는 명시적 오류 보호가 없다.",
+      "reason_en": "Redirect locations use a fixed 1024-byte array; long lines may also be discarded, and the upstream length-preserving/error behavior is absent.",
+      "source_evidence": [
+        "ext/standard/http_fopen_wrapper.c:75 HTTP_HEADER_BLOCK_SIZE is 1024",
+        "ext/standard/http_fopen_wrapper.c:125 fixed location array",
+        "ext/standard/http_fopen_wrapper.c:761 oversized header is drained and skipped",
+        "ext/standard/http_fopen_wrapper.c:816 strlcpy to fixed location buffer"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-52jp-hrpf-2jff",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/ac1a054bb3eb5994a199e8b18cca28cbabf5943e",
+      "planned_action_ko": "7.0 긴 헤더 처리 차이를 선행조사하고 동적 Location 저장·명시적 상한 오류 수정을 이식한 뒤 정상 장문 redirect 회귀검증을 추가한다.",
+      "planned_action_en": "Audit old long-header handling, backport dynamic Location storage and explicit bounds, and validate benign long redirects.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-pcmh-g36c-qc44",
+      "cve_id": "CVE-2025-1734",
+      "status": "PLANNED",
+      "component": "ext/standard HTTP response header parser",
+      "reason_ko": "colon 없는 헤더도 value를 줄 끝으로 잡고 반환 배열에 넣는다. 헤더 이름의 공백/토큰 검증도 없어 공지의 malformed-header 수용 메커니즘이 존재한다.",
+      "reason_en": "Colonless response headers are retained, and field-name token validation is absent.",
+      "source_evidence": [
+        "ext/standard/http_fopen_wrapper.c:790 colon lookup",
+        "ext/standard/http_fopen_wrapper.c:799 missing colon maps to empty value instead of failure",
+        "ext/standard/http_fopen_wrapper.c:846 malformed line is retained"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-pcmh-g36c-qc44",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/0548c4c1756724a89ef8310709419b08aadb2b3b",
+      "planned_action_ko": "공식 헤더 이름·colon 검증을 7.0 parser에 이식하고 정상 헤더와 명시적 오류 처리 회귀검증을 추가한다.",
+      "planned_action_en": "Backport header-name/colon validation and validate normal headers and explicit parse failures.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-wg4p-4hqh-c3g9",
+      "cve_id": null,
+      "status": "PLANNED",
+      "component": "ext/xml XML_OPTION_SKIP_TAGSTART",
+      "reason_ko": "SKIP_TAGSTART 매크로는 길이를 제한하지만 _xml_add_to_info의 두 호출은 raw tag_name + toffset를 사용한다. 공식 회귀 수정과 정확히 같은 누락이다. setter가 음수만 막으므로 tag 길이보다 큰 양수는 가능하다.",
+      "reason_en": "Two index-building calls bypass the existing clamped SKIP_TAGSTART macro and use raw offsets, matching the upstream regression.",
+      "source_evidence": [
+        "ext/xml/xml.c:73 SKIP_TAGSTART clamps to string length",
+        "ext/xml/xml.c:765 start-element info bypasses clamp",
+        "ext/xml/xml.c:835 end-element info bypasses clamp",
+        "ext/xml/xml.c:1612 setter rejects only negative offsets"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-wg4p-4hqh-c3g9",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/0e715e71d945b68f8ccedd62c5960df747af6625",
+      "planned_action_ko": "두 info 호출에도 동일 clamped 문자열을 사용하도록 공식 수정을 이식하고 정상 tag/짧은 tag의 index 일치 회귀검증을 추가한다.",
+      "planned_action_en": "Backport the clamped string in both info calls and validate tag/index consistency.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-v8xr-gpvj-cx9g",
+      "cve_id": "CVE-2025-1217",
+      "status": "PLANNED",
+      "component": "ext/standard HTTP response header folding",
+      "reason_ko": "매 줄을 독립 헤더로 해석하고 즉시 MIME notifier와 response_header에 전달한다. whitespace continuation을 앞 헤더에 결합하는 단계가 없어 공지의 folded-header 해석 차이가 존재한다.",
+      "reason_en": "Response lines are interpreted independently and notified before any continuation unfolding; folded-header handling is missing.",
+      "source_evidence": [
+        "ext/standard/http_fopen_wrapper.c:755 independent per-line parsing",
+        "ext/standard/http_fopen_wrapper.c:818 immediate MIME-type notification",
+        "ext/standard/http_fopen_wrapper.c:847 each physical line inserted separately"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-v8xr-gpvj-cx9g",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/d20b4c97a9f883b62b65b82d939c5af9a2028ef1",
+      "planned_action_ko": "공식 unfolding 수정을 malformed-header 검증과 함께 이식하고 정상 folded/단일행 MIME notifier 및 반환 배열 회귀검증을 추가한다.",
+      "planned_action_en": "Backport unfolding with header validation and validate ordinary folded/single-line notifier and response-array behavior.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-r6x9-5r99-36j7",
+      "cve_id": "CVE-2025-1218",
+      "status": "PLANNED",
+      "component": "ext/mysqlnd wire protocol",
+      "reason_ko": "길이 디코더에 remaining_size가 없고 여러 2바이트 읽기 뒤에만 경계 검사를 한다. 7.0 BAIL_IF_NO_MORE_DATA는 포인터가 끝을 넘었는지만 사후 검사하므로 정확한 읽기 전 보호가 없다.",
+      "reason_en": "Length decoders lack remaining-size arguments, and multi-byte fields are read before the old pointer-overrun check.",
+      "source_evidence": [
+        "ext/mysqlnd/mysqlnd_wireprotocol.c:63 guard checks only p-begin > packet size",
+        "ext/mysqlnd/mysqlnd_wireprotocol.c:129 field-length decoder has no remaining-size argument",
+        "ext/mysqlnd/mysqlnd_wireprotocol.c:159 64-bit decoder also lacks remaining size",
+        "ext/mysqlnd/mysqlnd_wireprotocol.c:876 two-byte status read precedes bounds check"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-r6x9-5r99-36j7",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/114dbb74368e6a6cd6e48ddb4a76dbe8728b84e2",
+      "planned_action_ko": "모든 packet handler의 읽기 전 정확한 byte 수 검사와 길이 디코더 remaining_size 계약을 이식하고 정상 packet decode·오류 경로 회귀검증을 추가한다.",
+      "planned_action_en": "Backport exact pre-read checks and remaining-size decoder contracts across handlers, then validate normal decoding and error paths.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-p3x9-6h7p-cgfc",
+      "cve_id": "CVE-2025-1219",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/libxml HTTP charset sniffing",
+      "reason_ko": "7.0 input buffer 생성은 받은 enc로 xmlAllocParserInputBuffer를 호출할 뿐 HTTP wrapperdata의 Content-Type을 검사하지 않는다. 공지의 여러 응답 중 첫 charset 선택 경로가 없다. 공식 8.0 태그에도 없고 8.1 태그에는 해당 header sniff가 존재한다. HTTP redirect wrapper 자체의 다른 결함까지 제외하는 판정은 아니다.",
+      "reason_en": "PHP 7.0 does not sniff HTTP Content-Type for libxml input buffers; the later first-response charset selection mechanism is absent.",
+      "source_evidence": [
+        "ext/libxml/libxml.c:398 input-buffer creation entry",
+        "ext/libxml/libxml.c:410 opens the stream",
+        "ext/libxml/libxml.c:417 directly allocates with supplied enc without wrapperdata header scanning"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-p3x9-6h7p-cgfc",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/b6004a043c16b211d462218fbb3f72db68ec2b18",
+      "planned_action_ko": "해당 sniff 수정 이식 불필요. 새 sniff 동작을 도입할 경우 최종 응답 헤더만 선택하는 보호도 함께 적용한다.",
+      "planned_action_en": "No backport for absent sniffing; require final-response-only selection if the feature is added.",
+      "validation": "not-applicable",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/blob/php-8.0.0/ext/libxml/libxml.c",
+        "https://github.com/php/php-src/blob/php-8.1.0/ext/libxml/libxml.c"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-hgf5-96fm-v528",
+      "cve_id": "CVE-2025-1736",
+      "status": "PLANNED",
+      "component": "ext/standard HTTP request header detection",
+      "reason_ko": "7.0에는 check_has_header helper가 없지만 inline strstr 검사에서 앞 문자가 LF/CR/space/tab 중 하나이면 Authorization이 있다고 본다. 공식 CRLF 경계 강화 보호가 없으며 공지와 같은 기본 인증 헤더 생략 원인이 남는다.",
+      "reason_en": "Inline header detection accepts bare LF, CR, spaces, or tabs as boundaries, without the upstream CRLF requirement.",
+      "source_evidence": [
+        "ext/standard/http_fopen_wrapper.c:489 Authorization search",
+        "ext/standard/http_fopen_wrapper.c:490 permissive single-character boundary",
+        "ext/standard/http_fopen_wrapper.c:474 same pattern for User-Agent"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-hgf5-96fm-v528",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/41d49abbd99dab06cdae4834db664435f8177174",
+      "planned_action_ko": "요청 헤더 검사를 공통화하고 CRLF 시작 경계·전체 반복 탐색을 이식한 뒤 정상 인증/header 선택 회귀검증을 추가한다.",
+      "planned_action_en": "Backport strict CRLF header detection and validate ordinary authorization/header selection.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-4w77-75f9-2c8w",
+      "cve_id": null,
+      "status": "PLANNED",
+      "component": "sapi/cli built-in server (separate from FPM)",
+      "reason_ko": "content-type가 존재할 때만 request_info->content_type를 갱신하고 없을 때 NULL 초기화하는 else가 없다. 공식 수정과 같은 stale pointer 누락이 7.0에도 있다. CLI 개발 서버 전용 경로로 Linux FPM 주 실행 경로와 분리하지만 배포 소스에 있으므로 제외하지 않는다.",
+      "reason_en": "The built-in CLI server leaves content_type stale when a header is missing; this source issue is separate from the FPM execution path.",
+      "source_evidence": [
+        "sapi/cli/php_cli_server.c:1827 conditionally finds content-type",
+        "sapi/cli/php_cli_server.c:1828 pointer assigned only when present",
+        "sapi/cli/php_cli_server.c:1829 no else resetting content_type"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-4w77-75f9-2c8w",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/f18d429b2008a3e7addce2d9444019077b9eda1c",
+      "planned_action_ko": "header 부재 시 NULL 초기화하는 공식 수정을 CLI 서버에 이식하고 일반 연속 요청의 content-type 초기화 회귀검증을 추가한다.",
+      "planned_action_en": "Backport the missing-header NULL reset and validate ordinary consecutive built-in-server requests.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-r977-prxv-hc43",
+      "cve_id": "CVE-2024-11233",
+      "status": "PLANNED",
+      "component": "ext/standard quoted-printable decode filter",
+      "reason_ko": "state 5 진입 시 icnt 검사가 첫 *ps 역참조보다 뒤에 있다. 공식 수정의 선행 icnt==0 검사가 없어 공지의 단일 byte overread 메커니즘이 7.0에 존재한다.",
+      "reason_en": "Decoder state 5 dereferences the input pointer before checking remaining input, matching the upstream missing-bound check.",
+      "source_evidence": [
+        "ext/standard/filters.c:1126 decoder state 5",
+        "ext/standard/filters.c:1127 dereferences *ps before checking icnt",
+        "ext/standard/filters.c:1140 remaining input check occurs later"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-r977-prxv-hc43",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/f3ade203d7ca2e70f09e4e29b6fe7f614fcc0821",
+      "planned_action_ko": "state 5 시작으로 입력 잔량 검사를 이동하는 수정을 이식하고 정상 분할 quoted-printable decode 경계 회귀검증을 추가한다.",
+      "planned_action_en": "Backport the state-entry bound check and validate benign split quoted-printable decoding.",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-rwp7-7vc6-8477",
+      "cve_id": "CVE-2024-11235",
+      "status": "NOT_APPLICABLE",
+      "component": "Zend compiler live ranges / coalesce assignment",
+      "reason_ko": "공식 fix는 일반 exception-handler 참조계수 전체가 아니라 ??=의 잘못된 live-range 계산을 수정한다. 7.0 parser에는 ??만 있고 ??= 토큰/AST가 없으며 zend_opcode.c에 zend_calc_live_ranges도 없다. ZEND_SEPARATE opcode 자체는 7.0에도 있으나 해당 후대 계산 경로가 없다는 것이 제외 근거다.",
+      "reason_en": "The official fix concerns ??= live-range calculation; PHP 7.0 has neither coalesce assignment nor zend_calc_live_ranges, despite having a SEPARATE opcode.",
+      "source_evidence": [
+        "Zend/zend_language_parser.y:221 only T_COALESCE is defined",
+        "Zend/zend_language_parser.y:943 ordinary coalesce grammar without assignment",
+        "Zend/zend_opcode.c:657 older opcode analysis without zend_calc_live_ranges",
+        "Zend/zend_vm_opcodes.h:188 SEPARATE exists but is not the absent later live-range path"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-rwp7-7vc6-8477",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/ef2c459941b5ffae501e5311f5ac2041aadbe461",
+      "planned_action_ko": "이 후대 계산 경로의 수정 이식 불필요. ??= 또는 live-range compiler를 가져오면 공식 SEPARATE 처리도 함께 적용한다.",
+      "planned_action_en": "No backport for the absent compiler path; retain the SEPARATE rule if later live-range analysis is imported.",
+      "validation": "not-applicable",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/blob/php-7.4.0/Zend/zend_language_parser.y"
+      ],
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-5hqh-c84r-qjcv",
+      "cve_id": "CVE-2024-11236",
+      "status": "PLANNED",
+      "component": "ext/pdo_firebird + ext/pdo_dblib",
+      "reason_ko": "두 PDO quoter가 7.0 소스에 존재한다. Firebird의 int qcount와 unquotedlen+qcount+2, DBLIB의 누적 quotedlen+2 및 emalloc 길이 계산에 공식 수정의 최대 길이/덧셈 overflow 검사가 없다. 32비트에서 특히 문제가 되는 동일 계열 메커니즘이며 프로필의 모듈 미포함은 배포 소스의 보호를 증명하지 않는다.",
+      "reason_en": "Both PDO quoters exist in PHP 7.0 and lack the upstream overflow and maximum-length guards; Firebird also retains an int quote counter. Module omission from a build profile does not cover distributed source.",
+      "source_evidence": [
+        "ext/pdo_firebird/firebird_driver.c:283 int qcount remains",
+        "ext/pdo_firebird/firebird_driver.c:298 unchecked unquotedlen + qcount + 2 followed by allocation",
+        "ext/pdo_dblib/dblib_driver.c:160 unchecked expanded length accumulation",
+        "ext/pdo_dblib/dblib_driver.c:165 unchecked +2 and +1 allocation"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-5hqh-c84r-qjcv",
+      "planned_action_ko": "공식 수정의 길이 검사를 7.0 char** PDO 인터페이스에 맞춰 이식한다. 32/64비트 산술 경계와 정상 quote 결과/오류 처리를 분리 검증한다. 대용량 공격 입력은 실행하지 않는다.",
+      "planned_action_en": "Port the checked length arithmetic to the PHP 7.0 PDO interface; validate 32/64-bit boundaries with arithmetic checks and benign quoting regressions.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/7a25e7728de2218dfba88c234a924c4a1ed31140",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/commit/4a79a5a59a7051bf0fffb0277193ece9d8721f26"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-c5f2-jwm7-mmq2",
+      "cve_id": "CVE-2024-11234",
+      "status": "PLANNED",
+      "component": "ext/standard HTTP stream wrapper",
+      "reason_ko": "7.0에도 request_fulluri가 있고 활성화되면 URL 파서가 처리한 구성요소 대신 원문 path를 strcat한다. 이 분기 전에 CR/LF 거부가 없고 비HTTP proxy 경로에서 full URI가 자동 활성화된다. 공지의 근본 경로가 실제 소스에 남아 있다.",
+      "reason_en": "The PHP 7.0 full-URI request path appends the original URI without a CR/LF rejection guard, including automatic activation for non-HTTP proxy requests.",
+      "source_evidence": [
+        "ext/standard/http_fopen_wrapper.c:170 non-HTTP proxy enables request_fulluri",
+        "ext/standard/http_fopen_wrapper.c:391 context option read",
+        "ext/standard/http_fopen_wrapper.c:398 original path appended with strcat"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-c5f2-jwm7-mmq2",
+      "planned_action_ko": "공식 수정과 대조해 full URI의 CR/LF를 요청 생성 전에 거부하는 보호를 이식한다. 정상 HTTP/FTP proxy URI와 안전한 제어문자 검증 단위 테스트로 동작을 확인한다.",
+      "planned_action_en": "Port pre-request CR/LF rejection and verify benign HTTP/FTP proxy requests plus isolated input-validation tests.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/compare/php-8.3.13...php-8.3.14"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-g665-fm4p-vhff",
+      "cve_id": "CVE-2024-8932",
+      "status": "PLANNED",
+      "component": "ext/ldap ldap_escape",
+      "reason_ko": "ldap_escape 및 php_ldap_do_escape가 7.0에 존재한다. len에 1 또는 3을 누적한 후 그대로 zend_string_alloc하고 int i/p로 출력한다. 공식 수정의 ZSTR_MAX_LEN-addend 검사가 없어 32비트 길이 확장 보호를 제공하지 않는다.",
+      "reason_en": "PHP 7.0 ldap_escape accumulates expanded lengths without overflow checks and uses int indices; the upstream maximum-length guards are missing.",
+      "source_evidence": [
+        "ext/ldap/ldap.c:2726 int i and p",
+        "ext/ldap/ldap.c:2731 unchecked +3/+1 accumulation",
+        "ext/ldap/ldap.c:2734 allocation uses accumulated len",
+        "ext/ldap/ldap.c:2740 escaped bytes written"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-g665-fm4p-vhff",
+      "planned_action_ko": "공식 길이 검사와 실패 반환을 7.0 API에 맞춰 이식하고 size_t 인덱스를 검토한다. 산술 경계 단위 검증과 정상 LDAP filter/DN escape 회귀 검증을 수행한다.",
+      "planned_action_en": "Port checked expansion and failure handling, review index types, and validate arithmetic boundaries and benign LDAP escaping.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/fba659abb9de4d313a8ffb512e6238988db05a94"
+    },
+    {
+      "ghsa_id": "GHSA-h35g-vwh6-m678",
+      "cve_id": "CVE-2024-8929",
+      "status": "PLANNED",
+      "component": "ext/mysqlnd result-field packet parser",
+      "reason_ko": "공지의 php_mysqlnd_rset_field_read가 7.0에 있고 def의 길이 값을 읽은 후 현재 커서만 검사한다. memcpy(meta->def,p,len) 전에 len이 남은 packet bytes 이하인지 검사하지 않는다. 7.0은 COM_FIELD_LIST도 아직 지원하지만 그 차이는 복사 길이 검증 누락을 해소하지 않는다. 장수 FPM worker에서 민감도 높은 메모리 경계다.",
+      "reason_en": "The PHP 7.0 result-field parser copies the server-supplied default-value length without checking it against remaining packet bytes. Continued COM_FIELD_LIST support does not remove this missing bound.",
+      "source_evidence": [
+        "ext/mysqlnd/mysqlnd_wireprotocol.c:1221 affected parser exists",
+        "ext/mysqlnd/mysqlnd_wireprotocol.c:1330 default-value length read",
+        "ext/mysqlnd/mysqlnd_wireprotocol.c:1334 cursor-only check before allocation",
+        "ext/mysqlnd/mysqlnd_wireprotocol.c:1341 memcpy uses unbounded len"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-h35g-vwh6-m678",
+      "planned_action_ko": "7.0의 COM_FIELD_LIST 호환성을 보존하면서 packet 남은 길이와 length-encoded 정수 읽기를 함께 검사하도록 이식한다. 정상 metadata/default 응답과 오류 반환·해제 경로를 검증한다. 가짜 서버나 공격 패킷은 실행하지 않는다.",
+      "planned_action_en": "Port packet-remaining-length checks while retaining PHP 7.0 COM_FIELD_LIST compatibility; verify benign metadata and cleanup/error paths without a fake server or attack packets.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/compare/php-8.3.13...php-8.3.14"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-865w-9rf3-2wh5",
+      "cve_id": "CVE-2024-9026",
+      "status": "PLANNED",
+      "component": "sapi/fpm worker output logging",
+      "reason_ko": "공지의 주 원인인 FPM_STDIO_CMD_FLUSH/cmd_pos 상태기계는 7.0 전체 FPM 소스에 없다. 따라서 그 분할 flush 버그를 그대로 적용할 수 없다. 다만 공지가 함께 지적한 NUL 이후 로그 잘림에 대해 7.0의 strchr와 zlog %s 경로도 binary-safe 보호를 제공하지 않으며 코드에 binary data FIXME가 있다. 이 부차 보호 누락을 coverage 정책상 PLANNED로 기록하며 같은 CVE의 실제 재현이나 공격 가능성을 확정하지 않는다.",
+      "reason_en": "The newer split-flush state machine is absent, but the advisory also discusses NUL-truncated logs. PHP 7.0 retains strchr/%s logging and explicitly flags binary data as unresolved; coverage remains planned for that unprotected subcase, without claiming exploit confirmation.",
+      "source_evidence": [
+        "sapi/fpm/fpm/fpm_stdio.c:116 legacy child_said implementation",
+        "sapi/fpm/fpm/fpm_stdio.c:177 binary-data FIXME",
+        "sapi/fpm/fpm/fpm_stdio.c:189 strchr scans NUL-terminated buffer",
+        "sapi/fpm/fpm/fpm_stdio.c:196 worker output logged via %s",
+        "sapi/fpm/fpm/zlog.c:184 syslog uses %s"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-865w-9rf3-2wh5",
+      "planned_action_ko": "주 flush 버그와 기존 NUL 로그 동작을 선행 조사로 분리한다. binary-safe escaping/length 처리 보호를 구현하고 정상 로그·NUL 포함 안전한 고정 문자열·syslog 형식 회귀 검증을 수행한다. flush 기능 자체를 불필요하게 이식하지 않는다.",
+      "planned_action_en": "Separate the absent flush mechanism from legacy NUL handling; implement binary-safe output protection and verify benign fixed-string logging and syslog formatting.",
+      "scope": "Linux FPM; primary flush feature absent, secondary NUL-log protection missing",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/compare/php-8.3.11...php-8.3.12"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-3cr5-j632-f35r",
+      "cve_id": "CVE-2025-1220",
+      "status": "PLANNED",
+      "component": "ext/standard fsockopen + socket transport",
+      "reason_ko": "fsockopen이 7.0에도 존재하며 s 인자로 받은 host를 %s로 host:port와 persistent key에 포맷해 내장 NUL에서 잘릴 수 있다. 공식 수정은 길이 인식 포맷과 socket parser의 NUL 거부를 함께 추가한다. 현재 소스에는 그 보호가 없다. SSRF 발생 자체는 응용 검증·호출 조건에 달려 있으며 실행 확인하지 않았다.",
+      "reason_en": "PHP 7.0 formats fsockopen hosts and persistent keys with %s. The upstream length-aware formatting and socket-parser NUL rejection are missing; application-specific SSRF was not reproduced.",
+      "source_evidence": [
+        "ext/standard/fsock.c:54 hostname accepted as string with explicit length",
+        "ext/standard/fsock.c:59 persistent key formatted using %s",
+        "ext/standard/fsock.c:63 host:port formatted using %s",
+        "ext/standard/fsock.c:88 formatted name passed to transport",
+        "main/streams/xp_socket.c:568 IP address parser lacks initial embedded-NUL rejection"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-3cr5-j632-f35r",
+      "planned_action_ko": "공식 두 부분 수정을 7.0에 이식하고 TCP/UDP/IPv6·persistent key의 정상 동작 및 입력 검증을 독립 검증한다. 외부 목적지나 SSRF 재현은 수행하지 않는다.",
+      "planned_action_en": "Port both length-aware host formatting and transport NUL rejection; validate benign TCP/UDP/IPv6 formatting and persistent-key behavior.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/27e67cc3712ce0bc94fd4b2bfbb7155d89ec52d6"
+    },
+    {
+      "ghsa_id": "GHSA-9pqp-7h25-4f32",
+      "cve_id": "CVE-2024-8925",
+      "status": "PLANNED",
+      "component": "main/rfc1867.c multipart boundary parsing",
+      "reason_ko": "7.0의 multipart_buffer_read에는 공지의 부분 boundary 일치 경로가 있고 FILLUNIT는 5KiB이나 내부 버퍼는 boundary_len+6까지 확장한다. 공식 수정은 boundary 길이를 FILLUNIT-strlen(\"\\r\\n--\") 이하로 제한한다. 현재 boundary 추출 뒤에 이 제한이 없어 보호를 제공하지 않는다. payload 손상이나 공격은 재현하지 않았다.",
+      "reason_en": "The PHP 7.0 multipart reader retains partial-boundary handling and lacks the upstream maximum boundary length guard (FILLUNIT minus the delimiter length). Payload corruption was not reproduced.",
+      "source_evidence": [
+        "main/rfc1867.c:222 FILLUNIT is 5 KiB",
+        "main/rfc1867.c:301 internal minimum size is boundary_len + 6",
+        "main/rfc1867.c:653 refill conditional on requested byte count",
+        "main/rfc1867.c:658 partial boundary match sets maximum read",
+        "main/rfc1867.c:686 zero-length read can terminate caller loop",
+        "main/rfc1867.c:800 multipart buffer initialized without boundary length cap"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-9pqp-7h25-4f32",
+      "planned_action_ko": "공식 boundary 최대 길이 검사와 조기 거부를 7.0에 이식한다. 정상 multipart field/file의 허용 boundary 길이와 버퍼 분할별 byte-for-byte 회귀 검증, 거부 경로의 정리를 확인한다.",
+      "planned_action_en": "Port the official boundary-length guard and early rejection; verify benign field/file parsing across allowed boundary lengths and buffer splits.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/compare/php-8.3.11...php-8.3.12"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-p99j-rfp4-xqvq",
+      "cve_id": "CVE-2024-8926",
+      "status": "PLANNED",
+      "component": "sapi/cgi Windows argument handling",
+      "reason_ko": "Linux FPM에는 Windows codepage/CGI argv 메커니즘이 적용되지 않는다. 그러나 배포 소스의 sapi/cgi/cgi_main.c에는 PHP_WIN32 CGI 코드와 query의 첫 ASCII hyphen만 확인하는 기존 getopt 보호가 있다. Windows CGI에서 argv와 query의 정규화 불일치 보호가 없으며, 8926의 비표준 codepage 조건을 검증하지 않았으므로 피해 확정이 아닌 전체 배포 소스 coverage 항목으로 남긴다.",
+      "reason_en": "Linux FPM is outside the Windows codepage/CGI mechanism. The distributed source still includes Windows CGI and only checks the decoded ASCII leading hyphen; robust Windows CGI argument protection is missing.",
+      "source_evidence": [
+        "sapi/cgi/cgi_main.c:1789 Windows CGI branch included",
+        "sapi/cgi/cgi_main.c:1808 query-based option guard",
+        "sapi/cgi/cgi_main.c:1816 only ASCII hyphen checked",
+        "sapi/cgi/cgi_main.c:1822 getopt consumes argv"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-p99j-rfp4-xqvq",
+      "planned_action_ko": "Windows CGI 별도 범위로 공식 후속 수정의 CGI/FastCGI getopt 차단을 검토·이식한다. Windows build/codepage 조건을 먼저 조사하고 정상 CLI/CGI 분리 회귀 검증한다. Linux FPM 적용 완료나 Windows 검증 완료로 표기하지 않는다.",
+      "planned_action_en": "Investigate Windows CGI build/codepage conditions, port robust CGI/FastCGI getopt suppression, and verify benign CLI/CGI separation on Windows.",
+      "scope": "Windows CGI source included; outside Linux FPM runtime target",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/compare/php-8.3.11...php-8.3.12"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-94p6-54jq-9mwp",
+      "cve_id": "CVE-2024-8927",
+      "status": "PLANNED",
+      "component": "sapi/cgi cgi.force_redirect",
+      "reason_ko": "배포 CGI 소스는 REDIRECT_STATUS와 HTTP_REDIRECT_STATUS 중 하나만 있어도 force_redirect를 통과한다. 공식 공지가 지적한 HTTP 헤더에서 온 환경변수와 신뢰 환경변수의 충돌이 그대로 남는다. Windows에 한정되지 않는 CGI 경로이며 Linux FPM SAPI의 실행 경로와는 분리된다.",
+      "reason_en": "The distributed CGI source accepts HTTP_REDIRECT_STATUS as a trusted redirect signal. This is a cross-platform CGI source gap, separate from the Linux FPM SAPI.",
+      "source_evidence": [
+        "sapi/cgi/cgi_main.c:1907 force_redirect gate",
+        "sapi/cgi/cgi_main.c:1914 REDIRECT_STATUS checked",
+        "sapi/cgi/cgi_main.c:1915 HTTP_REDIRECT_STATUS also trusted"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-94p6-54jq-9mwp",
+      "planned_action_ko": "공식 trusted redirect_status_env 선택 로직을 7.0 CGI에 이식하고 정상 Apache REDIRECT_STATUS 및 명시 설정 경로를 회귀 검증한다. FPM 무영향 범위를 문서화한다.",
+      "planned_action_en": "Port trusted redirect_status_env selection and verify benign Apache redirect and explicit-configuration behavior.",
+      "scope": "Cross-platform CGI source included; outside Linux FPM SAPI",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/compare/php-8.3.11...php-8.3.12"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-w8qr-v226-r27w",
+      "cve_id": "CVE-2024-5458",
+      "status": "PLANNED",
+      "component": "ext/filter FILTER_VALIDATE_URL",
+      "reason_ko": "7.0의 IPv6 host 검증 성공 분기에도 url_free 후 조기 return이 있다. 더 나아가 이 함수는 현대 user/password userinfo 검증 자체도 갖추지 않는다. 따라서 후대 버전 범위를 근거로 제외할 수 없고 IPv6 조기 반환과 userinfo 검증을 함께 보완해야 한다.",
+      "reason_en": "PHP 7.0 has the IPv6 success early return and also lacks the later userinfo validation. Both coverage gaps require backporting rather than a version-range exclusion.",
+      "source_evidence": [
+        "ext/filter/logical_filters.c:517 URL validator exists",
+        "ext/filter/logical_filters.c:549 IPv6 validation branch",
+        "ext/filter/logical_filters.c:551 early success return",
+        "ext/filter/logical_filters.c:561 remaining scheme/path/query checks omit userinfo"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-w8qr-v226-r27w",
+      "planned_action_ko": "공식 IPv6 제어흐름 수정과 userinfo 문자 검증 선행 수정을 함께 7.0에 이식한다. 정상 IPv4/IPv6/인증 URL, path/query flags 및 개별 문자 분류 회귀 검증을 수행한다.",
+      "planned_action_en": "Backport the userinfo validation prerequisite and IPv6 control-flow fix; validate benign URLs, flags, and isolated character classification.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-3qgc-jrrr-25jv",
+      "cve_id": "CVE-2024-4577",
+      "status": "PLANNED",
+      "component": "sapi/cgi Windows best-fit argument handling",
+      "reason_ko": "Linux FPM에는 Windows best-fit argv 변환이 없다. 배포 소스에는 PHP_WIN32용 CGI가 포함돼 있으며 query를 URL decode한 뒤 ASCII hyphen만 검사하는 2012년 계열 보호가 남아 있다. 공식 2024 best-fit/후속 CGI 차단 수정은 없다. 따라서 Windows CGI 소스 보호 이식 대상으로 기록하며 현재 Linux FPM 피해를 주장하지 않는다.",
+      "reason_en": "The distributed source includes Windows CGI with the older decoded-ASCII-hyphen guard and lacks the 2024 best-fit/follow-up protection. This is planned Windows CGI source coverage, outside Linux FPM.",
+      "source_evidence": [
+        "sapi/cgi/cgi_main.c:1789 Windows CGI included",
+        "sapi/cgi/cgi_main.c:1812 query URL decoding",
+        "sapi/cgi/cgi_main.c:1816 ASCII hyphen guard",
+        "sapi/cgi/cgi_main.c:1822 argv getopt remains enabled otherwise"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-3qgc-jrrr-25jv",
+      "planned_action_ko": "8926과 함께 최종 Windows CGI 보호를 검토·이식하고 정상 Windows CGI/CLI 인자 처리 회귀 검증을 별도 수행한다. 중간 best-fit 수정만으로 해결됨으로 표기하지 않는다.",
+      "planned_action_en": "Port the final Windows CGI protection with the follow-up bypass fix and verify benign Windows CGI/CLI argument handling separately.",
+      "scope": "Windows CGI source included; outside Linux FPM runtime target",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/compare/php-8.3.7...php-8.3.8",
+        "https://github.com/php/php-src/compare/php-8.3.11...php-8.3.12"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-9fcc-425m-g385",
+      "cve_id": "CVE-2024-5585",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/standard proc_open Windows array command",
+      "reason_ko": "이 CVE는 1874 수정에서 도입한 배열 명령의 is_executed_by_cmd 파일명 분류 우회다. 7.0 proc_open은 s 매개변수로 문자열만 허용하며 create_win_command_from_args/is_executed_by_cmd가 없다. 배열 명령은 공식 커밋 8be0510으로 7.4에 도입됐다. Windows CreateProcess/bypass_shell 코드는 배포 소스에 존재하지만 이 배열 전용 경로와 수정은 없다. 이는 Windows 문자열 명령 전반의 안전 선언이 아니다.",
+      "reason_en": "This bypass targets the newer Windows array-command filename classifier. PHP 7.0 accepts only string commands and lacks that classifier; array commands were introduced in PHP 7.4. Windows string-command code is present but is a separate scope.",
+      "source_evidence": [
+        "ext/standard/proc_open.c:415 command is char pointer",
+        "ext/standard/proc_open.c:460 s parameter accepts string command only",
+        "ext/standard/proc_open.c:724 Windows bypass_shell branch exists",
+        "ext/standard/proc_open.c:725 CreateProcess receives caller command string"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-9fcc-425m-g385",
+      "planned_action_ko": "해당 배열 전용 수정 이식 없음. 배열 API를 미래에 도입할 때 1874·5585 보호와 Windows 회귀 검증을 함께 요구한다.",
+      "planned_action_en": "No array-path backport; require both 1874 and 5585 protections if array-command support is introduced later.",
+      "scope": "Windows source included; affected array-command feature absent in PHP 7.0; outside Linux FPM",
+      "validation": "not-applicable",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/commit/8be051015e04ce6151da77581922eea65330f354",
+        "https://github.com/php/php-src/blob/php-7.4.0/ext/standard/proc_open.c#L446",
+        "https://github.com/php/php-src/compare/php-8.3.7...php-8.3.8"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-wpj3-hf5j-x4v4",
+      "cve_id": "CVE-2024-2756",
+      "status": "PLANNED",
+      "component": "main/php_variables.c cookie name normalization",
+      "reason_ko": "7.0 변수 등록에는 공백/점 정규화와 닫히지 않은 bracket을 underscore로 바꿔 plain_var로 보내는 코드가 있다. __Host-/__Secure- prefix의 원문과 정규화 결과를 비교하는 보호가 없다. 2022 부분 수정 자체가 없는 더 오래된 구현이므로 2024 우회만 보지 않고 전체 prefix 보호를 이식해야 한다.",
+      "reason_en": "PHP 7.0 normalizes cookie names and converts unmatched brackets to underscores without protecting __Host-/__Secure- prefixes. It lacks even the prerequisite 2022 protection.",
+      "source_evidence": [
+        "main/php_variables.c:94 space/dot normalization",
+        "main/php_variables.c:97 bracket parsing begins",
+        "main/php_variables.c:168 unmatched bracket changed to underscore",
+        "main/php_variables.c:174 normalized name returns to plain_var",
+        "main/php_variables.c:499 cookie parser calls variable registration"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-wpj3-hf5j-x4v4",
+      "planned_action_ko": "2022 원문 prefix 보호와 2024 bracket 경로 재검증을 함께 7.0에 이식한다. 정상 cookie 이름/배열 호환성과 prefix의 원문 보존·변환 거부 단위 회귀 검증을 수행한다.",
+      "planned_action_en": "Port the prerequisite prefix protection and bracket-path revalidation; verify benign cookie names, array compatibility, and isolated normalization rules.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/compare/php-8.3.3...php-8.3.6"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-h746-cjrr-wfmr",
+      "cve_id": "CVE-2024-3096",
+      "status": "PLANNED",
+      "component": "ext/standard password_hash bcrypt input",
+      "reason_ko": "7.0 password_hash는 s 문자열을 받아 내장 NUL 검사 없이 php_crypt로 넘긴다. php_crypt의 bcrypt 호출도 길이가 아닌 C 문자열을 사용하므로 공식 수정의 bcrypt NUL 거부가 필요하다. 이것은 저장된 hash 문자열의 NUL 문제라기보다 hash 생성 입력이 C 문자열에서 잘리는 메커니즘이며 정상 해시 상수시간 비교만으로 해소되지 않는다.",
+      "reason_en": "PHP 7.0 password_hash passes binary strings to C-string bcrypt without the upstream NUL rejection. Constant-time hash comparison does not correct truncation during hash creation.",
+      "source_evidence": [
+        "ext/standard/password.c:273 password accepted as string",
+        "ext/standard/password.c:278 bcrypt branch lacks NUL rejection",
+        "ext/standard/password.c:371 password passed to php_crypt",
+        "ext/standard/crypt.c:210 bcrypt receives C-string password",
+        "ext/standard/password.c:249 constant-time comparison occurs only after hashing"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-h746-cjrr-wfmr",
+      "planned_action_ko": "공식 NUL 입력 거부를 7.0 오류 규약에 맞춰 이식하고 정상 password_hash/verify 호환성 및 단독 입력 검증 회귀를 수행한다.",
+      "planned_action_en": "Port bcrypt NUL rejection using PHP 7.0 error conventions and verify benign hashing/verification compatibility plus isolated input checks.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/0ba5229a3f7572846e91c8f5382e87785f543826"
+    },
+    {
+      "ghsa_id": "GHSA-fjp9-9hwx-59fq",
+      "cve_id": "CVE-2024-2757",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/mbstring MIME header encoder",
+      "reason_ko": "공식 수정 3394efc의 결함은 mb_mime_header_encode의 wchar_buf 재충전에서 충분한 여유 없이 incomplete word를 재처리하는 새 상태기계다. 공식 도입 0ce755b는 이 구현을 2023년에 추가했고 php-8.2.0에는 구 mbfl_mime_header_encode, php-8.3.0에는 새 함수가 있음을 대조했다. 7.0은 구 mbfl 콜백 인코더를 호출하고 입력 루프가 매회 p++/n--로 진행하며 해당 wchar_buf/offset/refill 상태기계가 없다. 다른 mbstring 결함 전체에 대한 안전 선언은 아니다.",
+      "reason_en": "The official fix concerns the PHP 8.3 fast MIME encoder refill state machine, introduced by 0ce755b. PHP 7.0 uses the legacy mbfl callback encoder and lacks that wchar-buffer/offset/refill implementation.",
+      "source_evidence": [
+        "ext/mbstring/mbstring.c:3530 calls legacy mbfl_mime_header_encode",
+        "ext/mbstring/libmbfl/mbfl/mbfilter.c:2340 legacy encoder implementation",
+        "ext/mbstring/libmbfl/mbfl/mbfilter.c:2376 per-byte loop",
+        "ext/mbstring/libmbfl/mbfl/mbfilter.c:2377 p increment each iteration",
+        "ext/mbstring/libmbfl/mbfl/mbfilter.c:2378 n decremented each iteration"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-fjp9-9hwx-59fq",
+      "planned_action_ko": "이 새 인코더 전용 패치 이식 없음. 미래에 8.3 fast 인코더를 가져올 경우 해당 진행 보장 수정도 포함한다.",
+      "planned_action_en": "No backport for the absent fast encoder; retain the progress fix if that encoder is introduced later.",
+      "scope": "Affected PHP 8.3 encoder implementation absent from PHP 7.0; mbstring itself is present",
+      "validation": "not-applicable",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/3394efc63e52a017995f92d8da4ef28224247bb3",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/commit/0ce755be261f7bd1d78dbf4e3abad2e93e13c784",
+        "https://github.com/php/php-src/blob/php-8.2.0/ext/mbstring/mbstring.c#L3021",
+        "https://github.com/php/php-src/blob/php-8.3.0/ext/mbstring/mbstring.c#L5885"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-pc52-254m-w9w7",
+      "cve_id": "CVE-2024-1874",
+      "status": "NOT_APPLICABLE",
+      "component": "ext/standard proc_open Windows array command escaping",
+      "reason_ko": "공식 공지와 수정은 Windows proc_open 배열 명령을 자동 escape한 뒤 batch/cmd로 실행하는 경로에 대한 것이다. 배열 API와 create_win_command_from_args는 2019 공식 커밋 8be0510으로 7.4에 도입됐고 현재 7.0은 s 문자열만 받는다. Windows bypass_shell/CreateProcess 코드는 배포 소스에 있지만 호출자가 작성한 문자열을 받는 별도 계약이다. Linux FPM에는 Windows cmd.exe 실행 규칙도 없다.",
+      "reason_en": "The affected automatic Windows array-command escaping was introduced with PHP 7.4 command arrays. PHP 7.0 only accepts caller-authored command strings; its Windows CreateProcess branch is a different API contract.",
+      "source_evidence": [
+        "ext/standard/proc_open.c:460 string-only command parameter",
+        "ext/standard/proc_open.c:477 bypass_shell option exists",
+        "ext/standard/proc_open.c:724 Windows direct-command branch",
+        "ext/standard/proc_open.c:725 CreateProcess receives command string"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-pc52-254m-w9w7",
+      "planned_action_ko": "존재하지 않는 배열 escape 경로의 수정 이식 없음. 배열 기능 도입 시 batch/cmd 전용 escape·파일명 정규화 보호와 별도 Windows 회귀 검증을 함께 적용한다.",
+      "planned_action_en": "No absent-array-path backport; require batch/cmd escaping, filename normalization, and Windows regressions if command arrays are added.",
+      "scope": "Windows code included; affected array API absent from PHP 7.0; outside Linux FPM",
+      "validation": "not-applicable",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/commit/8be051015e04ce6151da77581922eea65330f354",
+        "https://github.com/php/php-src/compare/php-8.3.3...php-8.3.6"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-hh26-4ppw-5864",
+      "cve_id": "CVE-2024-2408",
+      "status": "PLANNED",
+      "component": "ext/openssl RSA PKCS#1 v1.5 private decryption",
+      "reason_ko": "7.0도 기본 RSA_PKCS1_PADDING으로 RSA_private_decrypt를 직접 호출하고 실패/성공에 따라 할당·복사·반환 경로가 다르다. 소스에 implicit rejection 또는 동등 보호가 없으며 실제 시간 신호는 링크 OpenSSL 버전·빌드에 의존해 이번 읽기만으로 확정할 수 없다. 공지에도 완결된 PHP 패치 버전이 제시되지 않으므로 해결됨으로 추정하지 않는다.",
+      "reason_en": "PHP 7.0 directly calls RSA_private_decrypt with PKCS#1 v1.5 padding and branches on the result. No equivalent protection is provided here; actual timing depends on the linked OpenSSL build and was not measured.",
+      "source_evidence": [
+        "ext/openssl/openssl.c:5011 default RSA_PKCS1_PADDING",
+        "ext/openssl/openssl.c:5035 direct RSA_private_decrypt call",
+        "ext/openssl/openssl.c:5040 success-dependent allocation and copying",
+        "ext/openssl/openssl.c:5052 success-dependent return path"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-hh26-4ppw-5864",
+      "planned_action_ko": "선행 조사로 빌드별 OpenSSL 계약·implicit rejection 제공 여부를 고정한다. 호환 가능한 안전 복호화 API 이식 또는 보호할 수 없는 PKCS#1 v1.5 경로 차단 정책을 구현하고 정상 RSA/OAEP 호환성·오류 동작 회귀를 검증한다. timing 공격 실험은 수행하지 않는다.",
+      "planned_action_en": "First verify each supported OpenSSL contract; implement a compatible protected API or block unprotected PKCS#1 v1.5 paths, then validate benign RSA/OAEP and error behavior.",
+      "scope": "Linux FPM/OpenSSL source; dependency-dependent timing risk, no timing experiment",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison"
+    },
+    {
+      "ghsa_id": "GHSA-3qrf-m4j2-pcrr",
+      "cve_id": "CVE-2023-3823",
+      "status": "PLANNED",
+      "component": "ext/libxml + DOM/SimpleXML/SOAP/XML/XMLReader/XSL",
+      "reason_ko": "공식 수정은 libxml 전역 기본 옵션이 parser context로 전파되는 것을 sanitize하는 것이다. 현재 7.0의 DOM xmlCtxtUseOptions, SimpleXML xmlReadMemory 등에는 그 보호가 없고 php_libxml.h에도 sanitize helpers가 없다. libxml entity loader의 별도 요청초기화 코드는 이 전역 옵션 문제를 해결하지 않는다. 공지의 FPM 미재현 진술만으로 배포 XML 소스를 제외하지 않는다.",
+      "reason_en": "The upstream fix sanitizes inherited libxml global parser options across XML extensions. PHP 7.0 lacks those helpers and call-site guards; entity-loader request initialization is a different mechanism.",
+      "source_evidence": [
+        "ext/dom/document.c:1441 options applied without global/context sanitization",
+        "ext/simplexml/simplexml.c:2286 xmlReadMemory uses inherited defaults",
+        "ext/simplexml/simplexml.c:2336 constructor reads XML without sanitization",
+        "ext/libxml/libxml.c:887 entity-loader flag reset addresses a different state",
+        "ext/libxml/php_libxml.h:120 header lacks upstream sanitization helpers"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-3qrf-m4j2-pcrr",
+      "planned_action_ko": "공식 전체 XML 호출부 보호를 PHP7.0의 libxml API에 맞춰 이식한다. 전역 옵션 저장/복구와 실패 경로를 검토하고 정상 XML·명시 옵션·확장 간 상태 격리 회귀를 검증한다. 외부 entity 유출 재현은 수행하지 않는다.",
+      "planned_action_en": "Port the full cross-extension libxml sanitization, review restore/error paths, and validate benign XML options and state isolation.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/c283c3ab0ba45d21b2b8745c1f9c7cbfe771c975",
+      "upstream_comparison": [
+        "https://github.com/php/php-src/commit/b3758bd21223b97c042cae7bd26a66cde081ea98"
+      ]
+    },
+    {
+      "ghsa_id": "GHSA-jqcx-ccgc-xwhv",
+      "cve_id": "CVE-2023-3824",
+      "status": "PLANNED",
+      "component": "ext/phar directory stream",
+      "reason_ko": "공지와 같은 phar_dir_read 구현이 7.0에도 남아 있다. count와 filename 길이로 to_read를 정한 뒤 php_stream_dirent 전체를 memset하고 d_name[to_read+1]에 NUL을 쓴다. d_name 실제 용량과 NUL 공간을 보장하지 않아 공식 수정이 필요하며 critical 공지에 해당하는 명확한 소스 누락이다.",
+      "reason_en": "PHP 7.0 retains the reported phar_dir_read logic, including the whole-struct memset and d_name[to_read + 1] write without reserving the destination terminator space.",
+      "source_evidence": [
+        "ext/phar/dirstream.c:105 to_read uses min(filename length,count)",
+        "ext/phar/dirstream.c:107 insufficient length check",
+        "ext/phar/dirstream.c:111 whole dirent memset",
+        "ext/phar/dirstream.c:113 to_read + 1 terminator write"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-jqcx-ccgc-xwhv",
+      "planned_action_ko": "공식 dirent 크기·파일명 용량 검사와 올바른 NUL 위치를 이식한다. 정상 Phar 목록/seek와 고정된 길이 산술 단위 검증·메모리 안전성 회귀를 수행한다. 취약 입력 실행은 하지 않는다.",
+      "planned_action_en": "Port correct dirent capacity checks and NUL placement; verify benign listing/seeking and isolated size arithmetic without vulnerable-input execution.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/c398fe98c044c8e7c23135acdc38d4ef7bedc983"
+    },
+    {
+      "ghsa_id": "GHSA-76gg-c692-v2mw",
+      "cve_id": "CVE-2023-3247",
+      "status": "PLANNED",
+      "component": "ext/soap HTTP Digest cnonce",
+      "reason_ko": "7.0은 후대의 unchecked php_random_bytes_throw 대신 php_rand를 사용하므로 공지의 RNG 실패에 따른 미초기화 stack 경로는 동일하지 않다. 그러나 단일 php_rand 값의 MD5를 만들고 cnonce의 첫 8문자만 전달하는 제한된 무작위성 메커니즘이 존재한다. 공식 수정의 충분한 보안 난수·실패 처리·전체 cnonce 사용을 제공하지 않아 coverage 항목을 유지한다.",
+      "reason_en": "PHP 7.0 uses php_rand rather than the later unchecked random-bytes call, but still has weak cnonce generation and transmits only eight digest characters. The secure-randomness coverage remains missing.",
+      "source_evidence": [
+        "ext/soap/php_http.c:653 cnonce derives from php_rand",
+        "ext/soap/php_http.c:656 nonce value MD5 digested",
+        "ext/soap/php_http.c:693 digest uses only eight cnonce bytes",
+        "ext/soap/php_http.c:768 header transmits only eight cnonce bytes"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-76gg-c692-v2mw",
+      "planned_action_ko": "7.0 보안 난수 API로 충분한 cnonce를 만들고 실패시 요청을 중단하도록 이식한다. 후속 수정의 digest/header 전체 cnonce 길이도 함께 반영하고 정상 Digest 인증 및 RNG 실패 정리 회귀를 검증한다.",
+      "planned_action_en": "Port sufficient cryptographic randomness with failure cleanup and full-length cnonce use in both digest calculation and headers; validate benign authentication and RNG-error cleanup.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/0cfca9aa1395271833848daec0bace51d965531d"
+    },
+    {
+      "ghsa_id": "GHSA-7fj2-8x79-rjf4",
+      "cve_id": "CVE-2023-0567",
+      "status": "PLANNED",
+      "component": "ext/standard crypt_blowfish",
+      "reason_ko": "공식 수정이 제거하는 PHP hack이 현재 7.0의 BF_safe_atoi64와 BF_decode에 그대로 남아 있다. salt의 $에서 decode를 조기 종료하고 나머지를 0으로 채우며 뒤에서 setting을 고정 길이 복사한다. 이는 최초 내장 crypt_blowfish부터 존재한 메커니즘으로 공지의 후대 버전 표기만으로 제외할 수 없다.",
+      "reason_en": "The PHP-specific truncated-salt hack removed upstream remains in the PHP 7.0 bcrypt decoder, including early termination at $ and zero filling before fixed-size setting copying.",
+      "source_evidence": [
+        "ext/standard/crypt_blowfish.c:380 PHP hack breaks at dollar sign",
+        "ext/standard/crypt_blowfish.c:412 PHP hack zero-fills remaining decoded salt",
+        "ext/standard/crypt_blowfish.c:777 fixed-size setting copy",
+        "ext/standard/crypt.c:215 bcrypt output length obtained with strlen"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-7fj2-8x79-rjf4",
+      "planned_action_ko": "공식 PHP hack 제거를 이식하고 정상 bcrypt 해시/crypt/verify 호환성 및 salt 유효문자 분류를 검증한다. 별도 NUL 입력 보호와 함께 검토하되 서로 다른 항목으로 추적한다.",
+      "planned_action_en": "Remove the upstream PHP hack and validate benign bcrypt compatibility and isolated salt character checks; track NUL-input protection separately.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/7437aaae38cf4b3357e7580f9e22fd4a403b6c23"
+    },
+    {
+      "ghsa_id": "GHSA-54hq-v5wp-fqgv",
+      "cve_id": "CVE-2023-0662",
+      "status": "PLANNED",
+      "component": "main multipart request parser limits",
+      "reason_ko": "7.0 multipart 루프에는 max_file_uploads와 max_input_vars가 있지만 전체 body parts 수 제한이 없다. upload 한도 초과마다 warning을 내고 계속 파싱하며 Build007 soft-OOM 종료만으로 CPU/로그 수 제한을 대체하지 못한다. 공식 max_multipart_body_parts 및 한도 초과 종료가 실제 소스에 없다.",
+      "reason_en": "PHP 7.0 has upload/input-variable limits but no total multipart-part limit. It can continue parsing and emitting upload warnings; Build007 soft-OOM handling does not supply CPU/log-count bounds.",
+      "source_evidence": [
+        "main/rfc1867.c:739 upload count initialized",
+        "main/rfc1867.c:831 multipart loop has no total-parts counter",
+        "main/rfc1867.c:840 soft-OOM guard is a different protection",
+        "main/rfc1867.c:975 input-variable warning limit",
+        "main/rfc1867.c:1012 upload-limit branch continues with warning",
+        "main/rfc1867.c:1014 repeated upload-limit warning"
+      ],
+      "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-54hq-v5wp-fqgv",
+      "planned_action_ko": "공식 max_multipart_body_parts 설정·카운터·한도 초과 종료를 7.0에 이식하고 기본값·설정 우선순위·정상 복수 file/field 요청·단일 warning 및 정리 경로 회귀를 검증한다. DoS 요청은 실행하지 않는다.",
+      "planned_action_en": "Port the total-part setting/counter/early termination and validate defaults, benign multipart requests, single-warning behavior, and cleanup without DoS requests.",
+      "scope": "PHP 7.0 distributed source; Linux FPM relevant when component is enabled",
+      "validation": "not-run",
+      "review_method": "exact-source and official-advisory comparison",
+      "upstream_fix_url": "https://github.com/php/php-src/commit/716de0cff539f46294ef70fe75d548cd66766370"
+    }
+  ],
+  "vendor_fixes": [
+    {
+      "cve_id": "CVE-2019-11034",
+      "summary": "Fix bug #77753 - Heap-buffer-overflow in php_ifd_get32s",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11034",
+      "patches": [
+        {
+          "name": "CVE-2019-11034.patch",
+          "sha256": "602e5cb28af9f9e381573118a40e14609c61f2c4cca21b15c2ef783ec5ba31f8",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:2818 — if ((dir_start - value_ptr) > value_len - (2+NumDirEntries*12)) {",
+        "ext/exif/exif.c:2819 — exif_error_docref(\"exif_read_data#error_ifd\" EXIFERR_CC, ImageInfo, E_WARNING, \"Illegal IFD size: 0x%04X > 0x%04X\", (dir_start - value_ptr) + (2+NumDirEntries*12), value_len);"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11035",
+      "summary": "Fixed bug #77831 - Heap-buffer-overflow in exif_iif_add_value in EXIF",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11035",
+      "patches": [
+        {
+          "name": "CVE-2019-11035-1.patch",
+          "sha256": "1c61097eee194c341118656d83fd3c5a575ff7cc99a3eef79ef0ae8c6c3b4b38",
+          "enabled": true
+        },
+        {
+          "name": "CVE-2019-11035-2.patch",
+          "sha256": "71bb9c33596c6765b528ef6c1b1d9418848bfa1ee2174073ae9a1ee3493b234a",
+          "enabled": true
+        },
+        {
+          "name": "CVE-2019-11035-3.patch",
+          "sha256": "860a63fd8b8cd37950aa6f2472f116c160e4f335e087f043c2ed88f510d96da1",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:1657 — static void exif_iif_add_value(image_info_type *image_info, int section_index, char *name, int tag, int format, int length, void* value, size_t value_len, int motorola_intel)",
+        "ext/exif/exif.c:1682 — if (length > value_len) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11036",
+      "summary": "Fix bug #77950 - Heap-buffer-overflow in _estrndup via exif_process_IFD_TAG",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11036",
+      "patches": [
+        {
+          "name": "CVE-2019-11036.patch",
+          "sha256": "ded51384203b13fbdd9e710168e6919d1a342e99c69f403dcf8571070d780800",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:2895 — if (byte_count > IFDlength || offset_val > IFDlength-byte_count || value_ptr < dir_entry || offset_val < (size_t)(dir_entry-offset_base) || dir_entry <= offset_base) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11039",
+      "summary": "Fix bug #78069 - Out-of-bounds read in iconv.c:_php_iconv_mime_decode() due to integer overflow",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11039",
+      "patches": [
+        {
+          "name": "CVE-2019-11039.patch",
+          "sha256": "8b19378e139e97deb01684b5f78c77949a360b882dbeb9fa519a04b4f6cfbf47",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/iconv/iconv.c:1648 — if (str_left > 1) {",
+        "ext/iconv/iconv.c:1639 — --str_left;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11040",
+      "summary": "Fix bug #77988 - heap-buffer-overflow on php_jpg_get16",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11040",
+      "patches": [
+        {
+          "name": "CVE-2019-11040.patch",
+          "sha256": "382295580e38c0944fdc22522defd56a2f803d49dafb9ba55ea06b85b044b8cd",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:3518 — if (pos>=ImageInfo->Thumbnail.size)",
+        "ext/exif/exif.c:2760 — return FALSE;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11041",
+      "summary": "Fix bug #78222 (heap-buffer-overflow on exif_scan_thumbnail)",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11041",
+      "patches": [
+        {
+          "name": "CVE-2019-11041.patch",
+          "sha256": "eb60e300c3526ef3ebfb4d5be84ffde290e0c5e3066d7b53b92634fccddea5ce",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:3507 — if (!data || ImageInfo->Thumbnail.size < 4) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11042",
+      "summary": "Fix bug #78256 (heap-buffer-overflow on exif_process_user_comment)",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11042",
+      "patches": [
+        {
+          "name": "CVE-2019-11042.patch",
+          "sha256": "6e970d3a86e65c9398f53531e1d73f03ed17515fec13473bbdd29721639a30db",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:2635 — if (ByteCount >=2 && !memcmp(szValuePtr, \"\\xFE\\xFF\", 2)) {",
+        "ext/exif/exif.c:2639 — } else if (ByteCount >=2 && !memcmp(szValuePtr, \"\\xFF\\xFE\", 2)) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11043",
+      "summary": "Fix bug #78599 (env_path_info underflow can lead to RCE) (CVE-2019-11043)",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11043",
+      "patches": [
+        {
+          "name": "CVE-2019-11043.patch",
+          "sha256": "f312ea2f87073568d78a0464022db9e2ee7c69dfe21ae96807853432ed01238f",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "sapi/fpm/fpm/fpm_main.c:1211 — path_info = (env_path_info && pilen > slen) ? env_path_info + pilen - slen : NULL;",
+        "sapi/fpm/fpm/fpm_main.c:1212 — tflag = path_info && (orig_path_info != path_info);"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11045",
+      "summary": "Fix #78863: DirectoryIterator class silently truncates after a null byte",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11045",
+      "patches": [
+        {
+          "name": "CVE-2019-11045.patch",
+          "sha256": "f3f1b2aca59936c5288a90537251732e16c5d35ee0328ccdf61cc95b46a57fe3",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/spl/spl_directory.c:687 — parsed = zend_parse_parameters(ZEND_NUM_ARGS(), \"p|l\", &path, &len, &flags);",
+        "ext/spl/spl_directory.c:690 — parsed = zend_parse_parameters(ZEND_NUM_ARGS(), \"p\", &path, &len);"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11046",
+      "summary": "Fix #78878: Buffer underflow in bc_shift_addsub",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11046",
+      "patches": [
+        {
+          "name": "CVE-2019-11046.patch",
+          "sha256": "b29353c161e6427727d133f8877679df4d37eeffc11ba3c9d464c817de63e509",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/bcmath/libbcmath/src/str2num.c:60 — while (*ptr >= '0' && *ptr <= '9') ptr++, digits++;\t/* digits */",
+        "ext/bcmath/libbcmath/src/str2num.c:62 — while (*ptr >= '0' && *ptr <= '9') ptr++, strscale++;\t/* digits */"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11047",
+      "summary": "Fixed bug #78910",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11047",
+      "patches": [
+        {
+          "name": "CVE-2019-11047.patch",
+          "sha256": "a21783694e2a871a2a0dcec29536a4e7f51c97631338d4e647e4fdcc0a5a2c8a",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:2751 — if (maker_note->id_string && value_len >= maker_note->id_string_len",
+        "ext/exif/exif.c:2752 — && strncmp(maker_note->id_string, value_ptr, maker_note->id_string_len))"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11048",
+      "summary": "Fix #78875: Long filenames cause OOM and temp files are not cleaned",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11048",
+      "patches": [
+        {
+          "name": "CVE-2019-11048.patch",
+          "sha256": "d177a4bf24bb3ae0294eb0a676c218d24ff252affebcafebfa473a020381ea23",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "main/rfc1867.c:728 — int boundary_len = 0, cancel_upload = 0, is_arr_upload = 0;",
+        "main/rfc1867.c:729 — size_t array_len = 0;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-11050",
+      "summary": "Fix bug #78793",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-11050",
+      "patches": [
+        {
+          "name": "CVE-2019-11050.patch",
+          "sha256": "c453f706afaefab60f95eeeba68cb497a8a6498fca358d80680daa0b62c8db82",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:2825 — if (!exif_process_IFD_TAG(ImageInfo, dir_start + offset,",
+        "ext/exif/exif.c:2824 — size_t offset = 2 + 12 * de;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9020",
+      "summary": "Fix bug #77242 (heap out of bounds read in xmlrpc_decode())",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9020",
+      "patches": [
+        {
+          "name": "CVE-2019-9020.patch",
+          "sha256": "ba1e09712c68c2e165f1114b2f1fd1a5408a75780d1ad48530c1ef43220918ac",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/xmlrpc/libxmlrpc/xml_element.c:726 — if(byte_idx > len) {",
+        "ext/xmlrpc/libxmlrpc/xml_element.c:727 — byte_idx = len;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9021",
+      "summary": "Fix bug #77247 (heap buffer overflow in phar_detect_phar_fname_ext)",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9021",
+      "patches": [
+        {
+          "name": "CVE-2019-9021.patch",
+          "sha256": "c42473c23b12749f8c95cf3e4f6e04951c4768d0bd7a2530d621d0828a050c85",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/phar/phar.c:2024 — pos = memchr(pos + 1, '.', filename_len - (pos - filename) - 1);"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9022",
+      "summary": "fix bug #75916 DNS_CAA record results contain garbage",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9022",
+      "patches": [
+        {
+          "name": "CVE-2019-9022-pre.patch",
+          "sha256": "8e8c7dd486b26ad125a754e7c4a59495e915db7df2cdb151b652c427cfe4cb22",
+          "enabled": true
+        },
+        {
+          "name": "CVE-2019-9022.patch",
+          "sha256": "e39cc72472f83c41eecf7e4a6435d4522922465ac1e16a52015ca49017013a57",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/standard/dns.c:556 — if ( (size_t) dlen < ((size_t)n) + 2 ) {",
+        "ext/standard/dns.c:462 — if (dlen == 0) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9023",
+      "summary": "Fix bug #77370 - check that we do not read past buffer end when parsing multibytes",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9023",
+      "patches": [
+        {
+          "name": "CVE-2019-9023-1.patch",
+          "sha256": "a4aa3bd278254ce91beb53fa202f9d1e9492209020395f6e0afc9be8a9eda7f4",
+          "enabled": true
+        },
+        {
+          "name": "CVE-2019-9023-2.patch",
+          "sha256": "f3576db5f77515f3b2868990f4e84d69328927f201e0308abae056a25108eca3",
+          "enabled": true
+        },
+        {
+          "name": "CVE-2019-9023-3.patch",
+          "sha256": "0538c90840844095472335e64b30d9005119d8ff0b99ab52635cf0bcbb86fabe",
+          "enabled": true
+        },
+        {
+          "name": "CVE-2019-9023-4.patch",
+          "sha256": "106578986f1029d7ccfb3b7830a4ad1967895cc328a9c6a77345180f09e289dd",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/mbstring/oniguruma/regparse.c:263 — if(UNEXPECTED(p > end)) p = end; \\",
+        "ext/mbstring/oniguruma/regparse.c:263 — if(UNEXPECTED(p > end)) p = end; \\"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9024",
+      "summary": "Fix bug #77380 (Global out of bounds read in xmlrpc base64 code)",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9024",
+      "patches": [
+        {
+          "name": "CVE-2019-9024.patch",
+          "sha256": "de6337fc37b7d3880e437a7a31c1fd79d5428ace901231c50e6c00b3cf134ff8",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/xmlrpc/libxmlrpc/base64.c:172 — if (dtable[(unsigned char)c] & 0x80) {",
+        "ext/xmlrpc/libxmlrpc/base64.c:80 — int c, n;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9637",
+      "summary": "Fix bug #77630 - safer rename() procedure",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9637",
+      "patches": [
+        {
+          "name": "CVE-2019-9637.patch",
+          "sha256": "cf6fb8db651e5b0ac4ebc5f9df9f639cae034828b855d7827f95a8a97aae4ad1",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "main/streams/plain_wrapper.c:1185 — if (VCWD_CHOWN(url_to, sb.st_uid, sb.st_gid)) {",
+        "main/streams/plain_wrapper.c:1187 — if (errno != EPERM) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9638",
+      "summary": "Fix bug #77563 - Uninitialized read in exif_process_IFD_in_MAKERNOTE",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9638",
+      "patches": [
+        {
+          "name": "CVE-2019-9638-and-CVE-2019-9639-1.patch",
+          "sha256": "ae18837cd0dd5c40847a68837dadbdaad92298011337f311903bb79edaae5b58",
+          "enabled": true
+        },
+        {
+          "name": "CVE-2019-9638-and-CVE-2019-9639-2.patch",
+          "sha256": "5f1a50a3f8c5249957928759710ab744460b20150927d3548723be03146562e7",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:2757 — if (value_len < 2 || maker_note->offset >= value_len - 1) {",
+        "ext/exif/exif.c:2789 — data_len = value_len;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9639",
+      "summary": "Fix bug #77563 - Uninitialized read in exif_process_IFD_in_MAKERNOTE",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9639",
+      "patches": [
+        {
+          "name": "CVE-2019-9638-and-CVE-2019-9639-1.patch",
+          "sha256": "ae18837cd0dd5c40847a68837dadbdaad92298011337f311903bb79edaae5b58",
+          "enabled": true
+        },
+        {
+          "name": "CVE-2019-9638-and-CVE-2019-9639-2.patch",
+          "sha256": "5f1a50a3f8c5249957928759710ab744460b20150927d3548723be03146562e7",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:2757 — if (value_len < 2 || maker_note->offset >= value_len - 1) {",
+        "ext/exif/exif.c:2789 — data_len = value_len;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9640",
+      "summary": "Fix bug #77540 - Invalid Read on exif_process_SOFn",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9640",
+      "patches": [
+        {
+          "name": "CVE-2019-9640.patch",
+          "sha256": "bdc3f9c244be2f9356f13d73da910bc1a480f41250917223bc0b44d942a9e23d",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:3538 — if (length > ImageInfo->Thumbnail.size || pos >= ImageInfo->Thumbnail.size - length) {",
+        "ext/exif/exif.c:3559 — if (length < 8 || ImageInfo->Thumbnail.size - 8 < pos) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9641",
+      "summary": "Fix integer overflows on 32-bits",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9641",
+      "patches": [
+        {
+          "name": "CVE-2019-9641.patch",
+          "sha256": "6afd9134690ba1138fe8bcedeed13fb2ddf63b846e6f752e3a18d390bc14a3f5",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:3603 — if (ImageInfo->FileSize >= 2 && ImageInfo->FileSize - 2 >= dir_offset) {",
+        "ext/exif/exif.c:3611 — dir_size = 2/*num dir entries*/ +12/*length of entry*/*(size_t)num_entries +4/* offset to next ifd (points to thumbnail or NULL)*/;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2019-9675",
+      "summary": "Fix bug #77586 - phar_tar_writeheaders_int() buffer overflow",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2019-9675",
+      "patches": [
+        {
+          "name": "CVE-2019-9675.patch",
+          "sha256": "91f1fb4c5903fefa91c285e9bb88de3f60d859f812df46c3751d2fc5043d1bec",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/phar/tar.c:765 — if (strlcpy(header.linkname, entry->link, sizeof(header.linkname)) >= sizeof(header.linkname)) {",
+        "ext/phar/tar.c:724 — if (fp->error) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2020-7059",
+      "summary": "Fix #79099: OOB read in php_strip_tags_ex",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2020-7059",
+      "patches": [
+        {
+          "name": "CVE-2020-7059.patch",
+          "sha256": "23957f3a47c194d8b9ac3269e0c4cd0204745f57e3a3c35297611a4bb679d88b",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/standard/string.c:4866 — } else if (state == 2 && p >= buf + 1 && *(p-1) != '\\\\') {",
+        "ext/standard/string.c:4893 — if (state == 1 && p >= buf + 1 && *(p-1) == '<') {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2020-7060",
+      "summary": "Fix bug #79037 (global buffer-overflow in `mbfl_filt_conv_big5_wchar`)",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2020-7060",
+      "patches": [
+        {
+          "name": "CVE-2020-7060.patch",
+          "sha256": "524a4c42d4b27e11e320add91ca3f19b5a789ab6395ef80fb492e5cbc565eddc",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/mbstring/libmbfl/filters/mbfilter_big5.c:142 — if ((c1 >= 0xfa && c1 <= 0xfe) || (c1 >= 0x8e && c1 <= 0xa0) ||",
+        "ext/mbstring/libmbfl/filters/mbfilter_big5.c:200 — if (w <= 0 && is_in_cp950_pua(c1, c)) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2020-7062",
+      "summary": "Fix bug #79221 - Null Pointer Dereference in PHP Session Upload Progress",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2020-7062",
+      "patches": [
+        {
+          "name": "CVE-2020-7062.patch",
+          "sha256": "ac90cf09a0ae518bcbba9fcdb108f01e0efdfed66d0d32d7dbc1fd727f558983",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/session/session.c:3141 — if (!Z_ISUNDEF(progress->data)) {",
+        "ext/session/session.c:3142 — SEPARATE_ARRAY(&progress->data);"
+      ]
+    },
+    {
+      "cve_id": "CVE-2020-7063",
+      "summary": "Fix bug #79082 - Files added to tar with Phar::buildFromIterator have all-access permissions",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2020-7063",
+      "patches": [
+        {
+          "name": "CVE-2020-7063.patch",
+          "sha256": "67a01c676882a3f38a838f2871db7f6a66c6d2cee848af82f5c04a19f6fd3e22",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/phar/phar_object.c:1749 — if (php_stream_stat(fp, &ssb) != -1) {",
+        "ext/phar/phar_object.c:1454 — php_stream_statbuf ssb;"
+      ]
+    },
+    {
+      "cve_id": "CVE-2020-7064",
+      "summary": "Fixed bug #79282",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2020-7064",
+      "patches": [
+        {
+          "name": "CVE-2020-7064.patch",
+          "sha256": "a9fc6eafecc640101de0b6a7116742a2190b32d329d44f403810ac70d8fd47fa",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/exif/exif.c:3246 — exif_error_docref(NULL EXIFERR_CC, ImageInfo, E_WARNING, \"Missing TIFF alignment marker\");",
+        "ext/exif/exif.c:3402 — sn = exif_file_sections_add(ImageInfo, marker, itemlen, NULL);"
+      ]
+    },
+    {
+      "cve_id": "CVE-2020-7066",
+      "summary": "Fix bug #79329 - get_headers should not accept \\0",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2020-7066",
+      "patches": [
+        {
+          "name": "CVE-2020-7066.patch",
+          "sha256": "29e584597b68fadf67daf564280f80a2a5a233aab8c55c7f3b1708a9c9362267",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "ext/standard/url.c:662 — if (zend_parse_parameters(ZEND_NUM_ARGS(), \"p|l\", &url, &url_len, &format) == FAILURE) {"
+      ]
+    },
+    {
+      "cve_id": "CVE-2020-7070",
+      "summary": "Do not decode cookie names anymore",
+      "status": "RESOLVED",
+      "validation": "vendor-source",
+      "upstream_url": "https://ubuntu.com/security/CVE-2020-7070",
+      "patches": [
+        {
+          "name": "CVE-2020-7070.patch",
+          "sha256": "15b67ffc088f4a8a5f5ac4d1c67a5f3f0f17a361495825eb5bbfa8aba441a1c5",
+          "enabled": true
+        }
+      ],
+      "source_evidence": [
+        "main/php_variables.c:493 — if (arg != PARSE_COOKIE) {",
+        "main/php_variables.c:493 — if (arg != PARSE_COOKIE) {"
+      ]
+    }
+  ],
+  "source_files": {
+    "Zend/zend_alloc.c": {
+      "root": "prepared-source",
+      "sha256": "41fe6d822bbe533e250f4a9b3a268ed86538440097e835278f167c7b7cd49da3",
+      "line_count": 3271
+    },
+    "Zend/zend_execute.c": {
+      "root": "prepared-source",
+      "sha256": "a4cfaebe055ad788b9fc84a8762d2a8fead58930e9cc546786f6074726752276",
+      "line_count": 2821
+    },
+    "Zend/zend_execute_API.c": {
+      "root": "prepared-source",
+      "sha256": "d5565af7355a534be59344b7a60274b182e71ae6c331e529b1be168ad9904a0a",
+      "line_count": 1700
+    },
+    "Zend/zend_language_parser.y": {
+      "root": "prepared-source",
+      "sha256": "673be0605e88ef1645bf18b5c1d2d269dc3d9e6888a68f28dcbd5009c76d071c",
+      "line_count": 1361
+    },
+    "Zend/zend_opcode.c": {
+      "root": "prepared-source",
+      "sha256": "3339c2eca950f895b09703246d6dbf93efd0dfcc9f581b532937f932c315f3a5",
+      "line_count": 787
+    },
+    "Zend/zend_virtual_cwd.c": {
+      "root": "prepared-source",
+      "sha256": "c2cd74f5aeb10fb748df3e592c6de7dda103a1fd6ec031a6eecc4f73ef32f6f4",
+      "line_count": 1983
+    },
+    "Zend/zend_vm_opcodes.h": {
+      "root": "prepared-source",
+      "sha256": "440ded30a513941e59d3f6348f260e3d07d6df80ea0ed29f633636e7831a7e2d",
+      "line_count": 206
+    },
+    "ext/bcmath/libbcmath/src/str2num.c": {
+      "root": "prepared-source",
+      "sha256": "556365d8c4174e5995effa450412d364f0aed3c04c3a7964d236569ff9067142",
+      "line_count": 112
+    },
+    "ext/dom/document.c": {
+      "root": "prepared-source",
+      "sha256": "efd24b665a6de0f949da9b173d7dab128edcf9e44da237969a007e43db271800",
+      "line_count": 2269
+    },
+    "ext/dom/node.c": {
+      "root": "prepared-source",
+      "sha256": "64cf6e6db91e93e36fea71233ad43bdaffcef1471f838596cd0ecbac9aa1653a",
+      "line_count": 1915
+    },
+    "ext/exif/exif.c": {
+      "root": "prepared-source",
+      "sha256": "a07cb98271a045d7abddb0efd1216832d86ead6cd01751b50cce6d5336567d28",
+      "line_count": 4276
+    },
+    "ext/filter/logical_filters.c": {
+      "root": "prepared-source",
+      "sha256": "53f11c7d35dc07e03370387ffedc561be2fe7fbe35a365561f60b46b26e9d6d5",
+      "line_count": 924
+    },
+    "ext/filter/sanitizing_filters.c": {
+      "root": "prepared-source",
+      "sha256": "f073983467292eef4b10cf0bda16b06171476ac6e52b460dd98ca29a5b6235a6",
+      "line_count": 404
+    },
+    "ext/iconv/iconv.c": {
+      "root": "prepared-source",
+      "sha256": "02744284ceca7ba21376c62fb37541c3a0d85eadccb86cbda492a97b468f98ea",
+      "line_count": 2949
+    },
+    "ext/ldap/ldap.c": {
+      "root": "prepared-source",
+      "sha256": "16ca795a3db709f90c347b19d386d11ea680f079396e29aaa73cbe7e8a94271c",
+      "line_count": 3428
+    },
+    "ext/libxml/libxml.c": {
+      "root": "prepared-source",
+      "sha256": "efe848cc2f8ee1250f78da11ad4d398d7709d20391f5b98fcda2c364d6e74bfd",
+      "line_count": 1364
+    },
+    "ext/libxml/php_libxml.h": {
+      "root": "prepared-source",
+      "sha256": "37fe17c4bbbf77fa3a2c7cfbff36f608854916dab7efb8e34c695dcedf1b59f7",
+      "line_count": 138
+    },
+    "ext/mbstring/libmbfl/filters/mbfilter_big5.c": {
+      "root": "prepared-source",
+      "sha256": "74c26b0f5a7e1c77b2d7c58f52eedfed983c73c99a6a2c022ac0bb0f474c860b",
+      "line_count": 351
+    },
+    "ext/mbstring/libmbfl/mbfl/mbfilter.c": {
+      "root": "prepared-source",
+      "sha256": "4f332e1af84e8c969c9d4fcaa5a648890ee8cd618f290d4d25e97dd7932b31e5",
+      "line_count": 3112
+    },
+    "ext/mbstring/libmbfl/mbfl/mbfl_encoding.c": {
+      "root": "prepared-source",
+      "sha256": "4b7d6f1847ebca3f161a82cc3a2c587e5e4326b3e3fcb471707d7d8e6b85740c",
+      "line_count": 341
+    },
+    "ext/mbstring/mbstring.c": {
+      "root": "prepared-source",
+      "sha256": "dea8a4cb37eec5502fb74acd2536da67578bfa56beb5765f90fc86d2d51b9019",
+      "line_count": 4964
+    },
+    "ext/mbstring/oniguruma/regparse.c": {
+      "root": "prepared-source",
+      "sha256": "c90a10e82456ecf8f8b18097fcd60a7dce90fd082a22efa7eaa4a5045fc5aba0",
+      "line_count": 5565
+    },
+    "ext/mbstring/php_mbregex.c": {
+      "root": "prepared-source",
+      "sha256": "e7370703981abf641e401a8dd8a0157ebc9005da59804fe80c213b364f3f4e3a",
+      "line_count": 1474
+    },
+    "ext/mysqlnd/mysqlnd_wireprotocol.c": {
+      "root": "prepared-source",
+      "sha256": "de2498c18e894fe7fcf2ee0c1098354ddeac38b87ff4f85a012d4299b5957e1f",
+      "line_count": 2619
+    },
+    "ext/openssl/openssl.c": {
+      "root": "prepared-source",
+      "sha256": "a877e7cf46d915bedf61a787ef2919133ca14d3dba59ecd995ba290539dd4671",
+      "line_count": 6008
+    },
+    "ext/openssl/xp_ssl.c": {
+      "root": "prepared-source",
+      "sha256": "68c21e94c4f7dba5f81d23dd99f639b258deb03d86940e389c99d79e35d33c31",
+      "line_count": 2680
+    },
+    "ext/pdo/pdo_sql_parser.re": {
+      "root": "prepared-source",
+      "sha256": "307dd7a35966a3fa35e868d922bdcec68e035f14cba2bd953cb24dcd71ee9313",
+      "line_count": 539
+    },
+    "ext/pdo_dblib/dblib_driver.c": {
+      "root": "prepared-source",
+      "sha256": "847c03952868c2910fe5b4c92882122a569580cc4f41781eb648a0e6f021365d",
+      "line_count": 485
+    },
+    "ext/pdo_firebird/firebird_driver.c": {
+      "root": "prepared-source",
+      "sha256": "7079cb614c4b82f8c4d36b63f0afd887066a182a89b357c0e7f901be61983c5f",
+      "line_count": 739
+    },
+    "ext/pdo_pgsql/pgsql_driver.c": {
+      "root": "prepared-source",
+      "sha256": "2a9d7ed3af84e2647af9be274af787002ab51dc8f0728628c31954009f6b1c17",
+      "line_count": 1294
+    },
+    "ext/pgsql/pgsql.c": {
+      "root": "prepared-source",
+      "sha256": "3225d5963f8a007bca9c92979b0f1b1c91bf6ae6cc19a891bea232d66baf90a7",
+      "line_count": 7155
+    },
+    "ext/phar/dirstream.c": {
+      "root": "prepared-source",
+      "sha256": "f194dd2e36ebbdc241b69d6b5806c071c8a83dca5e8e44b84ee8386b8517d82c",
+      "line_count": 678
+    },
+    "ext/phar/phar.c": {
+      "root": "prepared-source",
+      "sha256": "2d5e3dd8b20b7c4824c32fdf57617584884a4ce988acf9cee664ef5a53f5abf9",
+      "line_count": 3654
+    },
+    "ext/phar/phar_object.c": {
+      "root": "prepared-source",
+      "sha256": "4f050b44dabc4acaa63ff7b872a9ec042d2da60e62417391a3c307c40486c36a",
+      "line_count": 5585
+    },
+    "ext/phar/tar.c": {
+      "root": "prepared-source",
+      "sha256": "58f925d2bdfaa6d4cb10ca1006546ef1f40ebdaafa308756cc9db931ad5a5f2e",
+      "line_count": 1377
+    },
+    "ext/phar/util.c": {
+      "root": "prepared-source",
+      "sha256": "fd548b216dca0585a37b8b9c214ef78369a000cf4f5abc46f4ed62eb5ff4a1f0",
+      "line_count": 2096
+    },
+    "ext/session/session.c": {
+      "root": "prepared-source",
+      "sha256": "c499516119bf916876dc4299a3ee5702a6c98285172a12f4d5d5ff82dcce6d36",
+      "line_count": 3207
+    },
+    "ext/simplexml/simplexml.c": {
+      "root": "prepared-source",
+      "sha256": "e04f2287a195f4c6426d3c518f19f7b5f89b250e5932e180a5d02a5aa650e338",
+      "line_count": 2789
+    },
+    "ext/soap/php_encoding.c": {
+      "root": "prepared-source",
+      "sha256": "3af83ffc546469b843524a3b0b91cfafdbcecb151dc8cda55e53d8b0668daf5e",
+      "line_count": 3676
+    },
+    "ext/soap/php_http.c": {
+      "root": "prepared-source",
+      "sha256": "b9255b99d75ba8406eb5028dacc5083ea8b6749acacbc4c85110c6b7d30e98f7",
+      "line_count": 1542
+    },
+    "ext/soap/php_xml.c": {
+      "root": "prepared-source",
+      "sha256": "1f652fb55c30d8109378547fd403ac56981aa247358e396ab0e2f292cbf15ff0",
+      "line_count": 330
+    },
+    "ext/soap/soap.c": {
+      "root": "prepared-source",
+      "sha256": "eb8f7efaa8b09aa915726e0a67c2b8edee8f761ab6c36debe9dab76cf69df4fd",
+      "line_count": 4903
+    },
+    "ext/spl/spl_directory.c": {
+      "root": "prepared-source",
+      "sha256": "ad5691ad07f9a6eb3b04524e1271980c1bedb4d82e468cb1d89c6ca6c1241d4c",
+      "line_count": 3171
+    },
+    "ext/standard/array.c": {
+      "root": "prepared-source",
+      "sha256": "43d2c43aaadfce4cfc8814855d688ab321f63ab9f217cdec37767d7a8d178949",
+      "line_count": 5516
+    },
+    "ext/standard/basic_functions.c": {
+      "root": "prepared-source",
+      "sha256": "03575b68c35b16a25147240b4e022134e0792c793785eea79bb010d9e5b2accf",
+      "line_count": 6021
+    },
+    "ext/standard/crypt.c": {
+      "root": "prepared-source",
+      "sha256": "c803de133ba4d0d5dd6b042b034349ed7f9921897de2adfb156eff9b72619e15",
+      "line_count": 346
+    },
+    "ext/standard/crypt_blowfish.c": {
+      "root": "prepared-source",
+      "sha256": "c92b9fa256691de1048d2da9276f1bdc635700d79b588bf41ebe01c65244359a",
+      "line_count": 918
+    },
+    "ext/standard/dns.c": {
+      "root": "prepared-source",
+      "sha256": "bd5a703b31c169a0a8c4f12cb023ac7535a5e929a7ab34805ea252e86771bfd2",
+      "line_count": 1153
+    },
+    "ext/standard/filters.c": {
+      "root": "prepared-source",
+      "sha256": "d6735a7044c40e5cf0fdb5138fb0ea425e3b1c6905fe4333ac0a710f4816b6fa",
+      "line_count": 2115
+    },
+    "ext/standard/fsock.c": {
+      "root": "prepared-source",
+      "sha256": "bf173001cfe6c3e011a8859df83c674b89eb579044b2481f6b5470f5693e3f00",
+      "line_count": 150
+    },
+    "ext/standard/http_fopen_wrapper.c": {
+      "root": "prepared-source",
+      "sha256": "8515b0ae90008c648f6949eaf749de95e1ab6ab4fbe3684d6d054d97285f97e6",
+      "line_count": 1035
+    },
+    "ext/standard/image.c": {
+      "root": "prepared-source",
+      "sha256": "2a616d8bd6d3419e10798d8fe49547d334556c3760d2e991efed47cce74fac80",
+      "line_count": 1461
+    },
+    "ext/standard/metaphone.c": {
+      "root": "prepared-source",
+      "sha256": "00d51f03c19a6c81e4184562b41ad144535bb085ed6823aa7a0767d370b33f3b",
+      "line_count": 481
+    },
+    "ext/standard/password.c": {
+      "root": "prepared-source",
+      "sha256": "bd1fe15ef56a77b9cefccb786516295edbf84e79e45f70d631141e277b152d8e",
+      "line_count": 395
+    },
+    "ext/standard/proc_open.c": {
+      "root": "prepared-source",
+      "sha256": "3c822b40444b5023bab316e3ba59acf73d2b89cb46b7dd8ffc4c5c385bdc92c9",
+      "line_count": 987
+    },
+    "ext/standard/string.c": {
+      "root": "prepared-source",
+      "sha256": "cee10847f97f5313205316c755940a33a77bd086a8f3b5b3f4af7d8744d43894",
+      "line_count": 5774
+    },
+    "ext/standard/url.c": {
+      "root": "prepared-source",
+      "sha256": "71a8f981cab40f5d35f2fe993d6b6ec2f0f6eb528017b336b1cb5ea786306abe",
+      "line_count": 734
+    },
+    "ext/xml/xml.c": {
+      "root": "prepared-source",
+      "sha256": "c64ba93750b11bc1032473aebeb060bbcd1427516e016c57efe013b8d3ff76d9",
+      "line_count": 1723
+    },
+    "ext/xmlrpc/libxmlrpc/base64.c": {
+      "root": "prepared-source",
+      "sha256": "e460418e07fb84c3debba9b9eda45265a6da2bbc695f7569ed591d3b77856fff",
+      "line_count": 196
+    },
+    "ext/xmlrpc/libxmlrpc/xml_element.c": {
+      "root": "prepared-source",
+      "sha256": "a71800fe38b2fe6a8b62e33ecc207aeb32e9a7f502963df9d69a2be55c961a76",
+      "line_count": 770
+    },
+    "main/fastcgi.c": {
+      "root": "prepared-source",
+      "sha256": "7999278060d97efef7ac68e4828ce5f2888e8a85c25a449561518d6503e578ea",
+      "line_count": 1775
+    },
+    "main/main.c": {
+      "root": "prepared-source",
+      "sha256": "04f946e3dedab70838d7645ddfdc739c04cd2dbad8c1f25dbb70afdb8c1664ff",
+      "line_count": 2688
+    },
+    "main/php_variables.c": {
+      "root": "prepared-source",
+      "sha256": "e006666300c59e3aa0c46ce272f2b1af836b51bf3ce1547927d6064ea36b35a6",
+      "line_count": 895
+    },
+    "main/rfc1867.c": {
+      "root": "prepared-source",
+      "sha256": "aa388d0f2bc9765a1d971cbe4dd22228d5231e25c0344ef803b7bf88abfab22b",
+      "line_count": 1493
+    },
+    "main/streams/plain_wrapper.c": {
+      "root": "prepared-source",
+      "sha256": "ee89229908f5271c63eb2c175b39140e29b5767452b6f3e12cb83ba54ba17c7d",
+      "line_count": 1599
+    },
+    "main/streams/streams.c": {
+      "root": "prepared-source",
+      "sha256": "33fbb144a6a7f5fe64d8de63d67f7ec5b059691ae396d02fe7c6dc2c412abbb3",
+      "line_count": 2370
+    },
+    "main/streams/xp_socket.c": {
+      "root": "prepared-source",
+      "sha256": "7f69df256ab8c6c2a6cc63d5f21b345fe1b379b6c1bddb7c67d40523eaf066f8",
+      "line_count": 926
+    },
+    "sapi/cgi/cgi_main.c": {
+      "root": "prepared-source",
+      "sha256": "c04856b087d2e588ea1751ee3fcdf0ef70e88a315a67c0829d408259d4c90703",
+      "line_count": 2614
+    },
+    "sapi/cli/php_cli_server.c": {
+      "root": "prepared-source",
+      "sha256": "38b6c48d6b85fb16af7dc56c37bc934fb0161777592e11e0082f0883ac1b25d8",
+      "line_count": 2614
+    },
+    "sapi/fpm/fpm/fpm_main.c": {
+      "root": "prepared-source",
+      "sha256": "527bc6a2ed2e166706741880b106de674cabda5cd64c65c0ca7f5d7302e53aaa",
+      "line_count": 2046
+    },
+    "sapi/fpm/fpm/fpm_status.c": {
+      "root": "prepared-source",
+      "sha256": "d3c18f3a17ae3fcd223a12a8a5a6c58a441d5c99821935b027600716911cf952",
+      "line_count": 481
+    },
+    "sapi/fpm/fpm/fpm_stdio.c": {
+      "root": "prepared-source",
+      "sha256": "38357eeaf12995026277e3ee1ad580d98901371c8661887fbdb4762d14adccc2",
+      "line_count": 334
+    },
+    "sapi/fpm/fpm/zlog.c": {
+      "root": "prepared-source",
+      "sha256": "f99c49adbae637d0731ff08e44d2d5859bfa508f40d020b8a536105531e59d53",
+      "line_count": 205
+    }
+  },
+  "vendor_series_sha256": "d700ecc38d395d83ea3c3e68ac36b5454fe25de7048eeb756546f01698cd8d58",
+  "vendor_followup_notes": {
+    "CVE-2019-11035": "Initial pointer arithmetic and pasted call are corrected by active -2/-3 follow-ups; final source retains typed arithmetic and the corrected length argument.",
+    "CVE-2019-9023": "The -2 clamp is superseded by -3 SAFE_ENC_LEN; the final safe-length mechanism is retained."
+  }
+}

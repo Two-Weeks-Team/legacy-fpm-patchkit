@@ -4,6 +4,7 @@
 |---|---|
 | First safe run | [Getting started](GETTING_STARTED.md) · [한글 시작 가이드](GETTING_STARTED.ko.md) |
 | Understand the patch | [Scope and origins](PATCH_SCOPE.md) · [Behavior changes](BEHAVIOR_CHANGES.md) |
+| Check all official advisories and planned fixes | [Coverage matrix](SECURITY_COVERAGE.md) · [한글 대응표](SECURITY_COVERAGE.ko.md) |
 | Build a candidate | [Build profiles and dependencies](BUILDING.md) |
 | Inspect, back up and transition | [Installation and rollback](INSTALLATION.md) |
 | Assess actual evidence | [Verification](VERIFICATION.md) · [Support matrix](../SUPPORT.md) |

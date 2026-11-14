@@ -12,6 +12,20 @@ Source release archives include SHA-256 checksums and GitHub provenance attestat
 
 > **Source release for a legacy runtime.** This independent project backports selected security changes to Ubuntu's `7.0.33-0ubuntu0.16.04.16` source baseline. It does not restore upstream support, repair every PHP vulnerability, or certify arbitrary extensions and applications. Prefer a supported PHP release. Read the [exact support boundary](SUPPORT.md) before building or changing a service.
 
+<!-- SECURITY_COVERAGE_START -->
+## Official security coverage — 2026-11-14
+
+All **66 published official PHP repository advisories** were compared with the pinned source. See the [complete coverage matrix](docs/SECURITY_COVERAGE.md) for scope, per-item evidence and planned work.
+
+| Official catalog status | Count |
+|---|---|
+| Resolved · implementation present | 2 |
+| Not applicable · reported mechanism absent | 13 |
+| Unresolved · implementation planned | 51 |
+
+**31 existing vendor-patched CVEs are accounted for separately.** Resolved means protection code is present, not that every exploit was validated. Unimplemented protection is not a pass. The matrix exhausts the current official GitHub catalog and named vendor patches, not every historical PHP/dependency CVE.
+<!-- SECURITY_COVERAGE_END -->
+
 ## What was wrong, and what is addressed
 
 **The purpose is to address two disclosed PHP engine vulnerability classes in a pinned PHP 7.0 FPM source tree, including the request/session boundaries needed by that port.** The source changes are included and their identities verified; fresh tests establish the specific runtime behaviors listed below. They are not a demonstration that every exploit of either CVE is blocked on PHP 7.0.
@@ -40,7 +54,7 @@ The port also anticipates related failure modes in PHP 7.0. These are concrete p
 | Official-source reconstruction | 84 vendor patches, 46 changed-file pre/post hashes and both full normalized source digests match | The published cumulative patch reconstructs the intended source; this is not exploit validation |
 | Native FPM on Ubuntu 16.04.7 and 22.04 x86-64 | **36 named benign checks per environment**: three session codecs × progress On/Off | Plain session persistence, codec policy, small upload content/cleanup and same-worker continuity |
 | Stock/candidate comparison on Xenial | **Policy difference observed** with hashed binaries | A real intentional behavior change, not two tests that both pass unchanged |
-| Toolkit and public download | **45 unit tests**; release CI, downloaded archive checksum and GitHub provenance verified | Tooling regressions and source-package integrity, not a site's deployment readiness |
+| Toolkit and public download | **57 unit tests** on current source; v0.1.0 download passed 45 tests, checksum and GitHub provenance verification | Tooling regressions and source-package integrity, not a site's deployment readiness |
 
 [Exact records and failure history](docs/VERIFICATION.md) are published. Historical msgpack failures and a candidate-only PHPT failure remain documented. This release does not fix third-party modules, prevent scraping/DDoS, repair an existing compromise, or certify application compatibility. Its core claim is **the two targeted engine backports plus the stated PHP 7.0 protective adaptations, with evidence separated from expected effects**. Read [behavior changes](docs/BEHAVIOR_CHANGES.md) and [support limits](SUPPORT.md) before use.
 

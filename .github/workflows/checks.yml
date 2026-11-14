@@ -23,6 +23,8 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: python3 -m unittest discover -v
       - run: python3 -m patchkit verify
+      - run: python3 scripts/check-coverage.py
+      - run: python3 scripts/render-coverage.py --check
       - run: python3 scripts/check-public.py
       - run: bash -n scripts/build.sh
 
@@ -39,6 +41,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y build-essential autoconf automake bison re2c pkg-config dpkg-dev libtool binutils
       - run: python3 -m patchkit fetch
       - run: python3 -m patchkit prepare
+      - run: python3 scripts/check-coverage.py --source .work/source
       - name: Build without system installation
         run: bash scripts/build.sh .work/source .work/build portable
       - name: Real private-socket FPM regression
