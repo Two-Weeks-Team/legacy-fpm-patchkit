@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "baseline": "7.0.33-0ubuntu0.16.04.16",
+  "archives": [
+    {
+      "name": "php7.0_7.0.33.orig.tar.xz",
+      "sha256": "ab8c5be6e32b1f8d032909dedaaaa4bbb1a209e519abb01a52ce3914f9a13d96",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/p/php7.0/php7.0_7.0.33.orig.tar.xz"
+    },
+    {
+      "name": "php7.0_7.0.33-0ubuntu0.16.04.16.debian.tar.xz",
+      "sha256": "a0a25ceec019a56252b3f6ee89593f31a3d0eed5e0518ff9d975fbaceccc1c1d",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/p/php7.0/php7.0_7.0.33-0ubuntu0.16.04.16.debian.tar.xz"
+    },
+    {
+      "name": "php7.0_7.0.33-0ubuntu0.16.04.16.dsc",
+      "sha256": "47ca6e394ba4775bf2b09475712c473b0bd79c605797dc26408131b7ec4856ee",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/p/php7.0/php7.0_7.0.33-0ubuntu0.16.04.16.dsc"
+    }
+  ],
+  "normalized_baseline_sha256": "66baabf392efda31e45e3da19cdd365876e6beb5dd49d39ec60967548ef688e2",
+  "normalized_candidate_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+  "normalization": "Hash regular-file path/digest map as compact sorted JSON; exclude .pc bookkeeping and .orig patch backups."
+}
