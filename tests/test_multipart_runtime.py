@@ -1,5 +1,9 @@
 """Fixture/evidence decision tests; never a real PHP multipart PASS."""
 import unittest
+import ast
+import copy
+from contextlib import contextmanager
+import inspect
 from pathlib import Path
 import tempfile
 
@@ -58,6 +62,42 @@ class MultipartRuntimeTests(unittest.TestCase):
         for change in [{'stderr':'unexpected diagnostic'},{'output_budget_exceeded':True},{'returncode':2},{'stdout':'SKIP ini\nFAIL default\n'}]:
             with self.subTest(change=change), self.assertRaises(ValueError):
                 self.module.require_parent_phpt(dict(result,**change))
+
+    def test_actual_case_loop_checks_warning_contract_for_each_request(self):
+        # Exercise the runner's own loop, substituting only process/transport.
+        # This verifies a decision boundary, not actual PHP/FPM behavior.
+        runtime=self.module
+        tree=ast.parse(inspect.getsource(runtime.main))
+        loop=next(n for n in ast.walk(tree) if isinstance(n,ast.For) and isinstance(n.target,ast.Name) and n.target.id=='case')
+        code=compile(ast.fix_missing_locations(ast.Module(body=[copy.deepcopy(loop)],type_ignores=[])),'actual-case-loop','exec')
+        case=next(c for c in runtime.cases() if c['name']=='parts-four')
+        warning='PHP Warning: Multipart body parts limit exceeded 3. To increase the limit change max_multipart_body_parts in php.ini.\n'
+        for counts in ((1,1),(2,0),(0,2)):
+            with self.subTest(counts=counts), tempfile.TemporaryDirectory() as temporary:
+                directory=Path(temporary);pending=iter(counts)
+                @contextmanager
+                def workspace(output):
+                    yield output
+                @contextmanager
+                def instance(binary,root,case,budget,candidate):
+                    root.mkdir();(root/'uploads').mkdir();(root/'php.log').write_text('')
+                    yield
+                def request(socket_path,script,case,sid,budget):
+                    with (script.parent/'php.log').open('a') as stream:stream.write(warning*next(pending))
+                    want=case['candidate'];body='PID=123\nLIMIT='+want['limit']+'\n'
+                    body+=''.join('POST:'+k+'='+v+'\n' for k,v in want['post'].items())
+                    body+=''.join('FILE:'+k+'='+v+'\n' for k,v in want['files'].items())
+                    body+='PROGRESS=0\nCOMPLETE=yes\n'
+                    return {'body':body.encode('ascii'),'stderr':b''}
+                report={'candidate':{'cases':{}}}
+                namespace=dict(runtime.__dict__,directory=directory,all_cases=[case],side='candidate',report=report,
+                               fpm=Path('NOT_EXECUTED'),budget=lambda:30,case_workspace=workspace,instance=instance,request=request)
+                if counts==(1,1):
+                    exec(code,namespace)
+                    self.assertEqual(report['candidate']['cases'][case['name']],'PASS')
+                else:
+                    with self.assertRaisesRegex(ValueError,'warning count mismatch'):
+                        exec(code,namespace)
 
 
 if __name__=='__main__':unittest.main()

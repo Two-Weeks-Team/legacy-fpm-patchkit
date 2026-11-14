@@ -21,6 +21,7 @@ VARIANT='multipart-20261114'
 PROVENANCE_SHA256='ceb74f54416dd9d4ffe3f668e5c1b7651565d7d7ac0bf69e6d17640a8e1ad2f4'
 FILE_BYTES=b'ordinary-file\n\x00\xff'
 PHP=r'''<?php
+ob_start();
 header('Content-Type: text/plain');
 echo 'PID=',getmypid(),"\nLIMIT=",ini_get('max_multipart_body_parts'),"\n";
 foreach($_POST as $key=>$value){echo 'POST:',$key,'=',bin2hex($value),"\n";}
@@ -220,7 +221,7 @@ def main(argv=None):
             if not re.fullmatch(r'7\.0\.33[^:]*:8',version['stdout']) or version['stderr']:raise ValueError('this campaign requires the pinned 64-bit PHP7 build')
             report[side].update(source_sha256=actual_hash,binaries=hashes,cases={})
             for case in all_cases:
-                work=directory/case['name'];observations=[];channels={}
+                work=directory/case['name'];observations=[];channels={};offsets={};per_request_warnings=[]
                 with case_workspace(work) as actual:
                     with instance(fpm,actual,case,budget,side=='candidate'):
                         (actual/'request.body').write_bytes(body(case));sid=uuid.uuid4().hex
@@ -233,12 +234,25 @@ def main(argv=None):
                             deadline=time.monotonic()+min(1,budget())
                             while list((actual/'uploads').iterdir()) and time.monotonic()<deadline:time.sleep(.02)
                             if list((actual/'uploads').iterdir()):raise ValueError('request upload temporary file remained')
+                            # PHP's dedicated error log is written before the
+                            # completed response. Preserve each request's slice
+                            # instead of accepting a misleading 2+0 total.
+                            request_channels={'fcgi':error_text}
+                            for name in ('php.log','fpm.log','process.log'):
+                                data=(actual/name).read_bytes() if (actual/name).exists() else b''
+                                offset=offsets.get(name,0)
+                                if len(data)<offset:raise ValueError('owned diagnostic log was truncated')
+                                request_channels[name]=data[offset:].decode(errors='replace')
+                                offsets[name]=len(data)
+                            common.write_new(actual/('warnings-'+str(trial)+'.json'),request_channels)
+                            per_request_warnings.append(check_warnings(request_channels,case[side+'_warnings']))
                         if observations[0]['PID']!=observations[1]['PID']:raise ValueError('worker changed; counter reset was not tested in the same worker')
                 for name in ('php.log','fpm.log','process.log'):
                     if (work/name).exists():channels[name]=(work/name).read_text(errors='replace')
-                # Two complete requests produce twice each expected per-request warning.
+                # Keep the whole-case/shutdown check as well, so late or extra
+                # diagnostics cannot disappear after the per-request checks.
                 warn=check_warnings(channels,{k:v*2 for k,v in case[side+'_warnings'].items()})
-                common.write_new(work/'observations.json',{'responses':observations,'warning_channels':channels,'counts':warn,'result':'PASS'})
+                common.write_new(work/'observations.json',{'responses':observations,'warning_channels':channels,'per_request_warnings':per_request_warnings,'counts':warn,'result':'PASS'})
                 report[side]['cases'][case['name']]='PASS'
             phpt_dir=directory/'phpt';phpt_dir.mkdir();phpt=[]
             for name in ('multipart-limit-ini.phpt','multipart-limit-default.phpt'):
