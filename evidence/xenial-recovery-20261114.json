@@ -1,0 +1,7 @@
+{
+  "result": "REHEARSAL_PASS",
+  "candidate_sha256": "47f253738f5c1efe9834d5a5700e83ff5dd599aa05ef8dad51bc05becb6f8da9",
+  "restored_sha256": "c923045a95120a84565d06a15749e4fcb867c95938acf8cb6bf473c7cb093ccb",
+  "service_activation": "NOT_PERFORMED",
+  "scope": "synthetic files only; not production rollback proof"
+}

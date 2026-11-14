@@ -1,0 +1,17 @@
+{
+  "candidate": {
+    "handler": "php",
+    "started": "yes",
+    "switch": "blocked"
+  },
+  "candidate_sha256": "47f253738f5c1efe9834d5a5700e83ff5dd599aa05ef8dad51bc05becb6f8da9",
+  "result": "POLICY_DIFF_OBSERVED",
+  "schema": 1,
+  "scope": "benign serializer-transition policy difference; not exploit resistance",
+  "stock": {
+    "handler": "php_binary",
+    "started": "yes",
+    "switch": "allowed"
+  },
+  "stock_sha256": "9fd2c21393f469a2cec96845803353680146b29fea37226db634268c02da3528"
+}

@@ -1,0 +1,119 @@
+{
+  "campaigns": [
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php_binary",
+        "different-handler rejection: php_serialize",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 04:08:28] NOTICE: fpm is running, pid 29480\n[14-Nov-2026 04:08:28] NOTICE: ready to handle connections\n[14-Nov-2026 04:08:28] NOTICE: systemd monitor interval set to 10000ms\n",
+        "process.log": ""
+      },
+      "progress": true,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php_binary",
+        "different-handler rejection: php_serialize",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 04:08:28] NOTICE: fpm is running, pid 29482\n[14-Nov-2026 04:08:28] NOTICE: ready to handle connections\n[14-Nov-2026 04:08:28] NOTICE: systemd monitor interval set to 10000ms\n",
+        "process.log": ""
+      },
+      "progress": false,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php",
+        "different-handler rejection: php_serialize",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php_binary",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 04:08:28] NOTICE: fpm is running, pid 29484\n[14-Nov-2026 04:08:28] NOTICE: ready to handle connections\n[14-Nov-2026 04:08:28] NOTICE: systemd monitor interval set to 10000ms\n",
+        "process.log": ""
+      },
+      "progress": true,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php",
+        "different-handler rejection: php_serialize",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php_binary",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 04:08:28] NOTICE: fpm is running, pid 29486\n[14-Nov-2026 04:08:28] NOTICE: ready to handle connections\n[14-Nov-2026 04:08:28] NOTICE: systemd monitor interval set to 10000ms\n",
+        "process.log": ""
+      },
+      "progress": false,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php",
+        "different-handler rejection: php_binary",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php_serialize",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 04:08:29] NOTICE: fpm is running, pid 29488\n[14-Nov-2026 04:08:29] NOTICE: ready to handle connections\n[14-Nov-2026 04:08:29] NOTICE: systemd monitor interval set to 10000ms\n",
+        "process.log": ""
+      },
+      "progress": true,
+      "result": "PASS"
+    },
+    {
+      "checks": [
+        "same-handler assignment/session start",
+        "same-worker plain session persistence",
+        "different-handler rejection: php",
+        "different-handler rejection: php_binary",
+        "ordinary multipart upload/digest/temp cleanup",
+        "same-worker continuity after upload"
+      ],
+      "codec": "php_serialize",
+      "diagnostics": {
+        "fpm.log": "[14-Nov-2026 04:08:29] NOTICE: fpm is running, pid 29490\n[14-Nov-2026 04:08:29] NOTICE: ready to handle connections\n[14-Nov-2026 04:08:29] NOTICE: systemd monitor interval set to 10000ms\n",
+        "process.log": ""
+      },
+      "progress": false,
+      "result": "PASS"
+    }
+  ],
+  "cli_sha256": "e0e3457f426d9516aca091f866be41666c64c93db32ba18f69c30ba710fb03af",
+  "external_modules": "NOT_TESTED",
+  "fpm_sha256": "47f253738f5c1efe9834d5a5700e83ff5dd599aa05ef8dad51bc05becb6f8da9",
+  "libc": [
+    "glibc",
+    "2.23"
+  ],
+  "machine": "x86_64",
+  "php_version": "7.0.33",
+  "production": "NOT_ACCESSED",
+  "result": "BENIGN_RUNTIME_PASS",
+  "schema": 1,
+  "scope": "benign isolated local regression; not exploit or application acceptance"
+}

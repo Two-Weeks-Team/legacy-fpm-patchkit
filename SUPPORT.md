@@ -11,6 +11,8 @@ This independent source release targets **PHP 7.0.33, Ubuntu source revision `7.
 | Inspection | ELF architecture and checksum/build-record facts; no binary execution | A complete ABI or library compatibility verdict |
 | Recovery rehearsal | real file copy/replace/restore in a NEW synthetic directory | Recovery of an activated production service |
 
+Fresh native checks completed on Ubuntu 22.04 x86-64/glibc 2.35 (`portable`) and Ubuntu 16.04.7 x86-64/glibc 2.23 (`xenial-amd64`): 36 named benign checks per environment. The Xenial artifact also completed a paired stock/candidate serializer-policy comparison. Exact binary identities, evidence and limits are in the [verification record](docs/VERIFICATION.md).
+
 ## Intentional change
 
 Switching `session.serialize_handler` to a different codec during a request is rejected. Applications that depend on that behavior must be adapted or use a different maintained runtime. Initial codec selection and same-codec assignments remain testable. See [behavior changes](docs/BEHAVIOR_CHANGES.md).

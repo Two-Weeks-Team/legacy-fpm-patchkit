@@ -1,0 +1,10 @@
+autoconf 2.69-9
+bison 2:3.0.4.dfsg-1
+gcc-5 5.4.0-6ubuntu1~16.04.12
+libc6 2.23-0ubuntu11.3
+libpcre3 2:8.38-3.1
+libssl1.0.0 1.0.2g-1ubuntu4.20
+libsystemd0 229-4ubuntu21.31
+libxml2 2.9.3+dfsg1-1ubuntu0.7
+re2c 0.16-1
+zlib1g 1:1.2.8.dfsg-2ubuntu4.3

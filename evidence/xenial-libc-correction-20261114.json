@@ -1,0 +1,20 @@
+{
+  "original_libc": [
+    "glibc",
+    "2.9"
+  ],
+  "original_record_sha256": "620b5c8cccdc5123a94b27b9d384aa6d43e35c5f6f2ecf39564ec9aec05ece43",
+  "schema": 1,
+  "reason": "legacy Python platform.libc_ver ELF heuristic reported 2.9; running GNU libc query reports 2.23",
+  "running_libc": [
+    "glibc",
+    "2.23"
+  ],
+  "other_build_fields_unchanged": true,
+  "corrected_record_sha256": "fe2c5f2f74eb76e14275e525ace7186c2cff0743211a642ed10e2b10273ef264",
+  "unchanged_binary_hashes": {
+    "php-fpm": "47f253738f5c1efe9834d5a5700e83ff5dd599aa05ef8dad51bc05becb6f8da9",
+    "php": "e0e3457f426d9516aca091f866be41666c64c93db32ba18f69c30ba710fb03af"
+  },
+  "query": "glibc 2.23"
+}

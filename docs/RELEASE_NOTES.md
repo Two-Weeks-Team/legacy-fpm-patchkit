@@ -2,6 +2,8 @@
 
 This release contains the pinned build007 backport, source preparation and verification tools, isolated Linux build profiles, benign native FPM regression checks and bilingual operator documentation.
 
+Recorded execution includes 45 unit tests, fresh official-source reconstruction, and 36 named benign native checks in each of Ubuntu 22.04 and Ubuntu 16.04.7 x86-64. A separate Xenial stock/candidate comparison observed the intended serializer-policy difference. See `docs/VERIFICATION.md` for artifact hashes, correction history and evidence boundaries.
+
 The release workflow runs unit/source checks and a fresh portable Linux build/native check before packaging the exact tag. The source archive and checksum manifest have GitHub build-provenance attestations. These attest the packaging workflow and artifact identity; they do not certify that PHP 7.0 is generally secure or that a binary is compatible with your site.
 
 ## Verify the download

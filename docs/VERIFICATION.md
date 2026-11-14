@@ -22,6 +22,22 @@ Earlier CI runs [43551910076](https://github.com/Two-Weeks-Team/legacy-fpm-patch
 
 The recorded portable binary is **not** claimed compatible with Xenial or external modules. A later tag reruns its own CI; compare the relevant run and binary identity rather than assuming a previous binary hash is the new output.
 
+### Xenial x86-64 execution — 2026-11-14
+
+A separate local Ubuntu 16.04.7 x86-64 guest compiled the `xenial-amd64` profile from the same verified source, using GCC 5.4.0 and glibc 2.23. The final native harness ran **6 codec/progress combinations with 36 named benign checks** successfully on that new binary. The build used an immutable toolkit snapshot; the final runtime harness and policy comparison used later immutable snapshots containing the documented harness fixes.
+
+- [Build record](../evidence/xenial-build-20261114.json) and [library/toolchain package versions](../evidence/xenial-packages-20261114.txt)
+- [Native result](../evidence/xenial-native-20261114.json)
+- [Paired benign policy comparison](../evidence/xenial-policy-difference-20261114.json): the retained stock copy allowed `php` → `php_binary`, the candidate rejected it and retained `php`, and both started a normal session. The stock copy is identified by its hash; it is not a newly downloaded package or a distributed asset.
+- [Nonexecuting inspection](../evidence/xenial-inspection-20261114.json) and [synthetic file recovery](../evidence/xenial-recovery-20261114.json), performed on the copied artifact on macOS. These are separate from Linux runtime evidence and actual service recovery.
+- FPM SHA-256: `47f253738f5c1efe9834d5a5700e83ff5dd599aa05ef8dad51bc05becb6f8da9`
+
+The old guest Python 3.5 `platform.libc_ver()` heuristic originally reported glibc 2.9 incorrectly. The [original build record](../evidence/xenial-build-legacy-python-original-20261114.json) is retained, alongside the [correction receipt](../evidence/xenial-libc-correction-20261114.json). Querying the running GNU libc reports 2.23; all other build fields and both binary hashes are unchanged. A new runtime run records the corrected environment. This metadata correction does not change a test verdict.
+
+Earlier local attempts failed on missing multiarch configuration, a host-shared script being edited during execution, and Python 3.5 import-path handling in the policy harness. They were not counted as passes. The corrected build uses the multiarch setting and an immutable script snapshot; the policy probe uses a legacy-compatible string import path. The final records above come from completed runs. Private machine paths and raw host logs are not included.
+
+These results cover the recorded built-in runtime behavior and intentional policy difference. They do not certify external extensions, an existing application's configuration, exploit resistance or a live deployment. No test binary is included in the source release.
+
 ## Optional benign policy comparison
 
 In an isolated environment with two trusted **copied** binaries and the required libraries:
@@ -60,6 +76,7 @@ These results remain failures/limits, not exceptions silently promoted to PASS. 
 | `SOURCE_VERIFIED` | Exact vendor baseline and patched source inventory agree |
 | `BUILT_NOT_RUNTIME_VERIFIED` | Compilation produced recorded binaries; separate runtime evidence needed |
 | `BENIGN_RUNTIME_PASS` | The named local benign behaviors passed on the recorded binary |
+| `POLICY_DIFF_OBSERVED` | The named benign serializer-policy difference was observed against a hashed stock copy |
 | `INSPECTED` | ELF/hash facts read without binary execution |
 | `REHEARSAL_PASS` | Synthetic file backup/replace/restore worked |
 

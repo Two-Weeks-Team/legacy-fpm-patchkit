@@ -1,0 +1,12 @@
+{
+  "result": "INSPECTED",
+  "sha256": "47f253738f5c1efe9834d5a5700e83ff5dd599aa05ef8dad51bc05becb6f8da9",
+  "elf_machine": "x86_64",
+  "host_machine": "arm64",
+  "host_system": "Darwin",
+  "runtime": "NOT_EXECUTED",
+  "external_modules": "NOT_TESTED",
+  "build_record": "CHECKSUM_MATCHES",
+  "deployment_approved": false,
+  "profile": "xenial-amd64"
+}
