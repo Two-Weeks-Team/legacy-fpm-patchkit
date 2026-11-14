@@ -25,6 +25,8 @@ The cumulative [cookie variant](docs/COOKIE_VARIANT.md) adds CVE-2024-2756 prote
 
 Switching `session.serialize_handler` to a different codec during a request is rejected. Applications that depend on that behavior must be adapted or use a different maintained runtime. Initial codec selection and same-codec assignments remain testable. See [behavior changes](docs/BEHAVIOR_CHANGES.md).
 
+The [legacy worker-log variant](docs/FPM_LOG_VARIANT.md) additionally preserves NUL-containing worker output in actual portable FPM file logs. Control/backslash representation and long-record splitting change; review log consumers. Syslog transport and CVE-2024-9026 as a whole are not accepted by this evidence, so accounting stays **7 / 14 / 45**. Prepared-source and actual compiled-input differences are documented separately.
+
 ## Known gaps and retained historical failures
 
 - A previously tested extension (`msgpack`) had serializer/data-transformation failures. This kit does not ship a replacement for it and must not be described as fixing that module.

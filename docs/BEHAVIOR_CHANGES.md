@@ -32,6 +32,12 @@ Every Content-Disposition part consumes the request-local budget, including fiel
 
 Authentic protected names, ordinary arrays and integer/string key distinctions remain supported. Cookie names are not newly URL-decoded. Cookie values retain existing decoding; NUL-containing values remain values rather than name delimiters. Top-level Cookie duplicates remain first-win and GET/POST duplicates last-win. This validates name provenance, not authentication or cookie Secure/Domain attributes. See [paired runtime evidence and limits](COOKIE_VARIANT.md).
 
+## Optional legacy worker-log variant
+
+`fpm-log-20261114` includes the cookie variant and preserves worker stdout/stderr bytes that could disappear after NUL. NUL and ASCII controls/DEL become lowercase `\xHH`, literal backslash becomes `\\`, and bytes above ASCII remain unchanged. LF remains a record boundary. Payloads over 512 encoded bytes are split without splitting escape tokens; pool labels over 128 original bytes gain an explicit `...`. Short ordinary printable lines and pool names retain their output.
+
+Log parsers or alerts expecting raw tabs, carriage returns, backslashes or one record per long line may need adjustment. Request parsing and application output are unchanged. See [file-log evidence and reproduction](FPM_LOG_VARIANT.md); syslog transport and whole-CVE closure are not claimed.
+
 ## Unchanged deployment boundary
 
 The kit does not replace CLI system packages, third-party modules, opcache, application code, a database or an entire container. Compiled output contains both CLI and FPM for isolated testing, but the historical operational scope was a single FPM executable. Use an explicit scope for your own rollout.

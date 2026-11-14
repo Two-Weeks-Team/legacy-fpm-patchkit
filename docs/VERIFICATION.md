@@ -112,6 +112,7 @@ These results remain failures/limits, not exceptions silently promoted to PASS. 
 | `LOCAL_RUNTIME_PASS` | The paired local ACL/filter controls, target Valgrind observation, output/PHPT checks and benign regressions passed on the recorded portable binaries |
 | `PAIRED_MULTIPART_RUNTIME_PASS` | The recorded parent/candidate portable builds met the small multipart request, per-request warning, shutdown-tail, INI PHPT and normal regression contracts; no production or broad compatibility verdict |
 | `PAIRED_COOKIE_RUNTIME_PASS` | The recorded multipart parent/cookie candidate matched 19 CLI cases per build, 76 actual FPM requests with typed Cookie/GET/POST results, PHPT, quiet diagnostics, clean shutdown and normal regression contracts; no authentication, production or broad compatibility verdict |
+| `PAIRED_LEGACY_LOG_RUNTIME_PASS` | Recorded builds met the synthetic file-log contract for 48 producers plus 48 barriers, exact encoded payloads, expected parent loss, diagnostics, cleanup, producer PHPT and normal regressions; no syslog, whole-CVE or deployment verdict |
 | `INSPECTED` | ELF/hash facts read without binary execution |
 | `REHEARSAL_PASS` | Synthetic file backup/replace/restore worked |
 
@@ -124,6 +125,12 @@ The [final paired run 43599570950](https://github.com/Two-Weeks-Team/legacy-fpm-
 The original run 43597987318 failed at its first parent case because its PHP fixture emitted output before starting a session. Candidate runtime and later tests did not run. This remains a tool failure. Output buffering corrected it; a further review found aggregate warnings could mask a 2+0 request distribution and a later off-channel warning. Request-specific log slices and explicit shutdown tails now reject those patterns. Their negative decision tests are synthetic; actual FPM results come from the paired runs.
 
 Run 43598955155 completed the same source/binary behavior before the final tail guard; its 60 responses agree with the final run after removing PIDs. Same-head default-build Checks 43599554284 passed four jobs and 105 unit tests, but is not evidence for the multipart limits. The fresh multipart evidence demonstrates benign boundary/parts controls and normal preservation only; no callback END trace, Xenial/module/site acceptance, load test or production deployment is claimed.
+
+## Legacy worker-log parent/candidate evidence
+
+[Paired run 43606021097](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43606021097), head `896f91a007bd2a9c71e5844c342d6379ee8aca63`, completed both source preparations/builds and 96 requests (48 producers + 48 barriers). An independent callback/pipe check matched 328 actual log records across 48 trials. Candidate NUL tails/following lines were preserved; six parent case/stream combinations reproduced the known loss. All 24 instances exited cleanly, request slices plus shutdown tails matched complete logs, producer PHPT passed per build and each build passed 36 normal checks. [Public results](../evidence/fpm-log-portable-20261114.json) and [raw data](../evidence/fpm-log-20261114/README.md) retain exact identities and observations.
+
+Parent `f5f6b9f4…` and candidate `8333986e…` have a one-file prepared-source delta. Candidate-only JSON scanner regeneration is a separate recorded build difference; compiled-tree equivalence is not claimed. Same-head default-build Checks 43606021092 passed four jobs and 121 unit tests and does not substitute for log proof. Syslog delivery, arbitrary scheduling/concurrency, Xenial/module/site and production acceptance were not tested. No additional whole-advisory credit is granted. See [reproduction and limits](FPM_LOG_VARIANT.md).
 
 ## Cookie parent/candidate evidence
 

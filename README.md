@@ -64,6 +64,12 @@ The cumulative **`cookie-20261114`** variant adds [CVE-2024-2756 / GHSA-wpj3-hf5
 
 Select with `python3 -m patchkit prepare --variant cookie-20261114 --output .work/source-cookie`. Cumulative accounting is **7 implemented / 14 mechanism-absent / 45 planned**, with default build007 still **2 / 14 / 50**. This is portable Linux name-registration evidence; authentication, TLS/cookie attributes, Xenial/module/site compatibility and deployment are separate concerns.
 
+## Legacy worker-log data loss also hardened
+
+The cumulative **`fpm-log-20261114`** variant prevents NUL-containing worker stdout/stderr from discarding the rest of a read, including following normal lines. It uses byte lengths, visible control/backslash encoding and bounded records. Short ordinary printable lines retain their output; [representation changes and commands](docs/FPM_LOG_VARIANT.md) are documented.
+
+[Actual Linux execution](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43606021097) completed 48 producers plus 48 barriers. An independent check matched 328 master-log records; all 24 FPM instances exited cleanly. Both builds passed producer PHPT and 36 separate normal checks. [Results/raw data](evidence/fpm-log-portable-20261114.json) also record candidate-only JSON scanner regeneration; compiled-tree equivalence is not claimed. This is file-log hardening, not syslog delivery or whole-CVE closure. Accounting remains **7 / 14 / 45**.
+
 ## What was wrong, and what is addressed
 
 **Default build007 addresses two disclosed PHP engine vulnerability classes in a pinned PHP 7.0 FPM source tree, including the request/session boundaries needed by that port.** The explicit variants above add separately verified protections. The source changes are included and their identities verified; fresh tests establish the specific runtime behaviors listed below. They do not demonstrate that every exploit of either engine CVE is blocked on PHP 7.0.
@@ -92,7 +98,7 @@ The port also anticipates related failure modes in PHP 7.0. These are concrete p
 | Official-source reconstruction | 84 vendor patches, 46 changed-file pre/post hashes and both full normalized source digests match | The published cumulative patch reconstructs the intended source; this is not exploit validation |
 | Native FPM on Ubuntu 16.04.7 and 22.04 x86-64 | **36 named benign checks per environment**: three session codecs × progress On/Off | Plain session persistence, codec policy, small upload content/cleanup and same-worker continuity |
 | Stock/candidate comparison on Xenial | **Policy difference observed** with hashed binaries | A real intentional behavior change, not two tests that both pass unchanged |
-| Toolkit and public download | **114 unit tests** on current source; v0.1.0 download passed 45 tests, checksum and GitHub provenance verification | Tooling regressions and source-package integrity, not a site's deployment readiness |
+| Toolkit and public download | **121 unit tests** on current source; v0.1.0 download passed 45 tests, checksum and GitHub provenance verification | Tooling regressions and source-package integrity, not a site's deployment readiness |
 
 [Exact records and failure history](docs/VERIFICATION.md) are published. Historical msgpack failures and a candidate-only PHPT failure remain documented. This release does not fix third-party modules, prevent scraping/DDoS, repair an existing compromise, or certify application compatibility. Its core claim is **the two targeted engine backports plus the stated PHP 7.0 protective adaptations, with evidence separated from expected effects**. Read [behavior changes](docs/BEHAVIOR_CHANGES.md) and [support limits](SUPPORT.md) before use.
 
