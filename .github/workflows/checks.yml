@@ -1,0 +1,65 @@
+name: Checks
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    name: Unit / Python ${{ matrix.python }}
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python: ['3.10', '3.12']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python3 -m unittest discover -v
+      - run: python3 -m patchkit verify
+      - run: python3 scripts/check-public.py
+      - run: bash -n scripts/build.sh
+
+  native:
+    name: Fresh source / portable Linux FPM
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated runner build tools
+        run: sudo apt-get update && sudo apt-get install -y build-essential autoconf automake bison re2c pkg-config dpkg-dev libtool binutils
+      - run: python3 -m patchkit fetch
+      - run: python3 -m patchkit prepare
+      - name: Build without system installation
+        run: bash scripts/build.sh .work/source .work/build portable
+      - name: Real private-socket FPM regression
+        run: python3 scripts/native-check.py --fpm .work/build/php-fpm --cli .work/build/php --output .work/native-result.json
+      - name: Nonexecuting inspection and synthetic rollback
+        run: |
+          python3 -m patchkit inspect --binary .work/build/php-fpm --build-record .work/build/build.json
+          python3 -m patchkit rehearse --candidate .work/build/php-fpm --output .work/recovery-drill
+      - name: Preserve logs and evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: portable-build-evidence
+          if-no-files-found: warn
+          path: |
+            .work/*.preparation.json
+            .work/native-result.json
+            .work/build/build.json
+            .work/build/*.log
+            .work/build/toolchain.txt
+            .work/build/configure-arguments.txt
+            .work/build/elf-*.txt
+            .work/build/libraries.txt
+            .work/build/SHA256SUMS

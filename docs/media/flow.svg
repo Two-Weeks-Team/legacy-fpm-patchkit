@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="280" viewBox="0 0 1120 280" role="img" aria-labelledby="title desc">
+<title id="title">Legacy FPM Patchkit verification flow</title>
+<desc id="desc">Pinned source leads to a verified patch, an isolated build, local checks and a separate operator deployment decision.</desc>
+<rect width="1120" height="280" rx="20" fill="#f4f4ef"/>
+<text x="38" y="48" fill="#294638" font-family="system-ui,sans-serif" font-size="15" font-weight="700" letter-spacing="2">LEGACY FPM PATCHKIT</text>
+<text x="38" y="83" fill="#1e3028" font-family="system-ui,sans-serif" font-size="25" font-weight="650">Evidence travels with the patch.</text>
+<g font-family="system-ui,sans-serif" font-size="15" fill="#20382c">
+<rect x="38" y="119" width="184" height="74" rx="10" fill="#dce8dc"/><text x="58" y="149" font-weight="700">01  Pinned source</text><text x="58" y="175" font-size="13">Archives + whole-tree hash</text>
+<rect x="252" y="119" width="184" height="74" rx="10" fill="#dce8dc"/><text x="272" y="149" font-weight="700">02  Frozen patch</text><text x="272" y="175" font-size="13">46 before / after identities</text>
+<rect x="466" y="119" width="184" height="74" rx="10" fill="#dce8dc"/><text x="486" y="149" font-weight="700">03  Isolated build</text><text x="486" y="175" font-size="13">Fresh binary + provenance</text>
+<rect x="680" y="119" width="184" height="74" rx="10" fill="#dce8dc"/><text x="700" y="149" font-weight="700">04  Local checks</text><text x="700" y="175" font-size="13">FPM + sessions + uploads</text>
+<rect x="894" y="119" width="188" height="74" rx="10" fill="#294638"/><text x="914" y="149" font-weight="700" fill="#fff">05  Your acceptance</text><text x="914" y="175" font-size="13" fill="#e1eadd">Modules, site and rollback</text>
+</g>
+<g stroke="#7f9683" stroke-width="2" fill="none"><path d="M228 155h18m-6-5 6 5-6 5M442 155h18m-6-5 6 5-6 5M656 155h18m-6-5 6 5-6 5M870 155h18m-6-5 6 5-6 5"/></g>
+<text x="38" y="239" fill="#647267" font-family="system-ui,sans-serif" font-size="14">A source check is not runtime proof. A local test is not production approval.</text>
+</svg>

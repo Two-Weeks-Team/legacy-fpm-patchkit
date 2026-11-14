@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "vendor_patches": 84,
+  "changed_files": 46,
+  "patch_sha256": "a7db5d018d5f7cef41c726b61eccd794356c5d06bb1bb4322027dde88fbd108c",
+  "baseline_sha256": "66baabf392efda31e45e3da19cdd365876e6beb5dd49d39ec60967548ef688e2",
+  "candidate_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+  "result": "SOURCE_VERIFIED",
+  "binary_compatibility": "NOT_TESTED"
+}

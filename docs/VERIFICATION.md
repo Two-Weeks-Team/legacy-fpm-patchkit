@@ -1,0 +1,39 @@
+# Verification record
+
+This page separates fresh public-kit execution from historical development evidence. CI results are linked from the README; consult the exact commit/run rather than a badge alone.
+
+## Fresh public-kit checks
+
+- Pinned public archives were freshly downloaded and SHA-verified on 2026-11-14.
+- Fresh reconstruction applied 84 Ubuntu vendor patches and the unchanged build007 cumulative patch.
+- All 46 pre/post image hashes and the complete normalized baseline/candidate source digests matched.
+- Unit tests cover unsafe archive paths/links, existing-output preservation, hash drift, vendor binary fixtures, FastCGI protocol/error/budget handling, nonexecuting ELF inspection and synthetic backup/restore.
+- Native build and regression results are recorded as separate JSON evidence under `evidence/`; only completed records are published as passes. In-progress or failed runs are not implied to pass by source checks.
+
+The Linux checker exercises the three built-in session codecs, progress On/Off, same-handler assignment, different-handler rejection, plain session round trips, small multipart upload/digest/temp cleanup and same-worker continuity. It uses no production INI, external modules, user accounts, database or remote site.
+
+## Historical evidence and limits
+
+The original project built and evaluated build007 in a legacy environment and performed a narrowly scoped FPM deployment. That is context, not fresh acceptance of this public build. Private operational receipts and risk-acceptance tokens are not shipped.
+
+Historical broad testing also recorded:
+
+- V3: three msgpack-related failures; no replacement msgpack module is distributed here.
+- V2: one candidate-only PHPT failure; this source release does not claim a completely green broad PHP suite.
+- An initial V4 run was invalid. A later paired expectation test passed on both stock and candidate and therefore was not a distinguishing security negative control.
+
+These results remain failures/limits, not exceptions silently promoted to PASS. Fresh benign regression success neither erases them nor proves every exploitation path closed.
+
+## Meaning of result labels
+
+| Label | Evidence |
+|---|---|
+| `INPUTS_VERIFIED` | Bundled patch matches the frozen manifest |
+| `ARCHIVES_VERIFIED` | Downloaded inputs match pinned hashes |
+| `SOURCE_VERIFIED` | Exact vendor baseline and patched source inventory agree |
+| `BUILT_NOT_RUNTIME_VERIFIED` | Compilation produced recorded binaries; separate runtime evidence needed |
+| `BENIGN_RUNTIME_PASS` | The named local benign behaviors passed on the recorded binary |
+| `INSPECTED` | ELF/hash facts read without binary execution |
+| `REHEARSAL_PASS` | Synthetic file backup/replace/restore worked |
+
+None means full security, arbitrary module compatibility or production acceptance. Bit-for-bit reproducibility with the old deployed binary is not claimed.

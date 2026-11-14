@@ -1,0 +1,26 @@
+name: Reproducible bug
+description: Report a sanitized source, build or benign runtime problem.
+body:
+  - type: markdown
+    attributes:
+      value: Do not disclose vulnerabilities, credentials, real session data or raw logs here. Use SECURITY.md for private reporting.
+  - type: input
+    id: version
+    attributes:
+      label: Kit tag or commit
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and artifact identity
+      description: OS/architecture, profile, compiler, source and binary hashes. No private configuration.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproduction, expected and actual result
+      description: Use synthetic inputs. Distinguish source checks, runtime checks and application behavior.
+    validations:
+      required: true

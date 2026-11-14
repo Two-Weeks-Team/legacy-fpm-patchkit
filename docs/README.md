@@ -1,0 +1,14 @@
+# Documentation
+
+| Need | Start here |
+|---|---|
+| First safe run | [Getting started](GETTING_STARTED.md) · [한글 시작 가이드](GETTING_STARTED.ko.md) |
+| Understand the patch | [Scope and origins](PATCH_SCOPE.md) · [Behavior changes](BEHAVIOR_CHANGES.md) |
+| Build a candidate | [Build profiles and dependencies](BUILDING.md) |
+| Inspect, back up and transition | [Installation and rollback](INSTALLATION.md) |
+| Assess actual evidence | [Verification](VERIFICATION.md) · [Support matrix](../SUPPORT.md) |
+| Understand the tools | [Architecture](ARCHITECTURE.md) · [Troubleshooting](TROUBLESHOOTING.md) |
+| Contribute or report a vulnerability | [Contributing](../CONTRIBUTING.md) · [Security](../SECURITY.md) |
+| Review redistribution terms | [Notices](../THIRD_PARTY_NOTICES.md) · [License originals](../licenses/) |
+
+Read the support boundary before interpreting a successful command. This kit never grants deployment approval.
