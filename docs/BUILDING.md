@@ -23,6 +23,12 @@ JSON lexer/grammar inputs and their generated C/companion headers use a fixed, c
 
 `json-generation-plan.json` records the verified pre-build hashes and two selected targets. After make, `json-generation.json` rechecks all six hashes and binds them to the original prepared-source SHA. `build.json` embeds this receipt and its file SHA; `SHA256SUMS` includes both JSON records. These are the actual JSON compiler-input hashes, not a claim that the entire generated working tree equals the prepared source. Keep these records with build artifacts.
 
+### Completed Linux verification — 2026-11-15
+
+[Paired run 43607944104](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43607944104) and same-head [Checks 43607943962](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43607943962) verified the cookie parent, worker-log candidate and default build007 on Ubuntu 22.04. All three reused the same pinned JSON tuple, with matching before/after receipts, zero JSON generator commands in make logs and six existing compiler warnings. The new worker-log binaries passed the 96-request campaign, producer PHPT and 36 normal checks per build; 48 log trials matched the previous run's behavior. Checks also passed 131 unit tests and default native regression.
+
+[Results and retained records](../evidence/json-generation-portable-20261115.json) distinguish evidence levels: paired binaries are available for direct SHA calculation; default binaries are identified by matching SHA256SUMS/build/native records, while its three retained JSON records can be hashed directly. The four other lexer commands remain in the successful build sequence, but their generated C hashes were not recorded. This verifies the JSON input tuple and named regressions, without claiming whole-binary bit reproducibility or new site/module/deployment acceptance. Earlier run records are preserved.
+
 ## Commands
 
 ```sh

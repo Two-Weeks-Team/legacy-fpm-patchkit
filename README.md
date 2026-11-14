@@ -70,6 +70,10 @@ The cumulative **`fpm-log-20261114`** variant prevents NUL-containing worker std
 
 [Actual Linux execution](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43606021097) completed 48 producers plus 48 barriers. An independent check matched 328 master-log records; all 24 FPM instances exited cleanly. Both builds passed producer PHPT and 36 separate normal checks. [Results/raw data](evidence/fpm-log-portable-20261114.json) also record candidate-only JSON scanner regeneration; compiled-tree equivalence is not claimed. This is file-log hardening, not syslog delivery or whole-CVE closure. Accounting remains **7 / 14 / 45**.
 
+## JSON build inputs verified by content
+
+File-copy timestamps could cause the same prepared source to select different regenerated JSON code. The build now checks a fixed six-file input/C/header tuple and records before/after hashes. [Actual Linux verification](docs/BUILDING.md) confirmed zero JSON regeneration in three builds, 131 unit tests and preserved FPM log behavior on new binaries. [Results and raw records](evidence/json-generation-portable-20261115.json) preserve the original runs and distinguish direct binary hashing from metadata-only identity checks. This verifies the JSON inputs; whole-binary bit reproducibility is a separate property.
+
 ## What was wrong, and what is addressed
 
 **Default build007 addresses two disclosed PHP engine vulnerability classes in a pinned PHP 7.0 FPM source tree, including the request/session boundaries needed by that port.** The explicit variants above add separately verified protections. The source changes are included and their identities verified; fresh tests establish the specific runtime behaviors listed below. They do not demonstrate that every exploit of either engine CVE is blocked on PHP 7.0.

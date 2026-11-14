@@ -6,9 +6,11 @@
 
 [Hashed results](../evidence/fpm-log-portable-20261114.json) and [539 retained raw files](../evidence/fpm-log-20261114/README.md) bind source, binaries, logs, request slices, shutdown tails and cleanup. Known non-root `user` startup notices are retained; no unexpected diagnostics were observed. Default-build Checks 43606021092 passed four jobs and 121 unit tests; it is separate from file-log proof.
 
-The prepared PHP delta changes one file, but the candidate build also regenerated its JSON scanner while the parent did not. Both make logs are retained. Do not describe compiled trees as differing solely by the FPM delta; use this run's binary hashes. Content-based build-generation correction is separate work.
+The prepared PHP delta changes one file, but that candidate build also regenerated its JSON scanner while the parent did not. Both make logs are retained. Do not describe those compiled trees as differing solely by the FPM delta; use each run's binary hashes.
 
-Limits: one synthetic Ubuntu 22.04 portable file-log campaign; no syslog daemon delivery, Xenial/module/site or production acceptance. The parent's expected-loss list assumes the single-write fixture; other read splits can cause a harness failure. Random-chunk component checks are separate from actual FPM. No whole-advisory credit is added: cumulative accounting stays **7 implemented / 14 mechanism-absent / 45 planned**, default build007 **2 / 14 / 50**.
+The subsequent [content-based build correction](BUILDING.md) was verified in run 43607944104: both builds reused the fixed JSON tuple without regeneration, with recorded before/after hashes. The new binaries repeated all 96 requests and 48 log trials with the same behavior as the first run. [Separate records](../evidence/json-generation-portable-20261115.json) preserve that build change; the first run's asymmetric make logs remain intact.
+
+Limits: small synthetic Ubuntu 22.04 portable file-log campaigns; no syslog daemon delivery, Xenial/module/site or production acceptance. The parent's expected-loss list assumes the single-write fixture; other read splits can cause a harness failure. Random-chunk component checks are separate from actual FPM. No whole-advisory credit is added: cumulative accounting stays **7 implemented / 14 mechanism-absent / 45 planned**, default build007 **2 / 14 / 50**.
 
 ## Source and reproduction
 
