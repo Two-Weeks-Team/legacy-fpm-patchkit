@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import platform
 import pwd
+import re
 import subprocess
 import sys
 import tempfile
@@ -17,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from patchkit import fcgi
 
 FIXTURE = r'''<?php
+ob_start();
 header('Content-Type: text/plain');
 $action = isset($_GET['action']) ? $_GET['action'] : 'session';
 echo 'pid=' . getmypid() . "\n";
@@ -47,6 +49,28 @@ echo "complete=yes\n";
 
 def fields(body):
     return dict(line.split('=', 1) for line in body.decode().splitlines() if '=' in line)
+
+
+def checked_response(result):
+    if result['stderr']:
+        raise ValueError('unexpected FastCGI stderr: ' + result['stderr'].decode('utf-8', 'replace')[-4000:])
+    values = fields(result['body'])
+    if values.get('complete') != 'yes':
+        raise ValueError('incomplete PHP fixture response')
+    return values
+
+
+def check_logs(root):
+    diagnostics = {}
+    for name in ['fpm.log', 'process.log']:
+        path = root / name
+        if not path.exists():
+            continue
+        text = path.read_text()[-32768:].replace(str(root), '<test-root>')
+        diagnostics[name] = text
+        if re.search(r'PHP (?:Warning|Fatal|Parse|Notice|Deprecated)|\b(?:WARNING|ERROR|ALERT|EMERGENCY):', text):
+            raise ValueError('unexpected FPM diagnostic: ' + text)
+    return diagnostics
 
 
 def campaign(binary, codec, progress):
@@ -99,10 +123,7 @@ php_value[session.upload_progress.enabled] = {progress}
                               'CONTENT_LENGTH': str(len(body)), 'CONTENT_TYPE': content_type,
                               'HTTP_COOKIE': 'PHPSESSID=' + sid, 'GATEWAY_INTERFACE': 'CGI/1.1'}
                     result = fcgi.request(socket_path, values, body)
-                    values = fields(result['body'])
-                    if values.get('complete') != 'yes':
-                        raise ValueError('incomplete PHP fixture response')
-                    return values
+                    return checked_response(result)
                 checks = []
                 first = ask('action=session&target=' + codec)
                 assert first['handler'] == codec and first['switch'] == 'allowed' and first['started'] == 'yes'
@@ -128,7 +149,8 @@ php_value[session.upload_progress.enabled] = {progress}
                 final = ask('action=session&target=' + codec)
                 assert final['pid'] == first['pid'] and final['previous'] == 'patchkit-value'
                 checks.append('same-worker continuity after upload')
-                return {'codec': codec, 'progress': progress, 'checks': checks, 'result': 'PASS'}
+                return {'codec': codec, 'progress': progress, 'checks': checks,
+                        'diagnostics': check_logs(root), 'result': 'PASS'}
             finally:
                 if process.poll() is None:
                     process.terminate()

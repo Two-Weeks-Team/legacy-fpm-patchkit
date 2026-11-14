@@ -78,12 +78,19 @@ def read_response(stream, request_id=1, maximum=1024*1024, deadline=None):
 def request(socket_path, values, body=b'', timeout=10):
     deadline = time.monotonic() + timeout
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as stream:
-        stream.settimeout(timeout)
+        def budget():
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError('FastCGI send deadline exceeded')
+            stream.settimeout(remaining)
+        def send(data):
+            budget()
+            stream.sendall(data)
+        budget()
         stream.connect(str(socket_path))
-        stream.sendall(record(1, struct.pack('!HB5x', 1, 0)))
+        send(record(1, struct.pack('!HB5x', 1, 0)))
         for kind, data in [(4, params(values)), (5, body)]:
             for offset in range(0, len(data), 65535):
-                stream.settimeout(max(0.001, deadline - time.monotonic()))
-                stream.sendall(record(kind, data[offset:offset+65535]))
-            stream.sendall(record(kind))
+                send(record(kind, data[offset:offset+65535]))
+            send(record(kind))
         return read_response(stream, 1, 1024*1024, deadline)

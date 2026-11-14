@@ -26,6 +26,10 @@ output=$(cd "$output" && pwd)
 cp -R "$source_dir" "$output/source"
 src="$output/source"
 export PHP_INI_SCAN_DIR=
+if command -v dpkg-architecture >/dev/null 2>&1; then
+  export DEB_HOST_MULTIARCH
+  DEB_HOST_MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
+fi
 export CFLAGS='-O2 -g -fPIE -fstack-protector-strong -Wformat -Werror=format-security -fno-strict-aliasing -fsigned-char'
 export CPPFLAGS='-D_FORTIFY_SOURCE=2'
 export LDFLAGS='-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now -Wl,--as-needed'

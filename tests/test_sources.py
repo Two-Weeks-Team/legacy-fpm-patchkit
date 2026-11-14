@@ -108,6 +108,29 @@ class SourceTests(unittest.TestCase):
         self.assertEqual((target / 'ext/exif/tests/image.jpg').read_bytes(), b'fixture')
         self.assertEqual((target / 'debian/control').read_text(), 'package')
 
+    def test_prepare_refuses_adjacent_existing_files_or_symlinks(self):
+        for suffix in ['.preparation.json', '.preparation.log', '.failed-preparation.log']:
+            with self.subTest(suffix=suffix):
+                target = self.root / ('source' + str(len(suffix)))
+                protected = self.root / ('keep' + str(len(suffix)))
+                protected.write_text('PRESERVE ME')
+                sidecar = Path(str(target) + suffix)
+                sidecar.symlink_to(protected)
+                with self.assertRaisesRegex(ValueError, 'output'):
+                    sources.prepare(self.root / 'missing-cache', target)
+                self.assertEqual(protected.read_text(), 'PRESERVE ME')
+                self.assertFalse(target.exists())
+                sidecar.unlink()
+
+    def test_failed_preparation_log_survives_workspace_cleanup(self):
+        target = self.root / 'source'
+        with self.assertRaisesRegex(ValueError, 'synthetic failure'):
+            with sources.preparation_workspace(target) as work:
+                (work / 'preparation.log').write_text('PATCH FAILED diagnostic')
+                raise ValueError('synthetic failure')
+        self.assertEqual(Path(str(target) + '.failed-preparation.log').read_text(), 'PATCH FAILED diagnostic')
+        self.assertFalse(target.exists())
+
 
 if __name__ == '__main__':
     unittest.main()

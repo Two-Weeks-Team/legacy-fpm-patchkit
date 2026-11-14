@@ -20,6 +20,7 @@ record = {'schema': 1, 'profile': profile, 'system': platform.system(), 'machine
           'toolchain': (output / 'toolchain.txt').read_text(),
           'CFLAGS': __import__('os').environ.get('CFLAGS'), 'CPPFLAGS': __import__('os').environ.get('CPPFLAGS'),
           'LDFLAGS': __import__('os').environ.get('LDFLAGS'),
+          'DEB_HOST_MULTIARCH': __import__('os').environ.get('DEB_HOST_MULTIARCH'),
           'result': 'BUILT_NOT_RUNTIME_VERIFIED', 'external_module_compatibility': 'NOT_TESTED',
           'historical_build007_binary_equivalence': 'NOT_CLAIMED'}
 (output / 'build.json').write_text(json.dumps(record, indent=2, sort_keys=True) + '\n')

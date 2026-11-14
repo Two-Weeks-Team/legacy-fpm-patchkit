@@ -1,5 +1,6 @@
 """Pinned public source acquisition and bounded, link-free extraction."""
 import hashlib
+from contextlib import contextmanager
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -151,19 +152,42 @@ def merge_packaging(packaging, source):
             shutil.copyfile(path, target)
 
 
+def new_outputs(destination):
+    paths = [Path(destination)] + [Path(str(destination) + suffix) for suffix in
+                                  ['.preparation.json', '.preparation.log', '.failed-preparation.log']]
+    if any(path.exists() or path.is_symlink() for path in paths):
+        raise ValueError('all source output and diagnostic paths must be new')
+
+
+@contextmanager
+def preparation_workspace(destination):
+    destination = Path(destination)
+    new_outputs(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix='.patchkit-', dir=destination.parent) as temporary:
+        stage = Path(temporary)
+        try:
+            yield stage
+        except Exception:
+            log = stage / 'preparation.log'
+            if log.exists():
+                # Exclusive creation also protects against a late symlink/file race.
+                with Path(str(destination) + '.failed-preparation.log').open('xb') as dst, log.open('rb') as src:
+                    shutil.copyfileobj(src, dst)
+            raise
+
+
 def prepare(cache, destination):
     """Prepare a NEW source tree. No existing tree is changed, including on failure."""
     cache, destination = Path(cache), Path(destination)
-    if destination.exists() or destination.is_symlink():
-        raise ValueError('source destination must be new')
+    new_outputs(destination)
     inputs = json.loads((ROOT / 'provenance/inputs.json').read_text())
     manifest = json.loads((ROOT / 'provenance/build007-source.json').read_text())
     verify_file(ROOT / 'patches/build007.patch', manifest['patch_sha256'])
     for row in inputs['archives']:
         verify_file(cache / row['name'], row['sha256'])
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='.patchkit-', dir=destination.parent) as temporary:
-        stage = Path(temporary)
+    with preparation_workspace(destination) as stage:
         extract(cache / inputs['archives'][0]['name'], stage / 'upstream')
         extract(cache / inputs['archives'][1]['name'], stage / 'packaging')
         source = stage / 'upstream/php-7.0.33'
@@ -197,7 +221,9 @@ def prepare(cache, destination):
                    'patch_sha256': manifest['patch_sha256'], 'baseline_sha256': baseline,
                    'candidate_sha256': candidate, 'result': 'SOURCE_VERIFIED',
                    'binary_compatibility': 'NOT_TESTED'}
+        record = stage / 'receipt.json'
+        record.write_text(json.dumps(receipt, indent=2) + '\n')
+        os.link(record, Path(str(destination) + '.preparation.json'))
+        os.link(log, Path(str(destination) + '.preparation.log'))
         source.rename(destination)
-        (destination.parent / (destination.name + '.preparation.json')).write_text(json.dumps(receipt, indent=2) + '\n')
-        shutil.copyfile(log, destination.parent / (destination.name + '.preparation.log'))
     return receipt

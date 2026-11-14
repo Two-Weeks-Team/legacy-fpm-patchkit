@@ -2,6 +2,7 @@ import socket
 import struct
 import threading
 import time
+from unittest.mock import patch
 import unittest
 from patchkit import fcgi
 
@@ -70,6 +71,25 @@ class FastCGITests(unittest.TestCase):
         with self.assertRaises(TimeoutError):
             fcgi.read_response(a, 1, 1024, started + 0.06)
         self.assertLess(time.monotonic() - started, 0.15)
+
+    def test_request_stops_transmitting_when_deadline_expires(self):
+        class Clock:
+            now = 0.0
+        clock = Clock()
+        class Transport:
+            sends = 0
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def settimeout(self, value): pass
+            def connect(self, path): pass
+            def sendall(self, value):
+                self.sends += 1
+                clock.now += 0.01
+        transport = Transport()
+        with patch('patchkit.fcgi.socket.socket', return_value=transport), patch('patchkit.fcgi.time.monotonic', side_effect=lambda: clock.now):
+            with self.assertRaises(TimeoutError):
+                fcgi.request('/synthetic', {'X': 'value'}, b'x' * 200000, timeout=0.02)
+        self.assertLessEqual(transport.sends, 2)
 
 
 if __name__ == '__main__':
