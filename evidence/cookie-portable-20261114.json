@@ -1,0 +1,1348 @@
+{
+  "schema": 1,
+  "variant": "cookie-20261114",
+  "base_variant": "multipart-20261114",
+  "scope": "Ubuntu 22.04 x86_64 portable CLI/FPM; synthetic name registration, no cookie authentication, TLS, site or production acceptance",
+  "workflow_run": 43603792774,
+  "head_sha": "0f0013bfdc74405b5cbc4379df8c6353b3f00f5b",
+  "url": "https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43603792774",
+  "artifact": {
+    "id": 14117786444,
+    "node_id": "MDg6QXJ0aWZhY3QxNDExNzc4NjQ0NA==",
+    "name": "cookie-paired-native",
+    "size_in_bytes": 31195970,
+    "url": "https://api.github.com/repos/Two-Weeks-Team/legacy-fpm-patchkit/actions/artifacts/14117786444",
+    "archive_download_url": "https://api.github.com/repos/Two-Weeks-Team/legacy-fpm-patchkit/actions/artifacts/14117786444/zip",
+    "expired": false,
+    "digest": "sha256:447b840e3f6a89760acfd0b5d76597d9a5a39b00ce0ce7a0bf841d8cd88ecbfe",
+    "created_at": "2026-11-14T14:18:47Z",
+    "updated_at": "2026-11-14T14:18:47Z",
+    "expires_at": "2027-02-12T14:14:07Z",
+    "workflow_run": {
+      "id": 43603792774,
+      "repository_id": 1457343854,
+      "head_repository_id": 1457343854,
+      "head_branch": "main",
+      "head_sha": "0f0013bfdc74405b5cbc4379df8c6353b3f00f5b"
+    }
+  },
+  "result": "PAIRED_COOKIE_RUNTIME_PASS",
+  "production": "NOT_ACCESSED",
+  "additional_implemented_advisories": [
+    "GHSA-wpj3-hf5j-x4v4"
+  ],
+  "inherited_catalog_counts": {
+    "RESOLVED": 6,
+    "NOT_APPLICABLE": 14,
+    "PLANNED": 46
+  },
+  "variant_catalog_counts": {
+    "RESOLVED": 7,
+    "NOT_APPLICABLE": 14,
+    "PLANNED": 45
+  },
+  "delta_sha256": "f72477d7b5183622fa8b785175dcc1bac9cd53fb1e869559fbdfbfa30b7f61f4",
+  "manifest_sha256": "73fe27ba703a6770b5e3959e4c76ef72580609eb809ed02743aa9c2c9f0e7629",
+  "sides": {
+    "parent": {
+      "source_sha256": "01ea416605986b1169674caf904bb51ef7a7626456f8e259fd7653c436fefb85",
+      "binaries": {
+        "php": "802820300224326ccebb34f1f022cfad96b39d8a99605e2931f2c5377d8165e3",
+        "php-fpm": "15af42328f189a4e9f0fd14448be2ce1d0c812e8a6089de0c0e3360e1b13f94b"
+      },
+      "build_record": "build-parent/build.json",
+      "profile": "portable",
+      "configure": [
+        "--prefix=/opt/legacy-fpm-patchkit",
+        "--enable-fpm",
+        "--enable-cli",
+        "--disable-cgi",
+        "--disable-phpdbg",
+        "--disable-all",
+        "--disable-debug",
+        "--disable-rpath",
+        "--disable-static",
+        "--with-pic",
+        "--without-pear",
+        "--enable-filter",
+        "--enable-hash",
+        "--enable-session",
+        "--with-config-file-path=/etc/php/7.0/fpm",
+        "--with-config-file-scan-dir=/etc/php/7.0/fpm/conf.d",
+        "--with-fpm-user=www-data",
+        "--with-fpm-group=www-data",
+        "--without-libxml",
+        "--enable-json"
+      ],
+      "toolchain": "Linux x86_64\ncc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0\nautoconf (GNU Autoconf) 2.71\nre2c 3.0\n",
+      "libc": [
+        "glibc",
+        "2.35"
+      ],
+      "cli_cases": {
+        "authentic": {
+          "G|S5f5f486f73742d64656d6f": "V6c65676974",
+          "G|S5f5f5365637572652d64656d6f": "V6c65676974"
+        },
+        "authentic-array": {
+          "G|S5f5f486f73742d64656d6f": "A",
+          "G|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+          "G|S5f5f5365637572652d64656d6f": "A",
+          "G|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+          "G|S5f5f5365637572652d64656d6f/I1": "V74776f"
+        },
+        "authentic-suffix": {
+          "G|S5f5f486f73742d64656d6f5f78": "V6f6b"
+        },
+        "authentic-then-bad": {
+          "G|S5f5f486f73742d64656d6f": "V756e74727573746564"
+        },
+        "bad-then-authentic": {
+          "G|S5f5f486f73742d64656d6f": "V74727573746564"
+        },
+        "binary-values": {
+          "G|S706c61696e": "V410042",
+          "G|S706c7573": "V6f6e652074776f"
+        },
+        "cookie-name-not-decoded": {
+          "G|S5f5f486f73742d64656d6f": "V6c69746572616c",
+          "G|S617272": "A",
+          "G|S617272/S78": "V76616c7565"
+        },
+        "dot-host": {
+          "G|S5f5f486f73742d64656d6f": "V64656d6f"
+        },
+        "dot-secure": {
+          "G|S5f5f5365637572652d64656d6f": "V64656d6f"
+        },
+        "duplicates": {
+          "G|S5f5f486f73742d64656d6f": "V6c617374",
+          "G|S647570": "V6c617374"
+        },
+        "fallback-host": {
+          "G|S5f5f486f73742d64656d6f": "V64656d6f"
+        },
+        "fallback-secure": {
+          "G|S5f5f5365637572652d64656d6f": "V64656d6f"
+        },
+        "indexed-host": {
+          "G|S5f5f486f73742d64656d6f": "A",
+          "G|S5f5f486f73742d64656d6f/S78": "V64656d6f"
+        },
+        "indexed-secure": {
+          "G|S5f5f5365637572652d64656d6f": "A",
+          "G|S5f5f5365637572652d64656d6f/S78": "V64656d6f"
+        },
+        "leading-space": {
+          "G|S5f5f486f73742d64656d6f": "V6f6b",
+          "G|S706c61696e": "V6f6e65"
+        },
+        "nested-prefix": {
+          "G|S7072656673": "A",
+          "G|S7072656673/S5f5f486f73742d6e6573746564": "V64656d6f"
+        },
+        "normal-alias-duplicate": {
+          "G|S615f62": "V6c617374"
+        },
+        "normal-array": {
+          "G|S615f62": "V74776f",
+          "G|S617272": "A",
+          "G|S617272/S78": "V6c617374",
+          "G|S6c697374": "A",
+          "G|S6c697374/I0": "V61",
+          "G|S6c697374/I1": "V62",
+          "G|S6e756d": "A",
+          "G|S6e756d/I0": "V7a",
+          "G|S6e756d/S3031": "V70",
+          "G|S706c61696e": "V6f6e65"
+        },
+        "short-prefix": {
+          "G|S5f": "V6f6e65",
+          "G|S5f5f": "V74776f",
+          "G|S5f5f486f7374": "V7468726565",
+          "G|S5f5f536563757265": "V666f7572"
+        }
+      },
+      "cases": {
+        "authentic": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "V6c65676974",
+              "C|S5f5f5365637572652d64656d6f": "V6c65676974",
+              "G|S5f5f486f73742d64656d6f": "V6c65676974",
+              "G|S5f5f5365637572652d64656d6f": "V6c65676974",
+              "P|S5f5f486f73742d64656d6f": "V6c65676974",
+              "P|S5f5f5365637572652d64656d6f": "V6c65676974"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "V6c65676974",
+              "C|S5f5f5365637572652d64656d6f": "V6c65676974",
+              "G|S5f5f486f73742d64656d6f": "V6c65676974",
+              "G|S5f5f5365637572652d64656d6f": "V6c65676974",
+              "P|S5f5f486f73742d64656d6f": "V6c65676974",
+              "P|S5f5f5365637572652d64656d6f": "V6c65676974"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "__Host-demo=legit; __Secure-demo=legit",
+            "form": "__Host-demo=legit&__Secure-demo=legit"
+          }
+        },
+        "authentic-array": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "A",
+              "C|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "C|S5f5f5365637572652d64656d6f": "A",
+              "C|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "C|S5f5f5365637572652d64656d6f/I1": "V74776f",
+              "G|S5f5f486f73742d64656d6f": "A",
+              "G|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "G|S5f5f5365637572652d64656d6f": "A",
+              "G|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "G|S5f5f5365637572652d64656d6f/I1": "V74776f",
+              "P|S5f5f486f73742d64656d6f": "A",
+              "P|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "P|S5f5f5365637572652d64656d6f": "A",
+              "P|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "P|S5f5f5365637572652d64656d6f/I1": "V74776f"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "A",
+              "C|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "C|S5f5f5365637572652d64656d6f": "A",
+              "C|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "C|S5f5f5365637572652d64656d6f/I1": "V74776f",
+              "G|S5f5f486f73742d64656d6f": "A",
+              "G|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "G|S5f5f5365637572652d64656d6f": "A",
+              "G|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "G|S5f5f5365637572652d64656d6f/I1": "V74776f",
+              "P|S5f5f486f73742d64656d6f": "A",
+              "P|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "P|S5f5f5365637572652d64656d6f": "A",
+              "P|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "P|S5f5f5365637572652d64656d6f/I1": "V74776f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "__Host-demo[x]=legit;__Secure-demo[]=one;__Secure-demo[]=two",
+            "form": "__Host-demo[x]=legit&__Secure-demo[]=one&__Secure-demo[]=two"
+          }
+        },
+        "authentic-suffix": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f5f78": "V6f6b",
+              "G|S5f5f486f73742d64656d6f5f78": "V6f6b",
+              "P|S5f5f486f73742d64656d6f5f78": "V6f6b"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f5f78": "V6f6b",
+              "G|S5f5f486f73742d64656d6f5f78": "V6f6b",
+              "P|S5f5f486f73742d64656d6f5f78": "V6f6b"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "__Host-demo.x=ok",
+            "form": "__Host-demo.x=ok"
+          }
+        },
+        "authentic-then-bad": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "V74727573746564",
+              "G|S5f5f486f73742d64656d6f": "V756e74727573746564",
+              "P|S5f5f486f73742d64656d6f": "V756e74727573746564"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "V74727573746564",
+              "G|S5f5f486f73742d64656d6f": "V756e74727573746564",
+              "P|S5f5f486f73742d64656d6f": "V756e74727573746564"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "__Host-demo=trusted;._Host-demo=untrusted",
+            "form": "__Host-demo=trusted&._Host-demo=untrusted"
+          }
+        },
+        "bad-then-authentic": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "V756e74727573746564",
+              "G|S5f5f486f73742d64656d6f": "V74727573746564",
+              "P|S5f5f486f73742d64656d6f": "V74727573746564"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "V756e74727573746564",
+              "G|S5f5f486f73742d64656d6f": "V74727573746564",
+              "P|S5f5f486f73742d64656d6f": "V74727573746564"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Host-demo=untrusted;__Host-demo=trusted",
+            "form": "._Host-demo=untrusted&__Host-demo=trusted"
+          }
+        },
+        "binary-values": {
+          "responses": [
+            {
+              "C|S706c61696e": "V410042",
+              "C|S706c7573": "V6f6e652074776f",
+              "G|S706c61696e": "V410042",
+              "G|S706c7573": "V6f6e652074776f",
+              "P|S706c61696e": "V410042",
+              "P|S706c7573": "V6f6e652074776f"
+            },
+            {
+              "C|S706c61696e": "V410042",
+              "C|S706c7573": "V6f6e652074776f",
+              "G|S706c61696e": "V410042",
+              "G|S706c7573": "V6f6e652074776f",
+              "P|S706c61696e": "V410042",
+              "P|S706c7573": "V6f6e652074776f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "plain=A%00B;plus=one+two",
+            "form": "plain=A%00B&plus=one+two"
+          }
+        },
+        "cookie-name-not-decoded": {
+          "responses": [
+            {
+              "C|S253546253546486f73742d64656d6f": "V6c69746572616c",
+              "C|S61727225354278253544": "V76616c7565",
+              "G|S5f5f486f73742d64656d6f": "V6c69746572616c",
+              "G|S617272": "A",
+              "G|S617272/S78": "V76616c7565",
+              "P|S5f5f486f73742d64656d6f": "V6c69746572616c",
+              "P|S617272": "A",
+              "P|S617272/S78": "V76616c7565"
+            },
+            {
+              "C|S253546253546486f73742d64656d6f": "V6c69746572616c",
+              "C|S61727225354278253544": "V76616c7565",
+              "G|S5f5f486f73742d64656d6f": "V6c69746572616c",
+              "G|S617272": "A",
+              "G|S617272/S78": "V76616c7565",
+              "P|S5f5f486f73742d64656d6f": "V6c69746572616c",
+              "P|S617272": "A",
+              "P|S617272/S78": "V76616c7565"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "%5F%5FHost-demo=literal;arr%5Bx%5D=value",
+            "form": "%5F%5FHost-demo=literal&arr%5Bx%5D=value"
+          }
+        },
+        "dot-host": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "V64656d6f",
+              "G|S5f5f486f73742d64656d6f": "V64656d6f",
+              "P|S5f5f486f73742d64656d6f": "V64656d6f"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "V64656d6f",
+              "G|S5f5f486f73742d64656d6f": "V64656d6f",
+              "P|S5f5f486f73742d64656d6f": "V64656d6f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Host-demo=demo",
+            "form": "._Host-demo=demo"
+          }
+        },
+        "dot-secure": {
+          "responses": [
+            {
+              "C|S5f5f5365637572652d64656d6f": "V64656d6f",
+              "G|S5f5f5365637572652d64656d6f": "V64656d6f",
+              "P|S5f5f5365637572652d64656d6f": "V64656d6f"
+            },
+            {
+              "C|S5f5f5365637572652d64656d6f": "V64656d6f",
+              "G|S5f5f5365637572652d64656d6f": "V64656d6f",
+              "P|S5f5f5365637572652d64656d6f": "V64656d6f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Secure-demo=demo",
+            "form": "._Secure-demo=demo"
+          }
+        },
+        "duplicates": {
+          "responses": [
+            {
+              "C|S647570": "V6669727374",
+              "C|S5f5f486f73742d64656d6f": "V6669727374",
+              "G|S647570": "V6c617374",
+              "G|S5f5f486f73742d64656d6f": "V6c617374",
+              "P|S647570": "V6c617374",
+              "P|S5f5f486f73742d64656d6f": "V6c617374"
+            },
+            {
+              "C|S647570": "V6669727374",
+              "C|S5f5f486f73742d64656d6f": "V6669727374",
+              "G|S647570": "V6c617374",
+              "G|S5f5f486f73742d64656d6f": "V6c617374",
+              "P|S647570": "V6c617374",
+              "P|S5f5f486f73742d64656d6f": "V6c617374"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "dup=first;dup=last;__Host-demo=first;__Host-demo=last",
+            "form": "dup=first&dup=last&__Host-demo=first&__Host-demo=last"
+          }
+        },
+        "fallback-host": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "V64656d6f",
+              "G|S5f5f486f73742d64656d6f": "V64656d6f",
+              "P|S5f5f486f73742d64656d6f": "V64656d6f"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "V64656d6f",
+              "G|S5f5f486f73742d64656d6f": "V64656d6f",
+              "P|S5f5f486f73742d64656d6f": "V64656d6f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "_[Host-demo=demo",
+            "form": "_[Host-demo=demo"
+          }
+        },
+        "fallback-secure": {
+          "responses": [
+            {
+              "C|S5f5f5365637572652d64656d6f": "V64656d6f",
+              "G|S5f5f5365637572652d64656d6f": "V64656d6f",
+              "P|S5f5f5365637572652d64656d6f": "V64656d6f"
+            },
+            {
+              "C|S5f5f5365637572652d64656d6f": "V64656d6f",
+              "G|S5f5f5365637572652d64656d6f": "V64656d6f",
+              "P|S5f5f5365637572652d64656d6f": "V64656d6f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "_[Secure-demo=demo",
+            "form": "_[Secure-demo=demo"
+          }
+        },
+        "indexed-host": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "A",
+              "C|S5f5f486f73742d64656d6f/S78": "V64656d6f",
+              "G|S5f5f486f73742d64656d6f": "A",
+              "G|S5f5f486f73742d64656d6f/S78": "V64656d6f",
+              "P|S5f5f486f73742d64656d6f": "A",
+              "P|S5f5f486f73742d64656d6f/S78": "V64656d6f"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "A",
+              "C|S5f5f486f73742d64656d6f/S78": "V64656d6f",
+              "G|S5f5f486f73742d64656d6f": "A",
+              "G|S5f5f486f73742d64656d6f/S78": "V64656d6f",
+              "P|S5f5f486f73742d64656d6f": "A",
+              "P|S5f5f486f73742d64656d6f/S78": "V64656d6f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Host-demo[x]=demo",
+            "form": "._Host-demo[x]=demo"
+          }
+        },
+        "indexed-secure": {
+          "responses": [
+            {
+              "C|S5f5f5365637572652d64656d6f": "A",
+              "C|S5f5f5365637572652d64656d6f/S78": "V64656d6f",
+              "G|S5f5f5365637572652d64656d6f": "A",
+              "G|S5f5f5365637572652d64656d6f/S78": "V64656d6f",
+              "P|S5f5f5365637572652d64656d6f": "A",
+              "P|S5f5f5365637572652d64656d6f/S78": "V64656d6f"
+            },
+            {
+              "C|S5f5f5365637572652d64656d6f": "A",
+              "C|S5f5f5365637572652d64656d6f/S78": "V64656d6f",
+              "G|S5f5f5365637572652d64656d6f": "A",
+              "G|S5f5f5365637572652d64656d6f/S78": "V64656d6f",
+              "P|S5f5f5365637572652d64656d6f": "A",
+              "P|S5f5f5365637572652d64656d6f/S78": "V64656d6f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Secure-demo[x]=demo",
+            "form": "._Secure-demo[x]=demo"
+          }
+        },
+        "leading-space": {
+          "responses": [
+            {
+              "C|S706c61696e": "V6f6e65",
+              "C|S5f5f486f73742d64656d6f": "V6f6b",
+              "G|S706c61696e": "V6f6e65",
+              "G|S5f5f486f73742d64656d6f": "V6f6b",
+              "P|S706c61696e": "V6f6e65",
+              "P|S5f5f486f73742d64656d6f": "V6f6b"
+            },
+            {
+              "C|S706c61696e": "V6f6e65",
+              "C|S5f5f486f73742d64656d6f": "V6f6b",
+              "G|S706c61696e": "V6f6e65",
+              "G|S5f5f486f73742d64656d6f": "V6f6b",
+              "P|S706c61696e": "V6f6e65",
+              "P|S5f5f486f73742d64656d6f": "V6f6b"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": " plain=one; __Host-demo=ok",
+            "form": "plain=one&%20%20__Host-demo=ok"
+          }
+        },
+        "nested-prefix": {
+          "responses": [
+            {
+              "C|S7072656673": "A",
+              "C|S7072656673/S5f5f486f73742d6e6573746564": "V64656d6f",
+              "G|S7072656673": "A",
+              "G|S7072656673/S5f5f486f73742d6e6573746564": "V64656d6f",
+              "P|S7072656673": "A",
+              "P|S7072656673/S5f5f486f73742d6e6573746564": "V64656d6f"
+            },
+            {
+              "C|S7072656673": "A",
+              "C|S7072656673/S5f5f486f73742d6e6573746564": "V64656d6f",
+              "G|S7072656673": "A",
+              "G|S7072656673/S5f5f486f73742d6e6573746564": "V64656d6f",
+              "P|S7072656673": "A",
+              "P|S7072656673/S5f5f486f73742d6e6573746564": "V64656d6f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "prefs[__Host-nested]=demo",
+            "form": "prefs[__Host-nested]=demo"
+          }
+        },
+        "normal-alias-duplicate": {
+          "responses": [
+            {
+              "C|S615f62": "V6669727374",
+              "G|S615f62": "V6c617374",
+              "P|S615f62": "V6c617374"
+            },
+            {
+              "C|S615f62": "V6669727374",
+              "G|S615f62": "V6c617374",
+              "P|S615f62": "V6c617374"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "a.b=first;a_b=last",
+            "form": "a.b=first&a_b=last"
+          }
+        },
+        "normal-array": {
+          "responses": [
+            {
+              "C|S706c61696e": "V6f6e65",
+              "C|S615f62": "V74776f",
+              "C|S617272": "A",
+              "C|S617272/S78": "V6c617374",
+              "C|S6c697374": "A",
+              "C|S6c697374/I0": "V61",
+              "C|S6c697374/I1": "V62",
+              "C|S6e756d": "A",
+              "C|S6e756d/S3031": "V70",
+              "C|S6e756d/I0": "V7a",
+              "G|S706c61696e": "V6f6e65",
+              "G|S615f62": "V74776f",
+              "G|S617272": "A",
+              "G|S617272/S78": "V6c617374",
+              "G|S6c697374": "A",
+              "G|S6c697374/I0": "V61",
+              "G|S6c697374/I1": "V62",
+              "G|S6e756d": "A",
+              "G|S6e756d/S3031": "V70",
+              "G|S6e756d/I0": "V7a",
+              "P|S706c61696e": "V6f6e65",
+              "P|S615f62": "V74776f",
+              "P|S617272": "A",
+              "P|S617272/S78": "V6c617374",
+              "P|S6c697374": "A",
+              "P|S6c697374/I0": "V61",
+              "P|S6c697374/I1": "V62",
+              "P|S6e756d": "A",
+              "P|S6e756d/S3031": "V70",
+              "P|S6e756d/I0": "V7a"
+            },
+            {
+              "C|S706c61696e": "V6f6e65",
+              "C|S615f62": "V74776f",
+              "C|S617272": "A",
+              "C|S617272/S78": "V6c617374",
+              "C|S6c697374": "A",
+              "C|S6c697374/I0": "V61",
+              "C|S6c697374/I1": "V62",
+              "C|S6e756d": "A",
+              "C|S6e756d/S3031": "V70",
+              "C|S6e756d/I0": "V7a",
+              "G|S706c61696e": "V6f6e65",
+              "G|S615f62": "V74776f",
+              "G|S617272": "A",
+              "G|S617272/S78": "V6c617374",
+              "G|S6c697374": "A",
+              "G|S6c697374/I0": "V61",
+              "G|S6c697374/I1": "V62",
+              "G|S6e756d": "A",
+              "G|S6e756d/S3031": "V70",
+              "G|S6e756d/I0": "V7a",
+              "P|S706c61696e": "V6f6e65",
+              "P|S615f62": "V74776f",
+              "P|S617272": "A",
+              "P|S617272/S78": "V6c617374",
+              "P|S6c697374": "A",
+              "P|S6c697374/I0": "V61",
+              "P|S6c697374/I1": "V62",
+              "P|S6e756d": "A",
+              "P|S6e756d/S3031": "V70",
+              "P|S6e756d/I0": "V7a"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "plain=one;a.b=two;arr[x]=first;arr[x]=last;list[]=a;list[]=b;num[01]=p;num[0]=z",
+            "form": "plain=one&a.b=two&arr[x]=first&arr[x]=last&list[]=a&list[]=b&num[01]=p&num[0]=z"
+          }
+        },
+        "short-prefix": {
+          "responses": [
+            {
+              "C|S5f": "V6f6e65",
+              "C|S5f5f": "V74776f",
+              "C|S5f5f486f7374": "V7468726565",
+              "C|S5f5f536563757265": "V666f7572",
+              "G|S5f": "V6f6e65",
+              "G|S5f5f": "V74776f",
+              "G|S5f5f486f7374": "V7468726565",
+              "G|S5f5f536563757265": "V666f7572",
+              "P|S5f": "V6f6e65",
+              "P|S5f5f": "V74776f",
+              "P|S5f5f486f7374": "V7468726565",
+              "P|S5f5f536563757265": "V666f7572"
+            },
+            {
+              "C|S5f": "V6f6e65",
+              "C|S5f5f": "V74776f",
+              "C|S5f5f486f7374": "V7468726565",
+              "C|S5f5f536563757265": "V666f7572",
+              "G|S5f": "V6f6e65",
+              "G|S5f5f": "V74776f",
+              "G|S5f5f486f7374": "V7468726565",
+              "G|S5f5f536563757265": "V666f7572",
+              "P|S5f": "V6f6e65",
+              "P|S5f5f": "V74776f",
+              "P|S5f5f486f7374": "V7468726565",
+              "P|S5f5f536563757265": "V666f7572"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "_=one;__=two;__Host=three;__Secure=four",
+            "form": "_=one&__=two&__Host=three&__Secure=four"
+          }
+        }
+      },
+      "phpt": {
+        "statuses": [
+          "FAIL"
+        ],
+        "returncode": 1
+      },
+      "benign_runtime_checks": 36
+    },
+    "candidate": {
+      "source_sha256": "f5f6b9f4263bce9e4de03b7fba315490e6d08bcc9862cd7d048a52929f756fe5",
+      "binaries": {
+        "php": "cd2f1ad3b8d419c35fdeaa5fc0ab858512c6cde04354d0ab408cba869cca9c25",
+        "php-fpm": "decb87c60f4b1371ab59fce9b9dd885a0ba241144b26a70e28d25a7a7654fe28"
+      },
+      "build_record": "build-cookie/build.json",
+      "profile": "portable",
+      "configure": [
+        "--prefix=/opt/legacy-fpm-patchkit",
+        "--enable-fpm",
+        "--enable-cli",
+        "--disable-cgi",
+        "--disable-phpdbg",
+        "--disable-all",
+        "--disable-debug",
+        "--disable-rpath",
+        "--disable-static",
+        "--with-pic",
+        "--without-pear",
+        "--enable-filter",
+        "--enable-hash",
+        "--enable-session",
+        "--with-config-file-path=/etc/php/7.0/fpm",
+        "--with-config-file-scan-dir=/etc/php/7.0/fpm/conf.d",
+        "--with-fpm-user=www-data",
+        "--with-fpm-group=www-data",
+        "--without-libxml",
+        "--enable-json"
+      ],
+      "toolchain": "Linux x86_64\ncc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0\nautoconf (GNU Autoconf) 2.71\nre2c 3.0\n",
+      "libc": [
+        "glibc",
+        "2.35"
+      ],
+      "cli_cases": {
+        "authentic": {
+          "G|S5f5f486f73742d64656d6f": "V6c65676974",
+          "G|S5f5f5365637572652d64656d6f": "V6c65676974"
+        },
+        "authentic-array": {
+          "G|S5f5f486f73742d64656d6f": "A",
+          "G|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+          "G|S5f5f5365637572652d64656d6f": "A",
+          "G|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+          "G|S5f5f5365637572652d64656d6f/I1": "V74776f"
+        },
+        "authentic-suffix": {
+          "G|S5f5f486f73742d64656d6f5f78": "V6f6b"
+        },
+        "authentic-then-bad": {
+          "G|S5f5f486f73742d64656d6f": "V74727573746564"
+        },
+        "bad-then-authentic": {
+          "G|S5f5f486f73742d64656d6f": "V74727573746564"
+        },
+        "binary-values": {
+          "G|S706c61696e": "V410042",
+          "G|S706c7573": "V6f6e652074776f"
+        },
+        "cookie-name-not-decoded": {
+          "G|S5f5f486f73742d64656d6f": "V6c69746572616c",
+          "G|S617272": "A",
+          "G|S617272/S78": "V76616c7565"
+        },
+        "dot-host": {},
+        "dot-secure": {},
+        "duplicates": {
+          "G|S5f5f486f73742d64656d6f": "V6c617374",
+          "G|S647570": "V6c617374"
+        },
+        "fallback-host": {},
+        "fallback-secure": {},
+        "indexed-host": {},
+        "indexed-secure": {},
+        "leading-space": {
+          "G|S5f5f486f73742d64656d6f": "V6f6b",
+          "G|S706c61696e": "V6f6e65"
+        },
+        "nested-prefix": {
+          "G|S7072656673": "A"
+        },
+        "normal-alias-duplicate": {
+          "G|S615f62": "V6c617374"
+        },
+        "normal-array": {
+          "G|S615f62": "V74776f",
+          "G|S617272": "A",
+          "G|S617272/S78": "V6c617374",
+          "G|S6c697374": "A",
+          "G|S6c697374/I0": "V61",
+          "G|S6c697374/I1": "V62",
+          "G|S6e756d": "A",
+          "G|S6e756d/I0": "V7a",
+          "G|S6e756d/S3031": "V70",
+          "G|S706c61696e": "V6f6e65"
+        },
+        "short-prefix": {
+          "G|S5f": "V6f6e65",
+          "G|S5f5f": "V74776f",
+          "G|S5f5f486f7374": "V7468726565",
+          "G|S5f5f536563757265": "V666f7572"
+        }
+      },
+      "cases": {
+        "authentic": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "V6c65676974",
+              "C|S5f5f5365637572652d64656d6f": "V6c65676974",
+              "G|S5f5f486f73742d64656d6f": "V6c65676974",
+              "G|S5f5f5365637572652d64656d6f": "V6c65676974",
+              "P|S5f5f486f73742d64656d6f": "V6c65676974",
+              "P|S5f5f5365637572652d64656d6f": "V6c65676974"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "V6c65676974",
+              "C|S5f5f5365637572652d64656d6f": "V6c65676974",
+              "G|S5f5f486f73742d64656d6f": "V6c65676974",
+              "G|S5f5f5365637572652d64656d6f": "V6c65676974",
+              "P|S5f5f486f73742d64656d6f": "V6c65676974",
+              "P|S5f5f5365637572652d64656d6f": "V6c65676974"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "__Host-demo=legit; __Secure-demo=legit",
+            "form": "__Host-demo=legit&__Secure-demo=legit"
+          }
+        },
+        "authentic-array": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "A",
+              "C|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "C|S5f5f5365637572652d64656d6f": "A",
+              "C|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "C|S5f5f5365637572652d64656d6f/I1": "V74776f",
+              "G|S5f5f486f73742d64656d6f": "A",
+              "G|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "G|S5f5f5365637572652d64656d6f": "A",
+              "G|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "G|S5f5f5365637572652d64656d6f/I1": "V74776f",
+              "P|S5f5f486f73742d64656d6f": "A",
+              "P|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "P|S5f5f5365637572652d64656d6f": "A",
+              "P|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "P|S5f5f5365637572652d64656d6f/I1": "V74776f"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "A",
+              "C|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "C|S5f5f5365637572652d64656d6f": "A",
+              "C|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "C|S5f5f5365637572652d64656d6f/I1": "V74776f",
+              "G|S5f5f486f73742d64656d6f": "A",
+              "G|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "G|S5f5f5365637572652d64656d6f": "A",
+              "G|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "G|S5f5f5365637572652d64656d6f/I1": "V74776f",
+              "P|S5f5f486f73742d64656d6f": "A",
+              "P|S5f5f486f73742d64656d6f/S78": "V6c65676974",
+              "P|S5f5f5365637572652d64656d6f": "A",
+              "P|S5f5f5365637572652d64656d6f/I0": "V6f6e65",
+              "P|S5f5f5365637572652d64656d6f/I1": "V74776f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "__Host-demo[x]=legit;__Secure-demo[]=one;__Secure-demo[]=two",
+            "form": "__Host-demo[x]=legit&__Secure-demo[]=one&__Secure-demo[]=two"
+          }
+        },
+        "authentic-suffix": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f5f78": "V6f6b",
+              "G|S5f5f486f73742d64656d6f5f78": "V6f6b",
+              "P|S5f5f486f73742d64656d6f5f78": "V6f6b"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f5f78": "V6f6b",
+              "G|S5f5f486f73742d64656d6f5f78": "V6f6b",
+              "P|S5f5f486f73742d64656d6f5f78": "V6f6b"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "__Host-demo.x=ok",
+            "form": "__Host-demo.x=ok"
+          }
+        },
+        "authentic-then-bad": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "V74727573746564",
+              "G|S5f5f486f73742d64656d6f": "V74727573746564",
+              "P|S5f5f486f73742d64656d6f": "V74727573746564"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "V74727573746564",
+              "G|S5f5f486f73742d64656d6f": "V74727573746564",
+              "P|S5f5f486f73742d64656d6f": "V74727573746564"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "__Host-demo=trusted;._Host-demo=untrusted",
+            "form": "__Host-demo=trusted&._Host-demo=untrusted"
+          }
+        },
+        "bad-then-authentic": {
+          "responses": [
+            {
+              "C|S5f5f486f73742d64656d6f": "V74727573746564",
+              "G|S5f5f486f73742d64656d6f": "V74727573746564",
+              "P|S5f5f486f73742d64656d6f": "V74727573746564"
+            },
+            {
+              "C|S5f5f486f73742d64656d6f": "V74727573746564",
+              "G|S5f5f486f73742d64656d6f": "V74727573746564",
+              "P|S5f5f486f73742d64656d6f": "V74727573746564"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Host-demo=untrusted;__Host-demo=trusted",
+            "form": "._Host-demo=untrusted&__Host-demo=trusted"
+          }
+        },
+        "binary-values": {
+          "responses": [
+            {
+              "C|S706c61696e": "V410042",
+              "C|S706c7573": "V6f6e652074776f",
+              "G|S706c61696e": "V410042",
+              "G|S706c7573": "V6f6e652074776f",
+              "P|S706c61696e": "V410042",
+              "P|S706c7573": "V6f6e652074776f"
+            },
+            {
+              "C|S706c61696e": "V410042",
+              "C|S706c7573": "V6f6e652074776f",
+              "G|S706c61696e": "V410042",
+              "G|S706c7573": "V6f6e652074776f",
+              "P|S706c61696e": "V410042",
+              "P|S706c7573": "V6f6e652074776f"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "plain=A%00B;plus=one+two",
+            "form": "plain=A%00B&plus=one+two"
+          }
+        },
+        "cookie-name-not-decoded": {
+          "responses": [
+            {
+              "C|S253546253546486f73742d64656d6f": "V6c69746572616c",
+              "C|S61727225354278253544": "V76616c7565",
+              "G|S5f5f486f73742d64656d6f": "V6c69746572616c",
+              "G|S617272": "A",
+              "G|S617272/S78": "V76616c7565",
+              "P|S5f5f486f73742d64656d6f": "V6c69746572616c",
+              "P|S617272": "A",
+              "P|S617272/S78": "V76616c7565"
+            },
+            {
+              "C|S253546253546486f73742d64656d6f": "V6c69746572616c",
+              "C|S61727225354278253544": "V76616c7565",
+              "G|S5f5f486f73742d64656d6f": "V6c69746572616c",
+              "G|S617272": "A",
+              "G|S617272/S78": "V76616c7565",
+              "P|S5f5f486f73742d64656d6f": "V6c69746572616c",
+              "P|S617272": "A",
+              "P|S617272/S78": "V76616c7565"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "%5F%5FHost-demo=literal;arr%5Bx%5D=value",
+            "form": "%5F%5FHost-demo=literal&arr%5Bx%5D=value"
+          }
+        },
+        "dot-host": {
+          "responses": [
+            {},
+            {}
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Host-demo=demo",
+            "form": "._Host-demo=demo"
+          }
+        },
+        "dot-secure": {
+          "responses": [
+            {},
+            {}
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Secure-demo=demo",
+            "form": "._Secure-demo=demo"
+          }
+        },
+        "duplicates": {
+          "responses": [
+            {
+              "C|S647570": "V6669727374",
+              "C|S5f5f486f73742d64656d6f": "V6669727374",
+              "G|S647570": "V6c617374",
+              "G|S5f5f486f73742d64656d6f": "V6c617374",
+              "P|S647570": "V6c617374",
+              "P|S5f5f486f73742d64656d6f": "V6c617374"
+            },
+            {
+              "C|S647570": "V6669727374",
+              "C|S5f5f486f73742d64656d6f": "V6669727374",
+              "G|S647570": "V6c617374",
+              "G|S5f5f486f73742d64656d6f": "V6c617374",
+              "P|S647570": "V6c617374",
+              "P|S5f5f486f73742d64656d6f": "V6c617374"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "dup=first;dup=last;__Host-demo=first;__Host-demo=last",
+            "form": "dup=first&dup=last&__Host-demo=first&__Host-demo=last"
+          }
+        },
+        "fallback-host": {
+          "responses": [
+            {},
+            {}
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "_[Host-demo=demo",
+            "form": "_[Host-demo=demo"
+          }
+        },
+        "fallback-secure": {
+          "responses": [
+            {},
+            {}
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "_[Secure-demo=demo",
+            "form": "_[Secure-demo=demo"
+          }
+        },
+        "indexed-host": {
+          "responses": [
+            {},
+            {}
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Host-demo[x]=demo",
+            "form": "._Host-demo[x]=demo"
+          }
+        },
+        "indexed-secure": {
+          "responses": [
+            {},
+            {}
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "._Secure-demo[x]=demo",
+            "form": "._Secure-demo[x]=demo"
+          }
+        },
+        "leading-space": {
+          "responses": [
+            {
+              "C|S706c61696e": "V6f6e65",
+              "C|S5f5f486f73742d64656d6f": "V6f6b",
+              "G|S706c61696e": "V6f6e65",
+              "G|S5f5f486f73742d64656d6f": "V6f6b",
+              "P|S706c61696e": "V6f6e65",
+              "P|S5f5f486f73742d64656d6f": "V6f6b"
+            },
+            {
+              "C|S706c61696e": "V6f6e65",
+              "C|S5f5f486f73742d64656d6f": "V6f6b",
+              "G|S706c61696e": "V6f6e65",
+              "G|S5f5f486f73742d64656d6f": "V6f6b",
+              "P|S706c61696e": "V6f6e65",
+              "P|S5f5f486f73742d64656d6f": "V6f6b"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": " plain=one; __Host-demo=ok",
+            "form": "plain=one&%20%20__Host-demo=ok"
+          }
+        },
+        "nested-prefix": {
+          "responses": [
+            {
+              "C|S7072656673": "A",
+              "G|S7072656673": "A",
+              "P|S7072656673": "A"
+            },
+            {
+              "C|S7072656673": "A",
+              "G|S7072656673": "A",
+              "P|S7072656673": "A"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "prefs[__Host-nested]=demo",
+            "form": "prefs[__Host-nested]=demo"
+          }
+        },
+        "normal-alias-duplicate": {
+          "responses": [
+            {
+              "C|S615f62": "V6669727374",
+              "G|S615f62": "V6c617374",
+              "P|S615f62": "V6c617374"
+            },
+            {
+              "C|S615f62": "V6669727374",
+              "G|S615f62": "V6c617374",
+              "P|S615f62": "V6c617374"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "a.b=first;a_b=last",
+            "form": "a.b=first&a_b=last"
+          }
+        },
+        "normal-array": {
+          "responses": [
+            {
+              "C|S706c61696e": "V6f6e65",
+              "C|S615f62": "V74776f",
+              "C|S617272": "A",
+              "C|S617272/S78": "V6c617374",
+              "C|S6c697374": "A",
+              "C|S6c697374/I0": "V61",
+              "C|S6c697374/I1": "V62",
+              "C|S6e756d": "A",
+              "C|S6e756d/S3031": "V70",
+              "C|S6e756d/I0": "V7a",
+              "G|S706c61696e": "V6f6e65",
+              "G|S615f62": "V74776f",
+              "G|S617272": "A",
+              "G|S617272/S78": "V6c617374",
+              "G|S6c697374": "A",
+              "G|S6c697374/I0": "V61",
+              "G|S6c697374/I1": "V62",
+              "G|S6e756d": "A",
+              "G|S6e756d/S3031": "V70",
+              "G|S6e756d/I0": "V7a",
+              "P|S706c61696e": "V6f6e65",
+              "P|S615f62": "V74776f",
+              "P|S617272": "A",
+              "P|S617272/S78": "V6c617374",
+              "P|S6c697374": "A",
+              "P|S6c697374/I0": "V61",
+              "P|S6c697374/I1": "V62",
+              "P|S6e756d": "A",
+              "P|S6e756d/S3031": "V70",
+              "P|S6e756d/I0": "V7a"
+            },
+            {
+              "C|S706c61696e": "V6f6e65",
+              "C|S615f62": "V74776f",
+              "C|S617272": "A",
+              "C|S617272/S78": "V6c617374",
+              "C|S6c697374": "A",
+              "C|S6c697374/I0": "V61",
+              "C|S6c697374/I1": "V62",
+              "C|S6e756d": "A",
+              "C|S6e756d/S3031": "V70",
+              "C|S6e756d/I0": "V7a",
+              "G|S706c61696e": "V6f6e65",
+              "G|S615f62": "V74776f",
+              "G|S617272": "A",
+              "G|S617272/S78": "V6c617374",
+              "G|S6c697374": "A",
+              "G|S6c697374/I0": "V61",
+              "G|S6c697374/I1": "V62",
+              "G|S6e756d": "A",
+              "G|S6e756d/S3031": "V70",
+              "G|S6e756d/I0": "V7a",
+              "P|S706c61696e": "V6f6e65",
+              "P|S615f62": "V74776f",
+              "P|S617272": "A",
+              "P|S617272/S78": "V6c617374",
+              "P|S6c697374": "A",
+              "P|S6c697374/I0": "V61",
+              "P|S6c697374/I1": "V62",
+              "P|S6e756d": "A",
+              "P|S6e756d/S3031": "V70",
+              "P|S6e756d/I0": "V7a"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "plain=one;a.b=two;arr[x]=first;arr[x]=last;list[]=a;list[]=b;num[01]=p;num[0]=z",
+            "form": "plain=one&a.b=two&arr[x]=first&arr[x]=last&list[]=a&list[]=b&num[01]=p&num[0]=z"
+          }
+        },
+        "short-prefix": {
+          "responses": [
+            {
+              "C|S5f": "V6f6e65",
+              "C|S5f5f": "V74776f",
+              "C|S5f5f486f7374": "V7468726565",
+              "C|S5f5f536563757265": "V666f7572",
+              "G|S5f": "V6f6e65",
+              "G|S5f5f": "V74776f",
+              "G|S5f5f486f7374": "V7468726565",
+              "G|S5f5f536563757265": "V666f7572",
+              "P|S5f": "V6f6e65",
+              "P|S5f5f": "V74776f",
+              "P|S5f5f486f7374": "V7468726565",
+              "P|S5f5f536563757265": "V666f7572"
+            },
+            {
+              "C|S5f": "V6f6e65",
+              "C|S5f5f": "V74776f",
+              "C|S5f5f486f7374": "V7468726565",
+              "C|S5f5f536563757265": "V666f7572",
+              "G|S5f": "V6f6e65",
+              "G|S5f5f": "V74776f",
+              "G|S5f5f486f7374": "V7468726565",
+              "G|S5f5f536563757265": "V666f7572",
+              "P|S5f": "V6f6e65",
+              "P|S5f5f": "V74776f",
+              "P|S5f5f486f7374": "V7468726565",
+              "P|S5f5f536563757265": "V666f7572"
+            }
+          ],
+          "same_worker": true,
+          "diagnostic_count": 0,
+          "shutdown_diagnostic_count": 0,
+          "wire": {
+            "cookie": "_=one;__=two;__Host=three;__Secure=four",
+            "form": "_=one&__=two&__Host=three&__Secure=four"
+          }
+        }
+      },
+      "phpt": {
+        "statuses": [
+          "PASS"
+        ],
+        "returncode": 0
+      },
+      "benign_runtime_checks": 36
+    }
+  },
+  "fpm_requests": 76,
+  "cli_cases_per_build": 19,
+  "cleanup": {
+    "owned_fpm_instances": 38,
+    "forced_cleanup": 0,
+    "all_direct_children_reaped": true,
+    "unexpected_request_diagnostics": 0,
+    "unexpected_shutdown_diagnostics": 0
+  },
+  "execution_history": [
+    {
+      "run": 43603142926,
+      "result": "FAIL",
+      "cause": "Mixed string/integer map keys could not be sorted for evidence JSON; parent FPM18 requests, candidate0"
+    },
+    {
+      "run": 43603792774,
+      "result": "PAIRED_COOKIE_RUNTIME_PASS",
+      "scope": "76 FPM requests, CLI19 each, typed evidence, diagnostics and cleanup"
+    }
+  ],
+  "retained_raw": {
+    "archive": "evidence/cookie-20261114/raw.tar.gz",
+    "archive_sha256": "30980c3c046e391f17fa10f2c82de3061e6e45dd0f64f84651ad1bffad60c881",
+    "index": "evidence/cookie-20261114/raw-files.json",
+    "index_sha256": "d18ffc6ac4f81148e20e6d115a24ebc05e0f649ad3a0c377b14117190eaf0994",
+    "files": 493,
+    "uncompressed_bytes": 198711
+  }
+}
