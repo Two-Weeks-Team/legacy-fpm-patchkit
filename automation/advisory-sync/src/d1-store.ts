@@ -27,8 +27,8 @@ export class D1Store implements Store {
     const payload = encodeSnapshot(snapshot);
     await this.db.batch([
       this.db.prepare(`INSERT INTO runs(id,trigger,started_at,status,fence) VALUES(?,?,?,'RUNNING',
-        CASE WHEN EXISTS(SELECT 1 FROM sync_control WHERE id=1 AND lease_token=? AND lease_until>?) THEN 1 ELSE 0 END)
-        ON CONFLICT(id) DO UPDATE SET fence=excluded.fence`).bind(id, report.trigger, report.startedAt, id, Date.now()),
+        CASE WHEN EXISTS(SELECT 1 FROM sync_control WHERE id=1 AND lease_token=? AND lease_until>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER)) THEN 1 ELSE 0 END)
+        ON CONFLICT(id) DO UPDATE SET fence=excluded.fence`).bind(id, report.trigger, report.startedAt, id),
       this.db.prepare('INSERT OR IGNORE INTO snapshots(revision,payload,created_at) VALUES(?,?,?)').bind(snapshot.revision, payload, report.finishedAt),
       this.db.prepare('UPDATE sync_control SET current_revision=?,last_success_at=?,last_run_id=?,last_success_run_id=?,lease_token=NULL,lease_until=NULL WHERE id=1 AND lease_token=?').bind(snapshot.revision, report.finishedAt, id, id, id),
       this.db.prepare("UPDATE runs SET status='SUCCESS',finished_at=?,report=? WHERE id=?").bind(report.finishedAt, JSON.stringify(report), id),
@@ -37,7 +37,7 @@ export class D1Store implements Store {
   async fail(id: string, report: BatchReport): Promise<void> {
     await this.db.batch([
       this.db.prepare(`INSERT INTO runs(id,trigger,started_at,status,finished_at,report) VALUES(?,?,?,'FAILED',?,?)
-        ON CONFLICT(id) DO UPDATE SET status='FAILED',finished_at=excluded.finished_at,report=excluded.report`).bind(id, report.trigger, report.startedAt, report.finishedAt, JSON.stringify(report)),
+        ON CONFLICT(id) DO UPDATE SET status='FAILED',finished_at=excluded.finished_at,report=excluded.report WHERE runs.status!='SUCCESS'`).bind(id, report.trigger, report.startedAt, report.finishedAt, JSON.stringify(report)),
       this.db.prepare('UPDATE sync_control SET last_run_id=?,lease_token=NULL,lease_until=NULL WHERE id=1 AND lease_token=?').bind(id, id),
     ]);
   }

@@ -17,6 +17,17 @@ export async function runBatch(store: Store, seed: Seed, options: { trigger: str
     await store.commit(runId, snapshot, report); owned = false;
     return report;
   } catch (error) {
+    // A durable commit can succeed even when its transport acknowledgement or
+    // subsequent local lock cleanup fails. Reconcile that identity before fail().
+    let committed: BatchReport | null | undefined;
+    try { committed = (await store.load())?.lastSuccessReport; } catch { /* storage may still be unavailable */ }
+    if (committed?.runId === runId && committed.status === 'SUCCESS') {
+      owned = false;
+      try { await store.release(runId); } catch {
+        return { ...committed, cleanupWarning: 'Snapshot committed; lease/lock cleanup failed. Inspect local lock ownership before recovery.' };
+      }
+      return committed;
+    }
     const report: BatchReport = { runId, status: 'FAILED', trigger: options.trigger, startedAt, finishedAt: new Date().toISOString(),
       error: (error instanceof Error ? error.message : 'Batch failed').slice(0, 400) };
     await store.fail(runId, report); owned = false;

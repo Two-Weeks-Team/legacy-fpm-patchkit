@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, readFile, writeFile, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { runBatch } from '../src/batch.ts';
+import { raw } from './fixtures.ts';
 import { FileStore } from '../src/file-store.ts';
 import { buildSnapshot } from '../src/core.ts';
 import { fixture } from './fixtures.ts';
@@ -44,4 +46,20 @@ test('state symlinks are rejected without reading or overwriting their target', 
   await symlink(outside, join(dir, 'current.json'));
   await assert.rejects(store.load(), /symbolic|symlink|link|ELOOP/);
   assert.equal(await readFile(outside, 'utf8'), 'original');
+});
+
+
+test('a committed local checkpoint stays successful when lock cleanup fails', async () => {
+  const dir = await folder();
+  class CleanupFailureStore extends FileStore {
+    override async release(_id: string): Promise<void> { throw new Error('simulated local lock cleanup failure'); }
+  }
+  const result = await runBatch(new CleanupFailureStore(dir), await fixture(), {
+    trigger: 'cleanup-failure', fetcher: async () => new Response(JSON.stringify([raw()])),
+  });
+  assert.equal(result.status,'SUCCESS');
+  assert.match(result.cleanupWarning ?? '', /lock|lease/i);
+  const view = await new FileStore(dir).load();
+  assert.equal(view?.lastSuccessReport?.status,'SUCCESS');
+  assert.equal(view?.lastAttempt?.status,'SUCCESS');
 });
