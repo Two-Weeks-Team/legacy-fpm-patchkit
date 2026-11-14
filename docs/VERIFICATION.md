@@ -111,6 +111,7 @@ These results remain failures/limits, not exceptions silently promoted to PASS. 
 | `POLICY_DIFF_OBSERVED` | The named benign serializer-policy difference was observed against a hashed stock copy |
 | `LOCAL_RUNTIME_PASS` | The paired local ACL/filter controls, target Valgrind observation, output/PHPT checks and benign regressions passed on the recorded portable binaries |
 | `PAIRED_MULTIPART_RUNTIME_PASS` | The recorded parent/candidate portable builds met the small multipart request, per-request warning, shutdown-tail, INI PHPT and normal regression contracts; no production or broad compatibility verdict |
+| `PAIRED_COOKIE_RUNTIME_PASS` | The recorded multipart parent/cookie candidate matched 19 CLI cases per build, 76 actual FPM requests with typed Cookie/GET/POST results, PHPT, quiet diagnostics, clean shutdown and normal regression contracts; no authentication, production or broad compatibility verdict |
 | `INSPECTED` | ELF/hash facts read without binary execution |
 | `REHEARSAL_PASS` | Synthetic file backup/replace/restore worked |
 
@@ -123,3 +124,11 @@ The [final paired run 43599570950](https://github.com/Two-Weeks-Team/legacy-fpm-
 The original run 43597987318 failed at its first parent case because its PHP fixture emitted output before starting a session. Candidate runtime and later tests did not run. This remains a tool failure. Output buffering corrected it; a further review found aggregate warnings could mask a 2+0 request distribution and a later off-channel warning. Request-specific log slices and explicit shutdown tails now reject those patterns. Their negative decision tests are synthetic; actual FPM results come from the paired runs.
 
 Run 43598955155 completed the same source/binary behavior before the final tail guard; its 60 responses agree with the final run after removing PIDs. Same-head default-build Checks 43599554284 passed four jobs and 105 unit tests, but is not evidence for the multipart limits. The fresh multipart evidence demonstrates benign boundary/parts controls and normal preservation only; no callback END trace, Xenial/module/site acceptance, load test or production deployment is claimed.
+
+## Cookie parent/candidate evidence
+
+[Paired run 43603792774](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43603792774), head `0f0013bfdc74405b5cbc4379df8c6353b3f00f5b`, completed source preparation, both portable builds, 19 actual CLI cases per build, 76 FPM requests, one PHPT per build and 36 separate normal checks per build. Parent source `01ea4166…` and candidate `f5f6b9f4…` are bound to executable hashes in [the public result](../evidence/cookie-portable-20261114.json). [493 retained raw files](../evidence/cookie-20261114/README.md) preserve evidence after artifact expiry. All 38 FPM instances were reaped without forced cleanup; request diagnostics and shutdown tails contained no unexpected messages. An independent model matched all typed Cookie/GET/POST maps and PHPT output.
+
+The original run 43603142926 failed when JSON sorting compared mixed integer/string keys while recording the tenth parent fixture. It completed 19 parent CLI cases and nine parent FPM cases (18 responses); candidate runtime, PHPT and normal checks did not run. Explicit typed-path recording corrected this tool failure without changing PHP sources or request strings. Same-head default-build Checks 43603777589 passed four jobs and 114 unit tests, and remains separate from cookie proof.
+
+The candidate alone rejects manufactured protected prefixes, including bracket fallback and indexed/nested keys; authentic names, ordinary arrays, duplicate rules and binary values are preserved. This single successful portable Linux execution does not prove cookie authentication, TLS/attribute enforcement, Xenial/module/site acceptance, load or memory safety, or production deployment. See [behavior and reproduction](COOKIE_VARIANT.md).

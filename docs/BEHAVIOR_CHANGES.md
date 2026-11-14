@@ -26,6 +26,12 @@ See the [variant verification and retained evidence](ACL_FILTER_VARIANT.md).
 
 Every Content-Disposition part consumes the request-local budget, including fields/files that existing limits or disabled uploads would skip. An extra part triggers one warning and parsing stops; already accepted fields/files remain. Review applications that depend on processing more parts than this budget. The limit resets for every request; it does not decrement the configured INI value. Core-globals layout changes require a fresh build, and compatibility with existing external extensions is not inherited. See [actual verification and limits](MULTIPART_VARIANT.md).
 
+## Optional cookie variant
+
+`cookie-20261114` includes the multipart variant and rejects names that gain a `__Host-` or `__Secure-` prefix through normalization. The original registration name is preserved separately, and each actual string assignment key is checked, including indexed names and unmatched-bracket fallback. A forbidden nested key can leave an already-created ordinary parent array empty. The shared function applies the rule to Cookie, GET and POST.
+
+Authentic protected names, ordinary arrays and integer/string key distinctions remain supported. Cookie names are not newly URL-decoded. Cookie values retain existing decoding; NUL-containing values remain values rather than name delimiters. Top-level Cookie duplicates remain first-win and GET/POST duplicates last-win. This validates name provenance, not authentication or cookie Secure/Domain attributes. See [paired runtime evidence and limits](COOKIE_VARIANT.md).
+
 ## Unchanged deployment boundary
 
 The kit does not replace CLI system packages, third-party modules, opcache, application code, a database or an entire container. Compiled output contains both CLI and FPM for isolated testing, but the historical operational scope was a single FPM executable. Use an explicit scope for your own rollout.
