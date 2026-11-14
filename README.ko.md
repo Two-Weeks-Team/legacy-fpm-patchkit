@@ -26,6 +26,19 @@
 기존 51건을 [실제 구현 필요성](docs/IMPLEMENTATION_NECESSITY.ko.md)부터 재검토했습니다. 공개 Xenial FPM 기준 **수정 필요 22 / 조건부 23 / 다른 OS·SAPI 5 / 해당 경로 없음 1건**입니다. 먼저 해당 조건을 확인하고 필요한 보호만 구현합니다.
 <!-- SECURITY_COVERAGE_END -->
 
+## 실제 Linux에서 확인한 추가 수정 두 건
+
+명시적으로 선택하는 **`acl-filter-20261114`** 소스 변형에 다음 두 보호를 추가했습니다.
+
+| 공식 공지 | 원인과 수정 | 실제 관측 |
+|---|---|---|
+| [CVE-2026-91768 / GHSA-62xp-839h-2637](https://github.com/php/php-src/security/advisories/GHSA-62xp-839h-2637) | FPM이 IPv6 주소 16바이트 중 12바이트만 비교했습니다. 전체 주소를 비교하도록 고치고 mapped IPv4의 오프셋12·비교길이4는 유지했습니다. | 기준선에서 허용되던 다른 IPv6 주소가 후보에서 거부됐습니다. 정확 일치와 IPv4·mapped 정상 동작도 유지됐습니다. |
+| [GHSA-ch8v-r6jh-4vvr](https://github.com/php/php-src/security/advisories/GHSA-ch8v-r6jh-4vvr) — CVE 번호 없음 | URL 인코딩 표 256칸 중 255칸만 초기화했습니다. 모든 칸을 초기화하도록 고쳤습니다. | 기준선에서 Valgrind 미초기화 읽기37회, 후보 오류0건을 확인했습니다. 필터 출력270건과 PHPT 정상 대조도 통과했습니다. |
+
+[실제 Linux CI](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43592653493), [해시를 포함한 결과](evidence/acl-filter-portable-20261114.json), [빌드·검증 방법](docs/ACL_FILTER_VARIANT.md)을 공개합니다. 검증 환경은 Ubuntu22.04 portable CLI/FPM입니다. Xenial ABI·외부 모듈·운영 배포는 별도 검증 대상입니다.
+
+위 대응표는 보존된 기본 **build007** 소스 기준입니다. 이 변형을 선택하면 두 구현이 추가되어 같은 공식66건에서 **구현4 / 해당 경로 부재14 / 예정48건**이 됩니다. 준비 명령은 `python3 -m patchkit prepare --variant acl-filter-20261114 --output .work/source-candidate`입니다. 기본 명령과 v0.1.0 다운로드는 build007을 유지합니다.
+
 공식 공지는 [Cloudflare Workers 매시간 예약·로컬 배치](docs/ADVISORY_AUTOMATION.ko.md)로 자동 수집할 수 있습니다. 새 공지와 변경 항목은 별도 구현 작업 목록으로 제공됩니다.
 
 ## 어떤 문제가 있었고, 무엇을 고쳤나요?
@@ -56,7 +69,7 @@
 | 공식 원본에서 재구성 | vendor 패치 84개, 변경 파일 46개의 전후 해시, 전체 소스 해시 일치 | 공개한 누적 패치가 의도한 소스를 재현함. 공격 차단 시험과는 구분 |
 | Ubuntu 16.04.7·22.04 x86-64의 실제 FPM | **환경별 정상 기능 검사 36개 통과**: 세션 형식 3종 × 진행률 On/Off | 일반 세션 유지, 형식 변경 정책, 작은 업로드의 내용·정리, 같은 worker 연속 처리 확인 |
 | Xenial 원본·패치 비교 | **의도한 정책 차이 관측**, 바이너리 해시 기록 | 양쪽이 똑같이 통과하는 시험이 아니라 실제 동작 변화 확인 |
-| 도구·공개 배포 파일 | **현재 소스 단위 테스트 66개 통과**. v0.1.0 다운로드는 당시 45개 시험·체크섬·GitHub 출처 증명 검증 | 검증 도구와 배포 파일의 정합성. 개별 사이트의 배포 승인과는 구분 |
+| 도구·공개 배포 파일 | **현재 소스 단위 테스트 95개 통과**. v0.1.0 다운로드는 당시 45개 시험·체크섬·GitHub 출처 증명 검증 | 검증 도구와 배포 파일의 정합성. 개별 사이트의 배포 승인과는 구분 |
 
 [상세 결과와 실패 이력](docs/VERIFICATION.md)을 공개했습니다. 과거 msgpack 실패와 후보에서만 발생한 PHPT 실패도 보존했습니다. 이 릴리스는 외부 모듈 결함·크롤링/DDoS·기존 침해를 해결하거나 모든 사이트의 호환성을 보장하지 않습니다. **공개 취약점 두 종류의 엔진 수정과 명시한 PHP 7.0 보호 보완을 제공하며, 실증과 기대 효과를 구분합니다.** 사용 전 [동작 변화](docs/BEHAVIOR_CHANGES.md)와 [지원 범위](SUPPORT.md)를 확인하세요.
 

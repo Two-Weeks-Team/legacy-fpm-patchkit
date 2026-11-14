@@ -28,6 +28,19 @@ All **66 published official PHP repository advisories** were compared with the p
 The original 51 items were [reviewed for actual implementation necessity](docs/IMPLEMENTATION_NECESSITY.md): **22 required / 23 conditional / 5 other OS/SAPI / 1 mechanism absent** in the published Xenial FPM scope. Establish prerequisites before implementing relevant protection.
 <!-- SECURITY_COVERAGE_END -->
 
+## Two additional fixes with real Linux evidence
+
+The explicit **`acl-filter-20261114`** source variant adds two tested protections:
+
+| Advisory | Cause and change | Observed result |
+|---|---|---|
+| [CVE-2026-91768 / GHSA-62xp-839h-2637](https://github.com/php/php-src/security/advisories/GHSA-62xp-839h-2637) | FPM compared only 12 of 16 IPv6 address bytes. Compare the complete address; preserve mapped IPv4's offset 12 / length 4. | A different IPv6 address accepted by the baseline was rejected by the candidate. Exact matches and IPv4/mapped controls still behaved correctly. |
+| [GHSA-ch8v-r6jh-4vvr](https://github.com/php/php-src/security/advisories/GHSA-ch8v-r6jh-4vvr) (no assigned CVE) | URL encoding initialized 255 of 256 table entries. Initialize every entry. | Valgrind observed 37 uninitialized reads on the baseline and zero candidate errors. All 270 filter output cases and PHPT controls passed. |
+
+[Paired Linux CI](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43592653493), [hashed results](evidence/acl-filter-portable-20261114.json) and [build/verification commands](docs/ACL_FILTER_VARIANT.md) are public. This is Ubuntu 22.04 portable CLI/FPM evidence; Xenial ABI, external modules and production deployment require their own validation.
+
+The matrix above describes the preserved default **build007** source. Selecting this variant adds the two implementations: **4 implemented / 14 mechanism-absent / 48 planned** in the same 66-advisory catalog. Use `python3 -m patchkit prepare --variant acl-filter-20261114 --output .work/source-candidate`; the default command and v0.1.0 archive retain build007.
+
 Official advisories can also be [collected hourly with Cloudflare Workers or a local batch script](docs/ADVISORY_AUTOMATION.md); new and revised items become separate implementation work.
 
 ## What was wrong, and what is addressed
@@ -58,7 +71,7 @@ The port also anticipates related failure modes in PHP 7.0. These are concrete p
 | Official-source reconstruction | 84 vendor patches, 46 changed-file pre/post hashes and both full normalized source digests match | The published cumulative patch reconstructs the intended source; this is not exploit validation |
 | Native FPM on Ubuntu 16.04.7 and 22.04 x86-64 | **36 named benign checks per environment**: three session codecs × progress On/Off | Plain session persistence, codec policy, small upload content/cleanup and same-worker continuity |
 | Stock/candidate comparison on Xenial | **Policy difference observed** with hashed binaries | A real intentional behavior change, not two tests that both pass unchanged |
-| Toolkit and public download | **66 unit tests** on current source; v0.1.0 download passed 45 tests, checksum and GitHub provenance verification | Tooling regressions and source-package integrity, not a site's deployment readiness |
+| Toolkit and public download | **95 unit tests** on current source; v0.1.0 download passed 45 tests, checksum and GitHub provenance verification | Tooling regressions and source-package integrity, not a site's deployment readiness |
 
 [Exact records and failure history](docs/VERIFICATION.md) are published. Historical msgpack failures and a candidate-only PHPT failure remain documented. This release does not fix third-party modules, prevent scraping/DDoS, repair an existing compromise, or certify application compatibility. Its core claim is **the two targeted engine backports plus the stated PHP 7.0 protective adaptations, with evidence separated from expected effects**. Read [behavior changes](docs/BEHAVIOR_CHANGES.md) and [support limits](SUPPORT.md) before use.
 

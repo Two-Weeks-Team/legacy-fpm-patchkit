@@ -1,0 +1,312 @@
+{
+  "schema": 1,
+  "variant": "acl-filter-20261114",
+  "base_variant": "build007",
+  "scope": "Ubuntu 22.04 x86_64 portable; not Xenial ABI, external modules, application exposure or production deployment",
+  "workflow_run": 43592653493,
+  "head_sha": "d216af25412110f6f6b1d74962e220db361da9ba",
+  "catalog_accounting_commit": "71b48b05d64d948c1bfb97886c5a0bcc61c1b68d",
+  "url": "https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43592653493",
+  "artifact": {
+    "created_at": "2026-11-14T12:03:57Z",
+    "digest": "sha256:6bd878d0dc3e961cc0ffb4128524310828737eba29ec3ac81c77ecee9900a84f",
+    "expired": false,
+    "id": 14112629466,
+    "name": "acl-filter-paired-native",
+    "size_in_bytes": 31129461
+  },
+  "result": "LOCAL_RUNTIME_PASS",
+  "production": "NOT_ACCESSED",
+  "additional_implemented_advisories": [
+    "GHSA-62xp-839h-2637",
+    "GHSA-ch8v-r6jh-4vvr"
+  ],
+  "inherited_catalog_counts": {
+    "RESOLVED": 2,
+    "NOT_APPLICABLE": 14,
+    "PLANNED": 50
+  },
+  "variant_catalog_counts": {
+    "RESOLVED": 4,
+    "NOT_APPLICABLE": 14,
+    "PLANNED": 48
+  },
+  "baseline_ledger_sha256": "01fe407a1f649d268dcb93951f4f2f93cf01d13f4ec1b1e7a1249d9c1e763932",
+  "system": "Linux-6.8.0-1070-azure-x86_64-with-glibc2.35",
+  "bindv6only": "0",
+  "sides": {
+    "baseline": {
+      "source_identity": {
+        "normalized_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+        "patch_sha256": "a7db5d018d5f7cef41c726b61eccd794356c5d06bb1bb4322027dde88fbd108c",
+        "result": "SOURCE_VERIFIED",
+        "variant": "build007"
+      },
+      "binaries": {
+        "php": "dc5f37986e1fd50ee24bcac1da0ee6f31aeb96a4790b36350031bcd15e8d9158",
+        "php-fpm": "0a5e154fcf23f9405c2c77e2fa6f96311378e995a6d734377e92e4f787a9dbcb"
+      },
+      "profile": "portable",
+      "toolchain": "Linux x86_64\ncc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0\nautoconf (GNU Autoconf) 2.71\nre2c 3.0\n",
+      "libc": [
+        "glibc",
+        "2.35"
+      ],
+      "configure": [
+        "--prefix=/opt/legacy-fpm-patchkit",
+        "--enable-fpm",
+        "--enable-cli",
+        "--disable-cgi",
+        "--disable-phpdbg",
+        "--disable-all",
+        "--disable-debug",
+        "--disable-rpath",
+        "--disable-static",
+        "--with-pic",
+        "--without-pear",
+        "--enable-filter",
+        "--enable-hash",
+        "--enable-session",
+        "--with-config-file-path=/etc/php/7.0/fpm",
+        "--with-config-file-scan-dir=/etc/php/7.0/fpm/conf.d",
+        "--with-fpm-user=www-data",
+        "--with-fpm-group=www-data",
+        "--without-libxml",
+        "--enable-json"
+      ],
+      "acl": {
+        "A1": {
+          "allowed_clients": "::1",
+          "peer": "::1",
+          "response_body_hex": "61636c2d6f6b0a",
+          "refusal_log_observed": false,
+          "expected_allow": true,
+          "result": "PASS"
+        },
+        "A2": {
+          "allowed_clients": "::2",
+          "peer": "::1",
+          "response_body_hex": "61636c2d6f6b0a",
+          "refusal_log_observed": false,
+          "expected_allow": true,
+          "result": "PASS"
+        },
+        "A3": {
+          "allowed_clients": "127.0.0.1",
+          "peer": "127.0.0.1",
+          "response_body_hex": "61636c2d6f6b0a",
+          "refusal_log_observed": false,
+          "expected_allow": true,
+          "result": "PASS"
+        },
+        "A4": {
+          "allowed_clients": "127.0.0.2",
+          "peer": "127.0.0.1",
+          "response_body_hex": null,
+          "refusal_log_observed": true,
+          "expected_allow": false,
+          "result": "PASS"
+        },
+        "A5": {
+          "allowed_clients": "2001:db8::1",
+          "peer": "::1",
+          "response_body_hex": null,
+          "refusal_log_observed": true,
+          "expected_allow": false,
+          "result": "PASS"
+        }
+      },
+      "filter_outputs": {
+        "filter_cli": {
+          "cases": 270,
+          "mismatches": [],
+          "result": "PASS"
+        },
+        "filter_fpm": {
+          "cases": 270,
+          "mismatches": [],
+          "result": "PASS"
+        },
+        "filter_valgrind": {
+          "cases": 270,
+          "mismatches": [],
+          "result": "PASS"
+        }
+      },
+      "phpt": {
+        "existing": {
+          "returncode": 0,
+          "statuses": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "PASS",
+            "PASS"
+          ]
+        },
+        "new": {
+          "returncode": 0,
+          "statuses": [
+            "PASS"
+          ]
+        }
+      },
+      "memcheck": {
+        "unique_errors": 1,
+        "target_unique_errors": 1,
+        "occurrences": 37
+      },
+      "benign_runtime_checks": 36
+    },
+    "candidate": {
+      "source_identity": {
+        "baseline_patch_sha256": "a7db5d018d5f7cef41c726b61eccd794356c5d06bb1bb4322027dde88fbd108c",
+        "baseline_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+        "baseline_variant": "build007",
+        "changed": {
+          "ext/filter/sanitizing_filters.c": {
+            "after": "1d85822526a1156ef4f3dac7aa96fa80c9d75fb71afed7b21bda5eb261410092",
+            "before": "f073983467292eef4b10cf0bda16b06171476ac6e52b460dd98ca29a5b6235a6"
+          },
+          "main/fastcgi.c": {
+            "after": "758d260670a00433a5da6c39b6be82be9cd04a233a7c37808de21d64f43bc7f7",
+            "before": "7999278060d97efef7ac68e4828ce5f2888e8a85c25a449561518d6503e578ea"
+          }
+        },
+        "normalized_source_sha256": "a3b486acf385b7c65d345625a3f6b83d0806ee5a8d37b8bb6e6d9e4975b80e9a",
+        "patch_sha256": "23045b30b131a5a0eb9811ea7974a38b4dc8dc6694302b162fbb4b1389cfa0e9",
+        "result": "SOURCE_VERIFIED",
+        "variant": "acl-filter-20261114",
+        "variant_manifest_sha256": "e75f242ee002c1aebe29cf031541d2c80a69ecead94252780491f6c814d11f44"
+      },
+      "binaries": {
+        "php": "45a2e26b576096fd79c8ae07a0f92af68a35a92038232e703adf4b95181f4848",
+        "php-fpm": "d9159df61c8106930af3ed9f9941c6e6359d509a2c93fe3f74e7cd99fd4f3bdc"
+      },
+      "profile": "portable",
+      "toolchain": "Linux x86_64\ncc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0\nautoconf (GNU Autoconf) 2.71\nre2c 3.0\n",
+      "libc": [
+        "glibc",
+        "2.35"
+      ],
+      "configure": [
+        "--prefix=/opt/legacy-fpm-patchkit",
+        "--enable-fpm",
+        "--enable-cli",
+        "--disable-cgi",
+        "--disable-phpdbg",
+        "--disable-all",
+        "--disable-debug",
+        "--disable-rpath",
+        "--disable-static",
+        "--with-pic",
+        "--without-pear",
+        "--enable-filter",
+        "--enable-hash",
+        "--enable-session",
+        "--with-config-file-path=/etc/php/7.0/fpm",
+        "--with-config-file-scan-dir=/etc/php/7.0/fpm/conf.d",
+        "--with-fpm-user=www-data",
+        "--with-fpm-group=www-data",
+        "--without-libxml",
+        "--enable-json"
+      ],
+      "acl": {
+        "A1": {
+          "allowed_clients": "::1",
+          "peer": "::1",
+          "response_body_hex": "61636c2d6f6b0a",
+          "refusal_log_observed": false,
+          "expected_allow": true,
+          "result": "PASS"
+        },
+        "A2": {
+          "allowed_clients": "::2",
+          "peer": "::1",
+          "response_body_hex": null,
+          "refusal_log_observed": true,
+          "expected_allow": false,
+          "result": "PASS"
+        },
+        "A3": {
+          "allowed_clients": "127.0.0.1",
+          "peer": "127.0.0.1",
+          "response_body_hex": "61636c2d6f6b0a",
+          "refusal_log_observed": false,
+          "expected_allow": true,
+          "result": "PASS"
+        },
+        "A4": {
+          "allowed_clients": "127.0.0.2",
+          "peer": "127.0.0.1",
+          "response_body_hex": null,
+          "refusal_log_observed": true,
+          "expected_allow": false,
+          "result": "PASS"
+        },
+        "A5": {
+          "allowed_clients": "2001:db8::1",
+          "peer": "::1",
+          "response_body_hex": null,
+          "refusal_log_observed": true,
+          "expected_allow": false,
+          "result": "PASS"
+        }
+      },
+      "filter_outputs": {
+        "filter_cli": {
+          "cases": 270,
+          "mismatches": [],
+          "result": "PASS"
+        },
+        "filter_fpm": {
+          "cases": 270,
+          "mismatches": [],
+          "result": "PASS"
+        },
+        "filter_valgrind": {
+          "cases": 270,
+          "mismatches": [],
+          "result": "PASS"
+        }
+      },
+      "phpt": {
+        "existing": {
+          "returncode": 0,
+          "statuses": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "PASS",
+            "PASS"
+          ]
+        },
+        "new": {
+          "returncode": 0,
+          "statuses": [
+            "PASS"
+          ]
+        }
+      },
+      "memcheck": {
+        "unique_errors": 0,
+        "target_unique_errors": 0,
+        "occurrences": 0
+      },
+      "benign_runtime_checks": 36
+    }
+  },
+  "raw_file_sha256": {
+    "advisory-result/result.json": "24cb72ddd3cb6cb111841ab2bb190eb5f22c87bd6253e27f7721d84e422c11cf",
+    "advisory-result/baseline/memcheck.xml": "ec7cac37ba3a390c94f67d65f030cf040c07413b42699b1726aec78b29aec4ad",
+    "advisory-result/candidate/memcheck.xml": "c5c0301bba8c0d787dc23d0a30d120f1edc2cb0e8884ab068b8d4818b4f8dfc7",
+    "build-baseline/build.json": "a866bf3edf77b7dde15817f3348fbf7b930e5506460a6eb004272afe49998e16",
+    "build-candidate/build.json": "9b2f23fff56b58f4d57805f516037aed5f79046640162e4671849fd0cedcc76b"
+  },
+  "cleanup": {
+    "fpm_instances": 12,
+    "forced_cleanup": 0,
+    "unexpected_master_exits": 0,
+    "all_direct_children_reaped": true
+  }
+}

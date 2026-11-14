@@ -38,6 +38,38 @@ Earlier local attempts failed on missing multiarch configuration, a host-shared 
 
 These results cover the recorded built-in runtime behavior and intentional policy difference. They do not certify external extensions, an existing application's configuration, exploit resistance or a live deployment. No test binary is included in the source release.
 
+### Explicit ACL/filter variant — 2026-11-14
+
+The optional `acl-filter-20261114` source adds GHSA-62xp-839h-2637
+(CVE-2026-91768, complete IPv6 ACL comparison) and GHSA-ch8v-r6jh-4vvr
+(complete URL sanitizer table initialization). The default build007 remains
+frozen. See [selection and commands](ACL_FILTER_VARIANT.md).
+
+[Paired run 43592653493](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43592653493)
+successfully built baseline/candidate on Ubuntu 22.04 portable with the same
+toolchain. Actual FPM A2 accepted the mismatching peer on baseline and rejected
+it on candidate; exact-match, early-mismatch and mapped controls A1/A3/A4/A5
+remained correct. Baseline Valgrind reported the exact table read at
+`sanitizing_filters.c:108` 37 times; candidate had zero errors. All 270 filter
+cases, five existing PHPTs plus the new PHPT, and 36 benign checks passed on each
+binary. Twelve owned FPM instances exited cleanly. Baseline ordinary output
+also passed, so Valgrind supplies the distinguishing filter RED.
+
+[Public evidence](../evidence/acl-filter-portable-20261114.json) contains source,
+patch, binary and raw-file hashes plus the GitHub artifact digest. This does not
+establish this variant's Xenial ABI, external-module compatibility or production
+deployment. Its source catalog inherits build007 and adds two implementations:
+4 implemented / 14 mechanism-absent / 48 planned.
+
+The same-commit [Checks 43592617045](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43592617045)
+failed before build because its coverage ledgers still pinned the previous
+build driver's hash. That failure remains recorded. We compared the unchanged
+configure profiles, relinked 43 unchanged source references and the driver hash,
+and added a regression proving kit drift fails without prepared source.
+[Checks 43593350544](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43593350544)
+then passed all four jobs, including 95 unit tests on Python 3.10/3.12, the Worker
+checks and the actual default build007 build/FPM/inspection/recovery steps.
+
 ## Optional benign policy comparison
 
 In an isolated environment with two trusted **copied** binaries and the required libraries:
@@ -77,6 +109,7 @@ These results remain failures/limits, not exceptions silently promoted to PASS. 
 | `BUILT_NOT_RUNTIME_VERIFIED` | Compilation produced recorded binaries; separate runtime evidence needed |
 | `BENIGN_RUNTIME_PASS` | The named local benign behaviors passed on the recorded binary |
 | `POLICY_DIFF_OBSERVED` | The named benign serializer-policy difference was observed against a hashed stock copy |
+| `LOCAL_RUNTIME_PASS` | The paired local ACL/filter controls, target Valgrind observation, output/PHPT checks and benign regressions passed on the recorded portable binaries |
 | `INSPECTED` | ELF/hash facts read without binary execution |
 | `REHEARSAL_PASS` | Synthetic file backup/replace/restore worked |
 

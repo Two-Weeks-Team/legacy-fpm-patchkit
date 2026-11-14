@@ -5,6 +5,12 @@ It compares the full IPv6 address for `listen.allowed_clients` and initializes
 all 256 URL sanitizer lookup entries. Mapped IPv4's offset 12 / length 4 stays
 unchanged. IPv6 allowlist entries are individual addresses, not /96 ranges.
 
+## Completed portable runtime verification
+
+[Run 43592653493](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43592653493) built both variants from pinned full source on Ubuntu 22.04 x86-64 with gcc 11.4/glibc 2.35. Baseline/candidate A1–A5 behaved as specified below. Valgrind found the baseline's exact uninitialized table branch at `sanitizing_filters.c:108` (37 occurrences) and no candidate errors. The 270 byte/normal/flag cases, five existing PHPTs plus the new PHPT, and 36 benign checks passed on both builds. Twelve owned FPM instances exited cleanly.
+
+[Public evidence](../evidence/acl-filter-portable-20261114.json) binds source/patch/binary hashes, raw-file hashes and the GitHub artifact digest. The baseline's ordinary output also passed; its Valgrind observation supplies the distinguishing RED. The new variant therefore adds two implemented advisories to build007's two: 4 implemented, 14 mechanism-absent, 48 planned. No Xenial binary, external-module or production validation is claimed for this variant.
+
 The default remains `build007`. Its patch, inputs and preparation are preserved.
 The new variant has a fixed repository manifest and patch, with a manifest digest
 pinned in `patchkit/variants.py`. No arbitrary manifest path or expected-hash
@@ -44,7 +50,7 @@ candidate output is correct. A baseline 0xff output discrepancy is preserved;
 other output corruption fails. ASan, UBSan and compiler stack initialization do
 not replace this observation.
 
-The proposed paired workflow uses the existing `portable` profile on a hosted
+The completed paired workflow uses the existing `portable` profile on a hosted
 Ubuntu runner. This does not establish Xenial ABI, external-module compatibility,
 application exposure or production deployment. Source, build, runtime and CI
 results must each be reported from actual evidence before claiming resolution.
