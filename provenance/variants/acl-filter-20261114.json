@@ -1,0 +1,19 @@
+{
+  "base_variant": "build007",
+  "baseline_patch_sha256": "a7db5d018d5f7cef41c726b61eccd794356c5d06bb1bb4322027dde88fbd108c",
+  "baseline_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+  "candidate_source_sha256": "a3b486acf385b7c65d345625a3f6b83d0806ee5a8d37b8bb6e6d9e4975b80e9a",
+  "changed": {
+    "ext/filter/sanitizing_filters.c": {
+      "after": "1d85822526a1156ef4f3dac7aa96fa80c9d75fb71afed7b21bda5eb261410092",
+      "before": "f073983467292eef4b10cf0bda16b06171476ac6e52b460dd98ca29a5b6235a6"
+    },
+    "main/fastcgi.c": {
+      "after": "758d260670a00433a5da6c39b6be82be9cd04a233a7c37808de21d64f43bc7f7",
+      "before": "7999278060d97efef7ac68e4828ce5f2888e8a85c25a449561518d6503e578ea"
+    }
+  },
+  "patch_sha256": "23045b30b131a5a0eb9811ea7974a38b4dc8dc6694302b162fbb4b1389cfa0e9",
+  "schema": 1,
+  "variant": "acl-filter-20261114"
+}

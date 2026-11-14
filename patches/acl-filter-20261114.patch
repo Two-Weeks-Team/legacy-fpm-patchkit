@@ -1,0 +1,22 @@
+--- a/main/fastcgi.c
++++ b/main/fastcgi.c
+@@ -1342,7 +1342,7 @@
+ 	if (client_sa.sa.sa_family == AF_INET6) {
+ 		for (i = 0; allowed_clients[i].sa.sa_family ; i++) {
+ 			if (allowed_clients[i].sa.sa_family == AF_INET6
+-				&& !memcmp(&client_sa.sa_inet6.sin6_addr, &allowed_clients[i].sa_inet6.sin6_addr, 12)) {
++				&& !memcmp(&client_sa.sa_inet6.sin6_addr, &allowed_clients[i].sa_inet6.sin6_addr, sizeof(client_sa.sa_inet6.sin6_addr))) {
+ 				return 1;
+ 			}
+ #ifdef IN6_IS_ADDR_V4MAPPED
+--- a/ext/filter/sanitizing_filters.c
++++ b/ext/filter/sanitizing_filters.c
+@@ -78,7 +78,7 @@
+ 	unsigned char *e = s + char_len;
+ 	zend_string *str;
+ 
+-	memset(tmp, 1, sizeof(tmp)-1);
++	memset(tmp, 1, sizeof(tmp));
+ 
+ 	while (s < e) {
+ 		tmp[*s++] = '\0';

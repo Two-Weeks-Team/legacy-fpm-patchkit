@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import sys
 
-from . import __version__, sources, inspection, rehearsal
+from . import __version__, sources, inspection, rehearsal, variants
 
 
 def main(argv=None):
@@ -17,6 +17,7 @@ def main(argv=None):
     prepare = commands.add_parser('prepare', help='Reconstruct and patch a NEW source tree, offline')
     prepare.add_argument('--cache', type=Path, default=Path('.work/downloads'))
     prepare.add_argument('--output', type=Path, default=Path('.work/source'))
+    prepare.add_argument('--variant', choices=['build007', 'acl-filter-20261114'], default='build007')
     inspect = commands.add_parser('inspect', help='Read ELF/hash metadata without executing the binary')
     inspect.add_argument('--binary', required=True, type=Path)
     inspect.add_argument('--build-record', type=Path)
@@ -33,7 +34,7 @@ def main(argv=None):
         elif args.command == 'fetch':
             result = {'result': 'ARCHIVES_VERIFIED', 'archives': sources.fetch(args.cache)}
         elif args.command == 'prepare':
-            result = sources.prepare(args.cache, args.output)
+            result = sources.prepare(args.cache, args.output) if args.variant == variants.DEFAULT else variants.prepare(args.cache, args.output, args.variant)
         elif args.command == 'inspect':
             result = inspection.inspect(args.binary, args.build_record)
         else:

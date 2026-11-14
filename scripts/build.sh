@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # Build only. Never make install, replace a system file, or control a service.
 set -euo pipefail
-if [ "$#" -ne 3 ]; then
-  echo 'Usage: bash scripts/build.sh PREPARED_SOURCE NEW_OUTPUT portable|xenial-amd64' >&2
+if [ "$#" -ne 3 ] && [ "$#" -ne 4 ]; then
+  echo 'Usage: bash scripts/build.sh PREPARED_SOURCE NEW_OUTPUT portable|xenial-amd64 [build007|acl-filter-20261114]' >&2
   exit 2
 fi
 kit=$(cd "$(dirname "$0")/.." && pwd)
 source_dir=$(cd "$1" && pwd)
 output=$2
 profile=$3
+variant=${4:-build007}
 [ "$(uname -s)" = Linux ] || { echo 'Linux build environment required' >&2; exit 2; }
 [ ! -e "$output" ] && [ ! -L "$output" ] || { echo 'Output must be a new path' >&2; exit 2; }
 case "$profile" in
@@ -19,9 +20,11 @@ case "$profile" in
     ;;
   *) echo 'Unknown build profile' >&2; exit 2 ;;
 esac
-python3 "$kit/scripts/check-build-source.py" "$source_dir"
-mkdir -p "$output"
+source_identity=$(python3 "$kit/scripts/check-build-source.py" "$source_dir" --variant "$variant" --json)
+mkdir -p "$(dirname "$output")"
+mkdir "$output"
 output=$(cd "$output" && pwd)
+printf '%s\n' "$source_identity" > "$output/source-identity.json"
 failure_logs() {
   rc=$?
   trap - ERR
@@ -88,4 +91,4 @@ cp sapi/fpm/php-fpm "$output/php-fpm"
 readelf -h "$output/php-fpm" > "$output/elf-header.txt"
 readelf -d "$output/php-fpm" > "$output/elf-dynamic.txt"
 ldd "$output/php-fpm" > "$output/libraries.txt"
-python3 "$kit/scripts/build-record.py" "$output" "$profile"
+python3 "$kit/scripts/build-record.py" "$output" "$profile" "$variant" "$source_dir"
