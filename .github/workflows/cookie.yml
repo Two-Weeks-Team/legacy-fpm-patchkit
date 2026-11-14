@@ -1,0 +1,65 @@
+name: Cookie normalization / paired Linux FPM
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paired-native:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install tools only on this ephemeral hosted runner
+        run: sudo apt-get update && sudo apt-get install -y build-essential autoconf automake bison re2c pkg-config dpkg-dev libtool binutils
+      - name: Unit and frozen historical inputs
+        run: |
+          python3 -B -m unittest discover -v
+          python3 -B -m patchkit verify
+          bash -n scripts/build.sh
+      - name: Acquire pinned public archives
+        run: python3 -B -m patchkit fetch
+      - name: Prepare the fixed parent and complete cookie child
+        run: |
+          python3 -B -m patchkit prepare --variant multipart-20261114 --output .work/source-parent
+          python3 -B -m patchkit prepare --variant cookie-20261114 --output .work/source-cookie
+          python3 -B scripts/check-build-source.py .work/source-parent --variant multipart-20261114
+          python3 -B scripts/check-build-source.py .work/source-cookie --variant cookie-20261114
+      - name: Build both full trees with the same portable toolchain
+        run: |
+          bash scripts/build.sh .work/source-parent .work/build-parent portable multipart-20261114
+          bash scripts/build.sh .work/source-cookie .work/build-cookie portable cookie-20261114
+      - name: Actual paired CLI/FPM cookie maps, PHPT and normal regressions
+        run: |
+          python3 -B scripts/cookie-check.py \
+            --parent-cli .work/build-parent/php --parent-fpm .work/build-parent/php-fpm \
+            --parent-source .work/source-parent \
+            --candidate-cli .work/build-cookie/php --candidate-fpm .work/build-cookie/php-fpm \
+            --candidate-source .work/source-cookie --output .work/cookie-result
+      - name: Preserve raw evidence for successful and failed runs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: cookie-paired-native
+          if-no-files-found: warn
+          include-hidden-files: true
+          path: |
+            .work/source-*.preparation.*
+            .work/source-*.failed-preparation.log
+            .work/build-*/php
+            .work/build-*/php-fpm
+            .work/build-*/build.json
+            .work/build-*/source-identity.json
+            .work/build-*/*.log
+            .work/build-*/toolchain.txt
+            .work/build-*/configure-arguments.txt
+            .work/build-*/objects/main/php_config.h
+            .work/build-*/elf-*.txt
+            .work/build-*/libraries.txt
+            .work/build-*/SHA256SUMS
+            .work/cookie-result/
