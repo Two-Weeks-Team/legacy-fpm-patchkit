@@ -2818,11 +2818,11 @@ const seed = {
       "id": "GHSA-3237-qqm7-mfv7",
       "upstreamHash": "058c4bc9657d0aa3c2272202aa6bc9a155366703a446bae4e5b5e27c96b39dc7",
       "sourceHash": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
-      "status": "PLANNED",
+      "status": "NOT_APPLICABLE",
       "component": "ext/standard getimagesize JPEG APPn",
-      "reason": "The later broken helper is absent, but PHP 7.0 accepts a positive short APPn read and exposes the full allocation; equivalent confidentiality protection is missing.",
-      "action": "Confirm PHP 7.0 short-read semantics, backport complete-read/failure handling, and add benign JPEG and split-read regression coverage.",
-      "validation": "not-run"
+      "reason": "The exact advisory mechanism is absent: PHP 7 uses php_stream_read(), not the faulty later helper, and the stream implementation advances buf. A separate positive-short-read/full-length APPn copy deserves independent review, not attribution to this CVE.",
+      "action": "",
+      "validation": "not-applicable"
     },
     {
       "id": "GHSA-3cr5-j632-f35r",
@@ -2860,8 +2860,8 @@ const seed = {
       "sourceHash": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
       "status": "PLANNED",
       "component": "ext/soap libxml node names",
-      "reason": "SoapVar names reach xmlNodeSetName without the upstream NULL-name workaround; applicability depends on the linked libxml version.",
-      "action": "Confirm supported libxml versions, backport the old-libxml name workaround or length guard, and validate normal SoapVar serialization.",
+      "reason": "The actual fix site is serialize_zval() in soap.c, not a post-call repair in php_encoding.c. Candidate SoapVar names reach xmlNodeSetName(), then serialize_zval() dereferences name without the official NULL guards. Requires SOAP and libxml2 older than 2.13.",
+      "action": "Port the xmlParam/name NULL checks at soap.c serialize_zval, then verify ordinary SoapVar naming against the admitted libxml build.",
       "validation": "not-run"
     },
     {
@@ -2890,7 +2890,7 @@ const seed = {
       "sourceHash": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
       "status": "PLANNED",
       "component": "ext/standard HTTP redirects",
-      "reason": "Redirect locations use a fixed 1024-byte array; long lines may also be discarded, and the upstream length-preserving/error behavior is absent.",
+      "reason": "PHP 7 drains/discards overlong physical header lines, unlike the modern direct Location truncation case. However, relative redirects still reconstruct loc_path/new_path into fixed 1024-byte arrays and silently truncate the combined URL. The official fix also removes these reconstruction limits.",
       "action": "Audit old long-header handling, backport dynamic Location storage and explicit bounds, and validate benign long redirects.",
       "validation": "not-run"
     },
@@ -2981,7 +2981,7 @@ const seed = {
       "status": "PLANNED",
       "component": "ext/openssl openssl_encrypt AES-WRAP-PAD",
       "reason": "Encryption output is allocated as input length plus cipher block size, with no RFC 5649 wrap-padding expansion guard. Whether this PHP 7.0/OpenSSL combination exposes and accepts wrap ciphers remains unverified; PLANNED records missing protection rather than proven exploitability.",
-      "action": "First establish PHP 7/OpenSSL wrap-cipher availability and API requirements; then port safe sizing or explicit rejection and validate benign round trips, length boundaries and errors.",
+      "action": "First establish the exact linked Ubuntu OpenSSL delta, accepted wrap ciphers and complete successful PHP 7 EVP call path. Implement a checked expansion guard only if that affected path is confirmed; do not infer either safety or required padding from init failure alone.",
       "validation": "not-run"
     },
     {
@@ -3020,8 +3020,8 @@ const seed = {
       "sourceHash": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
       "status": "PLANNED",
       "component": "sapi/fpm worker output logging",
-      "reason": "The newer split-flush state machine is absent, but the advisory also discusses NUL-truncated logs. PHP 7.0 retains strchr/%s logging and explicitly flags binary data as unresolved; coverage remains planned for that unprotected subcase, without claiming exploit confirmation.",
-      "action": "Separate the absent flush mechanism from legacy NUL handling; implement binary-safe output protection and verify benign fixed-string logging and syslog formatting.",
+      "reason": "The exact upstream split-flush state machine is absent from PHP7, so its one-line fix is not needed here. The advisory separately discusses NUL truncation; legacy strchr/%s logging has related binary-safety limitations. That needs a separate hardening decision rather than treating the newer CVE fix as directly applicable.",
+      "action": "First decide the legacy binary-output/capture/syslog contract and establish any separate NUL-truncation hardening requirement. The official FLUSH state-machine fix has no matching PHP 7 path and is not a mandatory port. Implement only a separately justified logging change.",
       "validation": "not-run"
     },
     {
@@ -3071,7 +3071,7 @@ const seed = {
       "status": "PLANNED",
       "component": "Windows reserved device paths — Linux FPM runtime excluded",
       "reason": "Linux FPM does not use Windows DOS-device semantics. At distributed-source scope, however, the PHP 7 path/CRT layer lacks the reported reserved-device classification/rejection protection. Exact Windows CRT reachability remains unverified, so PLANNED records missing protection and required investigation rather than proven exploitability.",
-      "action": "First establish reserved-device reachability through PHP 7 Windows CRT/path APIs; port appropriate reserved-component classification/rejection into the legacy layer and validate benign paths, bare-NUL compatibility and device-name variants. Keep this separate from Linux FPM runtime applicability.",
+      "action": "First compare the legacy Windows CRT path handling with the official reserved-device classification contract. If affected reachability is established for an admitted Windows build, design and test compatible path rejection. No change is required on the Linux FPM critical path.",
       "validation": "not-run"
     },
     {
@@ -3201,7 +3201,7 @@ const seed = {
       "status": "PLANNED",
       "component": "ext/openssl RSA PKCS#1 v1.5 private decryption",
       "reason": "PHP 7.0 directly calls RSA_private_decrypt with PKCS#1 v1.5 padding and branches on the result. No equivalent protection is provided here; actual timing depends on the linked OpenSSL build and was not measured.",
-      "action": "First verify each supported OpenSSL contract; implement a compatible protected API or block unprotected PKCS#1 v1.5 paths, then validate benign RSA/OAEP and error behavior.",
+      "action": "First establish the exact linked RSA backend/padding and implicit-rejection contract, including vendor patches. Choose and test a compatible protected path or reject unsupported PKCS#1 v1.5 only after that decision; a version string or valid round trip is not timing-security evidence.",
       "validation": "not-run"
     },
     {
@@ -3210,8 +3210,8 @@ const seed = {
       "sourceHash": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
       "status": "PLANNED",
       "component": "ext/soap Apache Map null value",
-      "reason": "Both reported defects are present: the missing-value check rechecks xmlKey, and the typemap decoder dereferences data->properties without a NULL guard.",
-      "action": "Port the xmlValue check and NULL-safe decoder contract; verify benign Apache Maps, typemaps and controlled missing-value errors.",
+      "reason": "The exact Apache Map typo rechecks xmlKey after obtaining xmlValue, allowing NULL into typemap decoding. Both profiles omit SOAP. The observed upstream fix is the xmlValue check, not a general decoder NULL guard.",
+      "action": "Port the upstream xmlValue missing-value check and verify ordinary map behavior. Do not treat a second generic decoder-pointer guard as part of the observed official fix.",
       "validation": "not-run"
     },
     {
@@ -3371,7 +3371,7 @@ const seed = {
       "status": "PLANNED",
       "component": "ext/phar symbolic link traversal",
       "reason": "phar_get_link_source recursively follows links without a depth bound or visited set; the distributed source lacks the reported cycle protection regardless of profile module selection.",
-      "action": "Port bounded/cycle-aware resolution and verify benign link chains and controlled boundary errors.",
+      "action": "Port the official iterative link traversal with Floyd cycle detection and verify ordinary acyclic link resolution. Avoid an arbitrary depth cap that rejects valid long chains.",
       "validation": "not-run"
     },
     {
@@ -3391,7 +3391,7 @@ const seed = {
       "status": "PLANNED",
       "component": "ext/pdo_firebird quoting/prepare",
       "reason": "The newer token concatenator is absent, but NUL-terminated quoting and zero-length prepare remain without binary-safe protection; equivalent injection reachability needs investigation.",
-      "action": "Audit the old parser and API contract, backport binary-safe lengths or explicit NUL rejection, and validate normal quoting and binding.",
+      "action": "First trace the old quote→PDO parser→bytewise prepare path and Firebird length-zero contract to decide whether the same injection mechanism exists. Do not port the absent newer token concatenator blindly. Any independent NUL hardening needs a separate justified scope.",
       "validation": "not-run"
     },
     {
@@ -3483,14 +3483,14 @@ export const seedSnapshot = { ...{
   "assessments": [
     {
       "id": "GHSA-3237-qqm7-mfv7",
-      "status": "PLANNED",
+      "status": "NOT_APPLICABLE",
       "component": "ext/standard getimagesize JPEG APPn",
-      "reason": "The later broken helper is absent, but PHP 7.0 accepts a positive short APPn read and exposes the full allocation; equivalent confidentiality protection is missing.",
-      "action": "Confirm PHP 7.0 short-read semantics, backport complete-read/failure handling, and add benign JPEG and split-read regression coverage.",
-      "validation": "not-run",
+      "reason": "The exact advisory mechanism is absent: PHP 7 uses php_stream_read(), not the faulty later helper, and the stream implementation advances buf. A separate positive-short-read/full-length APPn copy deserves independent review, not attribution to this CVE.",
+      "action": "",
+      "validation": "not-applicable",
       "presence": "present",
       "upstreamHash": "058c4bc9657d0aa3c2272202aa6bc9a155366703a446bae4e5b5e27c96b39dc7",
-      "reviewedStatus": "PLANNED",
+      "reviewedStatus": "NOT_APPLICABLE",
       "reviewedUpstreamHash": "058c4bc9657d0aa3c2272202aa6bc9a155366703a446bae4e5b5e27c96b39dc7",
       "reviewedSourceHash": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9"
     },
@@ -3537,8 +3537,8 @@ export const seedSnapshot = { ...{
       "id": "GHSA-453j-q27h-5p8x",
       "status": "PLANNED",
       "component": "ext/soap libxml node names",
-      "reason": "SoapVar names reach xmlNodeSetName without the upstream NULL-name workaround; applicability depends on the linked libxml version.",
-      "action": "Confirm supported libxml versions, backport the old-libxml name workaround or length guard, and validate normal SoapVar serialization.",
+      "reason": "The actual fix site is serialize_zval() in soap.c, not a post-call repair in php_encoding.c. Candidate SoapVar names reach xmlNodeSetName(), then serialize_zval() dereferences name without the official NULL guards. Requires SOAP and libxml2 older than 2.13.",
+      "action": "Port the xmlParam/name NULL checks at soap.c serialize_zval, then verify ordinary SoapVar naming against the admitted libxml build.",
       "validation": "not-run",
       "presence": "present",
       "upstreamHash": "2aa963642a9e68255526b47aafecf430150f91ceccabc3683499271e1191eb37",
@@ -3576,7 +3576,7 @@ export const seedSnapshot = { ...{
       "id": "GHSA-52jp-hrpf-2jff",
       "status": "PLANNED",
       "component": "ext/standard HTTP redirects",
-      "reason": "Redirect locations use a fixed 1024-byte array; long lines may also be discarded, and the upstream length-preserving/error behavior is absent.",
+      "reason": "PHP 7 drains/discards overlong physical header lines, unlike the modern direct Location truncation case. However, relative redirects still reconstruct loc_path/new_path into fixed 1024-byte arrays and silently truncate the combined URL. The official fix also removes these reconstruction limits.",
       "action": "Audit old long-header handling, backport dynamic Location storage and explicit bounds, and validate benign long redirects.",
       "validation": "not-run",
       "presence": "present",
@@ -3694,7 +3694,7 @@ export const seedSnapshot = { ...{
       "status": "PLANNED",
       "component": "ext/openssl openssl_encrypt AES-WRAP-PAD",
       "reason": "Encryption output is allocated as input length plus cipher block size, with no RFC 5649 wrap-padding expansion guard. Whether this PHP 7.0/OpenSSL combination exposes and accepts wrap ciphers remains unverified; PLANNED records missing protection rather than proven exploitability.",
-      "action": "First establish PHP 7/OpenSSL wrap-cipher availability and API requirements; then port safe sizing or explicit rejection and validate benign round trips, length boundaries and errors.",
+      "action": "First establish the exact linked Ubuntu OpenSSL delta, accepted wrap ciphers and complete successful PHP 7 EVP call path. Implement a checked expansion guard only if that affected path is confirmed; do not infer either safety or required padding from init failure alone.",
       "validation": "not-run",
       "presence": "present",
       "upstreamHash": "ee8c740436bb2f2fbc0b3fe9fac17d9d950df72adf9a8befd5d48526befdbafa",
@@ -3745,8 +3745,8 @@ export const seedSnapshot = { ...{
       "id": "GHSA-865w-9rf3-2wh5",
       "status": "PLANNED",
       "component": "sapi/fpm worker output logging",
-      "reason": "The newer split-flush state machine is absent, but the advisory also discusses NUL-truncated logs. PHP 7.0 retains strchr/%s logging and explicitly flags binary data as unresolved; coverage remains planned for that unprotected subcase, without claiming exploit confirmation.",
-      "action": "Separate the absent flush mechanism from legacy NUL handling; implement binary-safe output protection and verify benign fixed-string logging and syslog formatting.",
+      "reason": "The exact upstream split-flush state machine is absent from PHP7, so its one-line fix is not needed here. The advisory separately discusses NUL truncation; legacy strchr/%s logging has related binary-safety limitations. That needs a separate hardening decision rather than treating the newer CVE fix as directly applicable.",
+      "action": "First decide the legacy binary-output/capture/syslog contract and establish any separate NUL-truncation hardening requirement. The official FLUSH state-machine fix has no matching PHP 7 path and is not a mandatory port. Implement only a separately justified logging change.",
       "validation": "not-run",
       "presence": "present",
       "upstreamHash": "31e6ab49cd7daf218cddbd1ecd4933d82f08fce20493910ffb7882009d2738ee",
@@ -3811,7 +3811,7 @@ export const seedSnapshot = { ...{
       "status": "PLANNED",
       "component": "Windows reserved device paths — Linux FPM runtime excluded",
       "reason": "Linux FPM does not use Windows DOS-device semantics. At distributed-source scope, however, the PHP 7 path/CRT layer lacks the reported reserved-device classification/rejection protection. Exact Windows CRT reachability remains unverified, so PLANNED records missing protection and required investigation rather than proven exploitability.",
-      "action": "First establish reserved-device reachability through PHP 7 Windows CRT/path APIs; port appropriate reserved-component classification/rejection into the legacy layer and validate benign paths, bare-NUL compatibility and device-name variants. Keep this separate from Linux FPM runtime applicability.",
+      "action": "First compare the legacy Windows CRT path handling with the official reserved-device classification contract. If affected reachability is established for an admitted Windows build, design and test compatible path rejection. No change is required on the Linux FPM critical path.",
       "validation": "not-run",
       "presence": "present",
       "upstreamHash": "69b930825f7db806959eb5f68e9f36f3705488e51350b339ce9192895b9e8841",
@@ -3980,7 +3980,7 @@ export const seedSnapshot = { ...{
       "status": "PLANNED",
       "component": "ext/openssl RSA PKCS#1 v1.5 private decryption",
       "reason": "PHP 7.0 directly calls RSA_private_decrypt with PKCS#1 v1.5 padding and branches on the result. No equivalent protection is provided here; actual timing depends on the linked OpenSSL build and was not measured.",
-      "action": "First verify each supported OpenSSL contract; implement a compatible protected API or block unprotected PKCS#1 v1.5 paths, then validate benign RSA/OAEP and error behavior.",
+      "action": "First establish the exact linked RSA backend/padding and implicit-rejection contract, including vendor patches. Choose and test a compatible protected path or reject unsupported PKCS#1 v1.5 only after that decision; a version string or valid round trip is not timing-security evidence.",
       "validation": "not-run",
       "presence": "present",
       "upstreamHash": "feeac550c19fcafe981b8e66678e4f803c4b409524bffb538a4618b5e5c8a028",
@@ -3992,8 +3992,8 @@ export const seedSnapshot = { ...{
       "id": "GHSA-hmxp-6pc4-f3vv",
       "status": "PLANNED",
       "component": "ext/soap Apache Map null value",
-      "reason": "Both reported defects are present: the missing-value check rechecks xmlKey, and the typemap decoder dereferences data->properties without a NULL guard.",
-      "action": "Port the xmlValue check and NULL-safe decoder contract; verify benign Apache Maps, typemaps and controlled missing-value errors.",
+      "reason": "The exact Apache Map typo rechecks xmlKey after obtaining xmlValue, allowing NULL into typemap decoding. Both profiles omit SOAP. The observed upstream fix is the xmlValue check, not a general decoder NULL guard.",
+      "action": "Port the upstream xmlValue missing-value check and verify ordinary map behavior. Do not treat a second generic decoder-pointer guard as part of the observed official fix.",
       "validation": "not-run",
       "presence": "present",
       "upstreamHash": "8af887d37036b5389728ef05ca7a68431489a41427eac1124b9b9b6f9f8c1259",
@@ -4201,7 +4201,7 @@ export const seedSnapshot = { ...{
       "status": "PLANNED",
       "component": "ext/phar symbolic link traversal",
       "reason": "phar_get_link_source recursively follows links without a depth bound or visited set; the distributed source lacks the reported cycle protection regardless of profile module selection.",
-      "action": "Port bounded/cycle-aware resolution and verify benign link chains and controlled boundary errors.",
+      "action": "Port the official iterative link traversal with Floyd cycle detection and verify ordinary acyclic link resolution. Avoid an arbitrary depth cap that rejects valid long chains.",
       "validation": "not-run",
       "presence": "present",
       "upstreamHash": "b2455f3951a293d610f8dfb981938e253f7e57da7e1eb2e5a73caec0dedc6ed8",
@@ -4227,7 +4227,7 @@ export const seedSnapshot = { ...{
       "status": "PLANNED",
       "component": "ext/pdo_firebird quoting/prepare",
       "reason": "The newer token concatenator is absent, but NUL-terminated quoting and zero-length prepare remain without binary-safe protection; equivalent injection reachability needs investigation.",
-      "action": "Audit the old parser and API contract, backport binary-safe lengths or explicit NUL rejection, and validate normal quoting and binding.",
+      "action": "First trace the old quote→PDO parser→bytewise prepare path and Firebird length-zero contract to decide whether the same injection mechanism exists. Do not port the absent newer token concatenator blindly. Any independent NUL hardening needs a separate justified scope.",
       "validation": "not-run",
       "presence": "present",
       "upstreamHash": "b49be8dccd27e1fd9fa85cc3d3d5574eaa51450b0894a60c3dff72eb81289cd4",
@@ -4342,8 +4342,8 @@ export const seedSnapshot = { ...{
   ],
   "counts": {
     "RESOLVED": 2,
-    "NOT_APPLICABLE": 13,
-    "PLANNED": 51
+    "NOT_APPLICABLE": 14,
+    "PLANNED": 50
   },
-  "revision": "1bd8d4fafc6146849e4d70f936aadf5d421b2853f2dee9f5fe12aff0051daba2"
+  "revision": "3d90f20ff7681c881182045a3af59867e601b9feb0a486b46770ace3b317e9a3"
 }, catalog: seed.catalog } satisfies import('./types.ts').Snapshot;

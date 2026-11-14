@@ -10,7 +10,7 @@ test('CLI exports initial reviewed worklist without claiming a live sync or crea
   const r = spawnSync(process.execPath, ['--import','tsx','src/cli.ts','export','--state-dir',state,'--kind','backlog'], { encoding:'utf8' });
   assert.equal(r.status, 0, r.stderr);
   const out = JSON.parse(r.stdout);
-  assert.equal(out.status.state, 'NEVER_SYNCED'); assert.equal(out.items.length, 51);
-  assert.deepEqual(out.status.counts, { RESOLVED:2, NOT_APPLICABLE:13, PLANNED:51 });
+  assert.equal(out.status.state, 'NEVER_SYNCED'); assert.equal(out.items.length, 50);
+  assert.deepEqual(out.status.counts, { RESOLVED:2, NOT_APPLICABLE:14, PLANNED:50 });
   await assert.rejects(access(state));
 });

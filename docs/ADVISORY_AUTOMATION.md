@@ -13,7 +13,7 @@ This optional service collects public PHP repository security advisories and pro
 5. Atomically commit the complete snapshot, successful-run record and watermark in D1. Failed attempts retain the last successful result. A 120-second lease prevents overlapping publishers; expired owners cannot commit.
 6. Export JSON and an escaped Markdown implementation worklist for separate source review, implementation and regression work.
 
-The reviewed seed dated 2026-11-14 contains **66 advisories: 2 source implementations, 13 specific mechanisms absent and 51 planned protections**. These labels apply to the pinned source, not arbitrary PHP installations. Vendor-patch coverage is separately documented in the matrix. Raw advisory descriptions, exploit payloads and operational records are excluded.
+After the [implementation-necessity review](IMPLEMENTATION_NECESSITY.md), the current reviewed seed contains **66 advisories: 2 source implementations, 14 specific mechanisms absent and 50 review-or-implementation planned**. The original deployment receipt retains its earlier 2/13/51 assessment. These labels apply to the pinned source, not arbitrary PHP installations. Vendor-patch coverage is separately documented in the matrix. Raw advisory descriptions, exploit payloads and operational records are excluded.
 
 ### Shared GitHub quota and optional authentication
 

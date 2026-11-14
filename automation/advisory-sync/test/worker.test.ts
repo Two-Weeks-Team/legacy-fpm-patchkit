@@ -43,7 +43,7 @@ test('public seed export is read-only and truthfully reports no successful live 
   const status=await mf.dispatchFetch('http://worker/status.json'); assert.equal(status.status,503);
   assert.equal((await body(status)).status.state,'NEVER_SYNCED');
   const backlog=await mf.dispatchFetch('http://worker/backlog.json'); assert.equal(backlog.status,200);
-  assert.equal((await body(backlog)).items.length,51); assert.equal(outboundCalls,0);
+  assert.equal((await body(backlog)).items.length,50); assert.equal(outboundCalls,0);
 });
 
 test('unauthorized callers cannot sync and readonly routes reject mutations', async () => {
@@ -58,7 +58,7 @@ test('authenticated HTTP sync publishes complete fixture data in actual workerd/
   assert.equal(run.status,200,await run.clone().text());
   const status=await mf.dispatchFetch('http://worker/status.json'); assert.equal(status.status,200);
   const out=await body(status); assert.equal(out.status.state,'HEALTHY');
-  assert.deepEqual(out.status.counts,{RESOLVED:2,NOT_APPLICABLE:13,PLANNED:51});
+  assert.deepEqual(out.status.counts,{RESOLVED:2,NOT_APPLICABLE:14,PLANNED:50});
   assert.equal((await body(await mf.dispatchFetch('http://worker/catalog.json'))).items.length,66);
 });
 
