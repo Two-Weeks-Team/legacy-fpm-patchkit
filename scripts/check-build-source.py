@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from patchkit import variants
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('source', type=Path)
-parser.add_argument('--variant', choices=['build007', 'acl-filter-20261114'], default='build007')
+parser.add_argument('--variant', choices=['build007', 'acl-filter-20261114', 'multipart-20261114'], default='build007')
 parser.add_argument('--json', action='store_true')
 args = parser.parse_args()
 try:

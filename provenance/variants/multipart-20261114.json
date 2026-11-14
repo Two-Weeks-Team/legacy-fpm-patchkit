@@ -1,0 +1,23 @@
+{
+  "base_variant": "acl-filter-20261114",
+  "baseline_patch_sha256": "23045b30b131a5a0eb9811ea7974a38b4dc8dc6694302b162fbb4b1389cfa0e9",
+  "baseline_source_sha256": "a3b486acf385b7c65d345625a3f6b83d0806ee5a8d37b8bb6e6d9e4975b80e9a",
+  "candidate_source_sha256": "01ea416605986b1169674caf904bb51ef7a7626456f8e259fd7653c436fefb85",
+  "changed": {
+    "main/main.c": {
+      "after": "434df06dbca04f02e01b8892bd93b984a935af1d878a93964a4dd36d075ac903",
+      "before": "04f946e3dedab70838d7645ddfdc739c04cd2dbad8c1f25dbb70afdb8c1664ff"
+    },
+    "main/php_globals.h": {
+      "after": "11a05b032a852d2fbfa66de2362a5e67f9814f8ae04576e02d212ef7fbb57149",
+      "before": "e03cea7dc255d0aff73c182142604d785e4d5704306e107f8e30c1ad17ddcfff"
+    },
+    "main/rfc1867.c": {
+      "after": "2ece9804f2e25153f768fee701eb8dcbc7d68aa411fb60bd7a2765d211370a3d",
+      "before": "aa388d0f2bc9765a1d971cbe4dd22228d5231e25c0344ef803b7bf88abfab22b"
+    }
+  },
+  "patch_sha256": "7425b8dea681c404399a97d8267c926298131612ec21187cb9aa9be00a75c71b",
+  "schema": 1,
+  "variant": "multipart-20261114"
+}
