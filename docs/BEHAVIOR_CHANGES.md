@@ -20,6 +20,12 @@ These changes apply only to `acl-filter-20261114`; default build007 preparation 
 
 See the [variant verification and retained evidence](ACL_FILTER_VARIANT.md).
 
+## Optional multipart variant
+
+`multipart-20261114` includes the ACL/filter variant and changes multipart input acceptance. Boundaries above 5116 bytes are rejected before buffer initialization. `max_multipart_body_parts` defaults to `-1`, deriving its budget from `max_input_vars + max_file_uploads` with checked arithmetic; other negative values also derive it. An explicit zero permits no Content-Disposition parts. The setting is SYSTEM/PERDIR and cannot be raised with application `ini_set`.
+
+Every Content-Disposition part consumes the request-local budget, including fields/files that existing limits or disabled uploads would skip. An extra part triggers one warning and parsing stops; already accepted fields/files remain. Review applications that depend on processing more parts than this budget. The limit resets for every request; it does not decrement the configured INI value. Core-globals layout changes require a fresh build, and compatibility with existing external extensions is not inherited. See [actual verification and limits](MULTIPART_VARIANT.md).
+
 ## Unchanged deployment boundary
 
 The kit does not replace CLI system packages, third-party modules, opcache, application code, a database or an entire container. Compiled output contains both CLI and FPM for isolated testing, but the historical operational scope was a single FPM executable. Use an explicit scope for your own rollout.

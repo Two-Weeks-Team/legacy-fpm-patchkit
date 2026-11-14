@@ -43,9 +43,22 @@ The matrix above describes the preserved default **build007** source. Selecting 
 
 Official advisories can also be [collected hourly with Cloudflare Workers or a local batch script](docs/ADVISORY_AUTOMATION.md); new and revised items become separate implementation work.
 
+## Two multipart protections verified on real FPM
+
+The cumulative **`multipart-20261114`** variant includes the ACL/filter changes above and adds:
+
+| Advisory | Cause and change | Observed result |
+|---|---|---|
+| [CVE-2024-8925 / GHSA-9pqp-7h25-4f32](https://github.com/php/php-src/security/advisories/GHSA-9pqp-7h25-4f32) | Boundaries could exceed the multipart reader's fixed fill-unit capacity. Reject lengths above 5116 bytes before allocating its buffer. | Both builds accept 5115/5116; only the candidate rejects 5117, with no fields or files registered. |
+| [CVE-2023-0662 / GHSA-54hq-v5wp-fqgv](https://github.com/php/php-src/security/advisories/GHSA-54hq-v5wp-fqgv) | Separate variable/file limits did not bound all multipart parts. Add a request-local total budget, defaulting to their checked sum. | At a small limit of 3, the parent processes 4 parts and the candidate stops after 3, with one warning per request. Normal inputs, existing limits and repeated requests in one worker remain correct. |
+
+[Final paired CI](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43599570950) verified 60 FPM requests, two INI PHPT controls per build and 36 normal checks per build. A preceding complete run agreed; the first fixture failure remains recorded. [Results and retained raw data](evidence/multipart-portable-20261114.json) and [commands, behavior and limits](docs/MULTIPART_VARIANT.md) are public.
+
+Select with `python3 -m patchkit prepare --variant multipart-20261114 --output .work/source-multipart`. Its cumulative catalog accounting is **6 implemented / 14 mechanism-absent / 46 planned**. Default build007 remains **2 / 14 / 50**. This is Ubuntu 22.04 portable evidence, not Xenial/module/site or production acceptance; the core-globals layout change requires a fresh build.
+
 ## What was wrong, and what is addressed
 
-**The purpose is to address two disclosed PHP engine vulnerability classes in a pinned PHP 7.0 FPM source tree, including the request/session boundaries needed by that port.** The source changes are included and their identities verified; fresh tests establish the specific runtime behaviors listed below. They are not a demonstration that every exploit of either CVE is blocked on PHP 7.0.
+**Default build007 addresses two disclosed PHP engine vulnerability classes in a pinned PHP 7.0 FPM source tree, including the request/session boundaries needed by that port.** The explicit variants above add separately verified protections. The source changes are included and their identities verified; fresh tests establish the specific runtime behaviors listed below. They do not demonstrate that every exploit of either engine CVE is blocked on PHP 7.0.
 
 | Disclosed problem | Why it matters | What this backport changes |
 |---|---|---|
@@ -71,7 +84,7 @@ The port also anticipates related failure modes in PHP 7.0. These are concrete p
 | Official-source reconstruction | 84 vendor patches, 46 changed-file pre/post hashes and both full normalized source digests match | The published cumulative patch reconstructs the intended source; this is not exploit validation |
 | Native FPM on Ubuntu 16.04.7 and 22.04 x86-64 | **36 named benign checks per environment**: three session codecs × progress On/Off | Plain session persistence, codec policy, small upload content/cleanup and same-worker continuity |
 | Stock/candidate comparison on Xenial | **Policy difference observed** with hashed binaries | A real intentional behavior change, not two tests that both pass unchanged |
-| Toolkit and public download | **95 unit tests** on current source; v0.1.0 download passed 45 tests, checksum and GitHub provenance verification | Tooling regressions and source-package integrity, not a site's deployment readiness |
+| Toolkit and public download | **105 unit tests** on current source; v0.1.0 download passed 45 tests, checksum and GitHub provenance verification | Tooling regressions and source-package integrity, not a site's deployment readiness |
 
 [Exact records and failure history](docs/VERIFICATION.md) are published. Historical msgpack failures and a candidate-only PHPT failure remain documented. This release does not fix third-party modules, prevent scraping/DDoS, repair an existing compromise, or certify application compatibility. Its core claim is **the two targeted engine backports plus the stated PHP 7.0 protective adaptations, with evidence separated from expected effects**. Read [behavior changes](docs/BEHAVIOR_CHANGES.md) and [support limits](SUPPORT.md) before use.
 

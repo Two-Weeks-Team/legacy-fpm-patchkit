@@ -1,5 +1,17 @@
 # Multipart source variant
 
+## Completed portable verification
+
+[Final paired run 43599570950](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43599570950) built the full ACL/filter parent and multipart candidate with the same Ubuntu 22.04 x86-64 portable toolchain. All 60 actual FPM requests matched: 15 cases per build, repeated in the same worker. The candidate alone enforced the 3/4-part, zero/derived-limit and boundary-5117 controls; normal boundary 5115/5116, existing variable/file limits and buffer splitting were preserved. Each request's warning count was checked separately, as were all 30 shutdown tails. Thirty owned FPM instances exited cleanly. Two INI PHPTs failed on the parent for the expected absence of the setting and passed on the candidate; both builds passed 36 separate normal checks.
+
+[Hashed results](../evidence/multipart-portable-20261114.json) and [457 retained small raw files](../evidence/multipart-20261114/README.md) bind source, delta, manifest, binaries and artifact identity. The first run, 43597987318, failed in the fixture before candidate execution; its failure is preserved. Complete runs 43598955155 and 43599570950 agree, including byte-identical binaries and responses after excluding PIDs. The latter also checks shutdown tails. A successful default-build Checks run is recorded separately and is not this multipart evidence.
+
+The observed scope is **Ubuntu 22.04 portable CLI/FPM**, with the minimal configuration explicitly enabling filter/hash/session/json plus core functionality. This does not establish Xenial ABI, arbitrary external-module or site compatibility, production deployment, large-request load capacity or memory-safety properties. Callback END calls were not directly traced: progress=0, empty session files and upload cleanup are measured outcomes. The source reuses the existing callback/cleanup path; source analysis and runtime observations remain distinct.
+
+This cumulative variant accounts for **6 implemented / 14 mechanism-absent / 46 planned** catalog items. Default build007 remains **2 / 14 / 50**. No default archive or historical deployed artifact is replaced.
+
+## Source and reproduction
+
 `multipart-20261114` requires the complete `acl-filter-20261114` parent. It adds
 the multipart boundary cap (CVE-2024-8925) and total Content-Disposition part
 budget (CVE-2023-0662). Earlier source variants and their evidence remain separate.

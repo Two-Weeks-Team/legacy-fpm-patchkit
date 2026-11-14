@@ -19,6 +19,8 @@ The [2026-11-14 coverage matrix](docs/SECURITY_COVERAGE.md) accounts for all 66 
 
 ## Intentional change
 
+The explicit cumulative [multipart variant](docs/MULTIPART_VARIANT.md) has additional Ubuntu 22.04 portable paired evidence and separate catalog accounting (6 implemented / 14 mechanism-absent / 46 planned). The baseline matrix above remains build007. This variant changes input acceptance and core-globals layout; use a fresh build and verify external extensions independently. The [behavior changes](docs/BEHAVIOR_CHANGES.md) explain its total-part budget and boundary limit.
+
 Switching `session.serialize_handler` to a different codec during a request is rejected. Applications that depend on that behavior must be adapted or use a different maintained runtime. Initial codec selection and same-codec assignments remain testable. See [behavior changes](docs/BEHAVIOR_CHANGES.md).
 
 ## Known gaps and retained historical failures

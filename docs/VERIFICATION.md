@@ -110,7 +110,16 @@ These results remain failures/limits, not exceptions silently promoted to PASS. 
 | `BENIGN_RUNTIME_PASS` | The named local benign behaviors passed on the recorded binary |
 | `POLICY_DIFF_OBSERVED` | The named benign serializer-policy difference was observed against a hashed stock copy |
 | `LOCAL_RUNTIME_PASS` | The paired local ACL/filter controls, target Valgrind observation, output/PHPT checks and benign regressions passed on the recorded portable binaries |
+| `PAIRED_MULTIPART_RUNTIME_PASS` | The recorded parent/candidate portable builds met the small multipart request, per-request warning, shutdown-tail, INI PHPT and normal regression contracts; no production or broad compatibility verdict |
 | `INSPECTED` | ELF/hash facts read without binary execution |
 | `REHEARSAL_PASS` | Synthetic file backup/replace/restore worked |
 
 None means full security, arbitrary module compatibility or production acceptance. Bit-for-bit reproducibility with the old deployed binary is not claimed.
+
+## Multipart parent/candidate evidence
+
+The [final paired run 43599570950](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/runs/43599570950), head `dba32efcad59633141adc51e30b3bc3e0d4257ea`, completed full source preparation, both portable builds, 60 FPM requests, parent/candidate INI controls and 36 normal checks per build. All stages ran. Parent source `a3b486ac…` and candidate `01ea4166…` are bound to exact executable hashes in [the public result](../evidence/multipart-portable-20261114.json); [retained raw data](../evidence/multipart-20261114/README.md) permits checking after artifact expiry.
+
+The original run 43597987318 failed at its first parent case because its PHP fixture emitted output before starting a session. Candidate runtime and later tests did not run. This remains a tool failure. Output buffering corrected it; a further review found aggregate warnings could mask a 2+0 request distribution and a later off-channel warning. Request-specific log slices and explicit shutdown tails now reject those patterns. Their negative decision tests are synthetic; actual FPM results come from the paired runs.
+
+Run 43598955155 completed the same source/binary behavior before the final tail guard; its 60 responses agree with the final run after removing PIDs. Same-head default-build Checks 43599554284 passed four jobs and 105 unit tests, but is not evidence for the multipart limits. The fresh multipart evidence demonstrates benign boundary/parts controls and normal preservation only; no callback END trace, Xenial/module/site acceptance, load test or production deployment is claimed.
