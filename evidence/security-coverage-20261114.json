@@ -120,10 +120,11 @@
         "ext/openssl/openssl.c:5745 — final output appended"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-7jrw-539f-x6vr",
-      "planned_action_ko": "선행 조사로 PHP7/OpenSSL 버전별 wrap cipher 가용성과 API 요구를 확인한 뒤 안전한 용량 산정 또는 명시적 미지원 처리를 이식한다. 정상 암호 round-trip·경계 길이·오류 반환 회귀를 검증한다.",
-      "planned_action_en": "First establish PHP 7/OpenSSL wrap-cipher availability and API requirements; then port safe sizing or explicit rejection and validate benign round trips, length boundaries and errors.",
+      "planned_action_ko": "정확한 Ubuntu OpenSSL 변경분·허용 wrap cipher·PHP 7 EVP 정상 성공 경로부터 확정한다. 영향 경로가 확인된 경우에만 확장 길이 검사를 이식하며 init 실패만으로 안전이나 필수 padding 크기를 단정하지 않는다.",
+      "planned_action_en": "First establish the exact linked Ubuntu OpenSSL delta, accepted wrap ciphers and complete successful PHP 7 EVP call path. Implement a checked expansion guard only if that affected path is confirmed; do not infer either safety or required padding from init failure alone.",
       "validation": "not-run",
-      "review_method": "exact-source and official-advisory comparison"
+      "review_method": "exact-source and official-advisory comparison",
+      "implementation_gate": "prerequisite-review"
     },
     {
       "ghsa_id": "GHSA-fpwc-w8rq-cr92",
@@ -253,17 +254,18 @@
       "cve_id": "CVE-2026-7262",
       "status": "PLANNED",
       "component": "ext/soap Apache Map null value",
-      "reason_ko": "xmlValue를 구한 직후 xmlKey를 다시 검사하는 오타와, typemap 경로의 data->properties 무조건 접근이 모두 있다. 누락 value가 NULL로 decoder에 전달될 수 있는 공지와 같은 구조다.",
-      "reason_en": "Both reported defects are present: the missing-value check rechecks xmlKey, and the typemap decoder dereferences data->properties without a NULL guard.",
+      "reason_ko": "Apache Map에서 xmlValue 조회 후 xmlKey를 다시 검사하는 정확한 오타가 있다. SOAP은 두 profile에서 비활성이다. 공식8.2.31은 value검사를 수정했으며 decoder 전역 NULL guard까지 수정됐다는 주장은 부정확하다.",
+      "reason_en": "The exact Apache Map typo rechecks xmlKey after obtaining xmlValue, allowing NULL into typemap decoding. Both profiles omit SOAP. The observed upstream fix is the xmlValue check, not a general decoder NULL guard.",
       "source_evidence": [
-        "ext/soap/php_encoding.c:2758 — xmlValue lookup",
-        "ext/soap/php_encoding.c:2759 — wrong xmlKey check",
-        "ext/soap/php_encoding.c:2766 — xmlValue passed to decoder",
-        "ext/soap/php_encoding.c:548 — typemap accesses data->properties"
+        "ext/soap/php_encoding.c:548",
+        "ext/soap/php_encoding.c:2758",
+        "ext/soap/php_encoding.c:2759",
+        "ext/soap/php_encoding.c:2766",
+        "scripts/build.sh:71"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-hmxp-6pc4-f3vv",
-      "planned_action_ko": "xmlValue 검증과 decoder NULL 계약을 수정 이식하고 정상 Apache Map·typemap 및 누락 값의 통제된 오류 처리 회귀를 검증한다.",
-      "planned_action_en": "Port the xmlValue check and NULL-safe decoder contract; verify benign Apache Maps, typemaps and controlled missing-value errors.",
+      "planned_action_ko": "공식 xmlValue 누락값 검사부터 이식하고 일반 Map 동작을 검증한다. 관찰되지 않은 두 번째 범용 decoder 포인터 검사를 이 공지의 공식 수정으로 합치지 않는다.",
+      "planned_action_en": "Port the upstream xmlValue missing-value check and verify ordinary map behavior. Do not treat a second generic decoder-pointer guard as part of the observed official fix.",
       "validation": "not-run",
       "review_method": "exact-source and official-advisory comparison"
     },
@@ -335,10 +337,11 @@
         "Zend/zend_virtual_cwd.c:1656 — expanded path passed to platform open()"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-9f67-6fw4-hpfp",
-      "planned_action_ko": "선행 조사로 PHP7 Windows CRT/경로 API의 예약 장치명 도달성을 확정하고, 필요한 예약 component 분류·거부를 구형 경로 계층에 이식한다. 정상 Windows 경로·bare NUL 호환·예약 이름 변형 오류 처리 회귀를 검증한다. Linux FPM 런타임 비대상과 이 작업 큐를 분리한다.",
-      "planned_action_en": "First establish reserved-device reachability through PHP 7 Windows CRT/path APIs; port appropriate reserved-component classification/rejection into the legacy layer and validate benign paths, bare-NUL compatibility and device-name variants. Keep this separate from Linux FPM runtime applicability.",
+      "planned_action_ko": "구형 Windows CRT 경로 처리와 공식 예약 장치 분류 계약을 먼저 대조한다. 지원할 Windows 빌드에서 영향 경로가 확인된 경우에만 호환 가능한 경로 거부를 구현·검증한다. Linux FPM 배포 선행조건으로 두지 않는다.",
+      "planned_action_en": "First compare the legacy Windows CRT path handling with the official reserved-device classification contract. If affected reachability is established for an admitted Windows build, design and test compatible path rejection. No change is required on the Linux FPM critical path.",
       "validation": "not-run",
-      "review_method": "exact-source and official-advisory comparison"
+      "review_method": "exact-source and official-advisory comparison",
+      "implementation_gate": "prerequisite-review"
     },
     {
       "ghsa_id": "GHSA-vc5h-9ppw-p5f3",
@@ -352,8 +355,8 @@
         "ext/phar/util.c:79 — unbounded recursive link traversal"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-vc5h-9ppw-p5f3",
-      "planned_action_ko": "상한/순환 검출 수정을 이식하고 정상 symlink chain 및 정책 경계의 오류 처리 회귀를 검증한다.",
-      "planned_action_en": "Port bounded/cycle-aware resolution and verify benign link chains and controlled boundary errors.",
+      "planned_action_ko": "공식 반복 링크 순회와 Floyd 순환 검사를 이식하고 정상 비순환 링크를 검증한다. 정상 긴 링크를 거부하는 임의 깊이 상한으로 대체하지 않는다.",
+      "planned_action_en": "Port the official iterative link traversal with Floyd cycle detection and verify ordinary acyclic link resolution. Avoid an arbitrary depth cap that rejects valid long chains.",
       "validation": "not-run",
       "review_method": "exact-source and official-advisory comparison"
     },
@@ -526,22 +529,33 @@
     {
       "ghsa_id": "GHSA-3237-qqm7-mfv7",
       "cve_id": "CVE-2025-14177",
-      "status": "PLANNED",
+      "status": "NOT_APPLICABLE",
       "component": "ext/standard getimagesize JPEG APPn",
-      "reason_ko": "공식 수정은 후대 php_read_stream_all_chunks의 buffer 이동 누락을 고친다. 그 helper는 7.0에 없지만, 7.0 php_read_APP는 읽기 결과가 양수이기만 하면 전체 length를 반환 문자열에 복사한다. stream read는 일반 wrapper에서 짧게 끝날 수 있어 초기화되지 않은 나머지를 배제하는 보호가 없다. 동일 CVE 트리거의 확정 주장이 아니라 보호 미제공 coverage 분류다.",
-      "reason_en": "The later broken helper is absent, but PHP 7.0 accepts a positive short APPn read and exposes the full allocation; equivalent confidentiality protection is missing.",
+      "reason_ko": "정확한 공지 원인인 php_read_stream_all_chunks()의 목적지 포인터 진행 누락은 7.0에 없다. 7.0은 php_stream_read()를 사용하며 그 구현은 buf를 전진시킨다. 별개로 APPn 양수 short-read 후 전체 길이 복사를 관찰했으나 이 CVE 수정 필요성과 합치지 않는다.",
+      "reason_en": "The exact advisory mechanism is absent: PHP 7 uses php_stream_read(), not the faulty later helper, and the stream implementation advances buf. A separate positive-short-read/full-length APPn copy deserves independent review, not attribution to this CVE.",
       "source_evidence": [
-        "ext/standard/image.c:454 buffer allocated for full APPn length",
-        "ext/standard/image.c:456 read is checked only for <= 0",
-        "ext/standard/image.c:465 full length is exposed in APP info",
-        "main/streams/streams.c:761 non-plain wrappers may stop before the requested size is filled"
+        "ext/standard/image.c:441",
+        "ext/standard/image.c:456",
+        "ext/standard/image.c:465",
+        "main/streams/streams.c:723",
+        "main/streams/streams.c:753",
+        "main/streams/streams.c:761"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-3237-qqm7-mfv7",
       "upstream_fix_url": "https://github.com/php/php-src/commit/c5f28c7cf0a052f48e47877c7aa5c5bcc54f1cfc",
-      "planned_action_ko": "선행조사로 7.0 stream read 계약과 APPn의 모든 호출 경로를 확정한 뒤 정확한 길이 읽기/실패 처리 보호를 이식하고 정상 JPEG·정상 분할 읽기 paired 회귀검증을 추가한다.",
-      "planned_action_en": "Confirm PHP 7.0 short-read semantics, backport complete-read/failure handling, and add benign JPEG and split-read regression coverage.",
-      "validation": "not-run",
-      "review_method": "exact-source and official-advisory comparison"
+      "planned_action_ko": "",
+      "planned_action_en": "",
+      "validation": "not-applicable",
+      "review_method": "exact-source and official-advisory comparison",
+      "prior_assessment": {
+        "status": "PLANNED",
+        "reason_en": "The later broken helper is absent, but PHP 7.0 accepts a positive short APPn read and exposes the full allocation; equivalent confidentiality protection is missing.",
+        "reason_ko": "공식 수정은 후대 php_read_stream_all_chunks의 buffer 이동 누락을 고친다. 그 helper는 7.0에 없지만, 7.0 php_read_APP는 읽기 결과가 양수이기만 하면 전체 length를 반환 문자열에 복사한다. stream read는 일반 wrapper에서 짧게 끝날 수 있어 초기화되지 않은 나머지를 배제하는 보호가 없다. 동일 CVE 트리거의 확정 주장이 아니라 보호 미제공 coverage 분류다.",
+        "planned_action_en": "Confirm PHP 7.0 short-read semantics, backport complete-read/failure handling, and add benign JPEG and split-read regression coverage.",
+        "planned_action_ko": "선행조사로 7.0 stream read 계약과 APPn의 모든 호출 경로를 확정한 뒤 정확한 길이 읽기/실패 처리 보호를 이식하고 정상 JPEG·정상 분할 읽기 paired 회귀검증을 추가한다.",
+        "validation": "not-run"
+      },
+      "separate_followup": "Audit old APPn short-read/full-length-copy behavior as an independent concern; do not credit or attribute it to this different missing-pointer-advance mechanism."
     },
     {
       "ghsa_id": "GHSA-h96m-rvf9-jgm2",
@@ -605,10 +619,11 @@
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-w476-322c-wpvm",
       "upstream_fix_url": "https://github.com/php/php-src/commit/3f40b65323dd1b85e9bab6878237d3867e449d5c",
-      "planned_action_ko": "선행조사로 구 parser/quoter의 NUL 의미와 server API 계약을 확정하고 길이 기반 복사·명시적 길이 또는 NUL 거부 보호를 이식한 뒤 정상 quoting/parameter 회귀검증을 추가한다.",
-      "planned_action_en": "Audit the old parser and API contract, backport binary-safe lengths or explicit NUL rejection, and validate normal quoting and binding.",
+      "planned_action_ko": "구형 quote→PDO 파서→byte별 prepare 경로와 Firebird 길이 0 계약을 먼저 확인해 같은 injection 기전의 존재를 판정한다. 존재하지 않는 신형 token 재조립 코드를 무조건 이식하지 않는다. 별도 NUL 보완은 독립 근거와 범위가 필요하다.",
+      "planned_action_en": "First trace the old quote→PDO parser→bytewise prepare path and Firebird length-zero contract to decide whether the same injection mechanism exists. Do not port the absent newer token concatenator blindly. Any independent NUL hardening needs a separate justified scope.",
       "validation": "not-run",
-      "review_method": "exact-source and official-advisory comparison"
+      "review_method": "exact-source and official-advisory comparison",
+      "implementation_gate": "prerequisite-review"
     },
     {
       "ghsa_id": "GHSA-cj93-vc83-wgqv",
@@ -635,16 +650,20 @@
       "cve_id": "CVE-2025-6491",
       "status": "PLANNED",
       "component": "ext/soap libxml node names",
-      "reason_ko": "SoapVar enc_name을 제한 없이 xmlNodeSetName에 주며 호출 뒤 NULL name 복원 보호가 없다. libxml <2.13 의존 조건이므로 실제 linked libxml 버전별 영향은 별도 확인 대상이며, 소스 자체는 구 libxml 지원 보호를 제공하지 않는다.",
-      "reason_en": "SoapVar names reach xmlNodeSetName without the upstream NULL-name workaround; applicability depends on the linked libxml version.",
+      "reason_ko": "실제 공식 수정 지점은 soap.c serialize_zval()의 NULL xmlParam/name 검사다. 후보는 SoapVar enc_name을 xmlNodeSetName()에 전달한 뒤 soap.c에서 name을 무검사 strcmp한다. SOAP와 libxml2<2.13 및 대용량 이름 조건이 필요하다.",
+      "reason_en": "The actual fix site is serialize_zval() in soap.c, not a post-call repair in php_encoding.c. Candidate SoapVar names reach xmlNodeSetName(), then serialize_zval() dereferences name without the official NULL guards. Requires SOAP and libxml2 older than 2.13.",
       "source_evidence": [
-        "ext/soap/php_encoding.c:454 enc_name accepts a string",
-        "ext/soap/php_encoding.c:456 xmlNodeSetName called without post-call name repair"
+        "scripts/build.sh:72",
+        "ext/soap/php_encoding.c:454",
+        "ext/soap/php_encoding.c:456",
+        "ext/soap/soap.c:4468",
+        "ext/soap/soap.c:4470",
+        "ext/soap/soap.c:4471"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-453j-q27h-5p8x",
       "upstream_fix_url": "https://github.com/php/php-src/commit/0298837252fda06e0f86be3dfe91f166f45e85d4",
-      "planned_action_ko": "의존 libxml 지원 범위를 먼저 확인하고 구 libxml용 sentinel name 복원 또는 입력 길이 보호를 이식한 뒤 정상 SoapVar 직렬화 회귀검증을 추가한다.",
-      "planned_action_en": "Confirm supported libxml versions, backport the old-libxml name workaround or length guard, and validate normal SoapVar serialization.",
+      "planned_action_ko": "soap.c serialize_zval의 xmlParam/name NULL 검사를 이식하고 허용할 libxml 빌드에서 일반 SoapVar 이름 동작을 검증한다.",
+      "planned_action_en": "Port the xmlParam/name NULL checks at soap.c serialize_zval, then verify ordinary SoapVar naming against the admitted libxml build.",
       "validation": "not-run",
       "review_method": "exact-source and official-advisory comparison"
     },
@@ -691,13 +710,17 @@
       "cve_id": "CVE-2025-1861",
       "status": "PLANNED",
       "component": "ext/standard HTTP redirects",
-      "reason_ko": "location은 1024바이트 고정 배열이며 strlcpy를 사용한다. 헤더 읽기 자체도 긴 헤더를 소모 후 무시하는 분기가 있어 현대 공지의 잘림과 정확한 결과 차이는 있으나, 긴 Location의 보존 또는 명시적 오류 보호가 없다.",
-      "reason_en": "Redirect locations use a fixed 1024-byte array; long lines may also be discarded, and the upstream length-preserving/error behavior is absent.",
+      "reason_ko": "7.0은 1024 초과 물리 header를 소모 후 버려 현대 Location 직접 잘림과 차이가 있다. 그러나 relative redirect의 loc_path/new_path를 1024 고정 배열에 snprintf/strlcpy하여 경로·query가 잘릴 수 있다. 공식 수정은 이 재조합 버퍼도 동적화한다.",
+      "reason_en": "PHP 7 drains/discards overlong physical header lines, unlike the modern direct Location truncation case. However, relative redirects still reconstruct loc_path/new_path into fixed 1024-byte arrays and silently truncate the combined URL. The official fix also removes these reconstruction limits.",
       "source_evidence": [
-        "ext/standard/http_fopen_wrapper.c:75 HTTP_HEADER_BLOCK_SIZE is 1024",
-        "ext/standard/http_fopen_wrapper.c:125 fixed location array",
-        "ext/standard/http_fopen_wrapper.c:761 oversized header is drained and skipped",
-        "ext/standard/http_fopen_wrapper.c:816 strlcpy to fixed location buffer"
+        "ext/standard/http_fopen_wrapper.c:125",
+        "ext/standard/http_fopen_wrapper.c:761",
+        "ext/standard/http_fopen_wrapper.c:769",
+        "ext/standard/http_fopen_wrapper.c:816",
+        "ext/standard/http_fopen_wrapper.c:867",
+        "ext/standard/http_fopen_wrapper.c:890",
+        "ext/standard/http_fopen_wrapper.c:901",
+        "ext/standard/http_fopen_wrapper.c:937"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-52jp-hrpf-2jff",
       "upstream_fix_url": "https://github.com/php/php-src/commit/ac1a054bb3eb5994a199e8b18cca28cbabf5943e",
@@ -982,24 +1005,26 @@
       "cve_id": "CVE-2024-9026",
       "status": "PLANNED",
       "component": "sapi/fpm worker output logging",
-      "reason_ko": "공지의 주 원인인 FPM_STDIO_CMD_FLUSH/cmd_pos 상태기계는 7.0 전체 FPM 소스에 없다. 따라서 그 분할 flush 버그를 그대로 적용할 수 없다. 다만 공지가 함께 지적한 NUL 이후 로그 잘림에 대해 7.0의 strchr와 zlog %s 경로도 binary-safe 보호를 제공하지 않으며 코드에 binary data FIXME가 있다. 이 부차 보호 누락을 coverage 정책상 PLANNED로 기록하며 같은 CVE의 실제 재현이나 공격 가능성을 확정하지 않는다.",
-      "reason_en": "The newer split-flush state machine is absent, but the advisory also discusses NUL-truncated logs. PHP 7.0 retains strchr/%s logging and explicitly flags binary data as unresolved; coverage remains planned for that unprotected subcase, without claiming exploit confirmation.",
+      "reason_ko": "공식 수정의 원인인 FPM_STDIO_CMD_FLUSH/cmd_pos 상태기계는 7.0 전체 FPM 소스에 없어 그 한 줄 수정은 불필요하다. 공지의 별도 NUL 로그 잘림 설명과 유사하게 구형 strchr/%s 경로는 바이너리 안전하지 않다. 이 관련 하드닝은 별도 판단 대상으로 남기며 같은 CVE의 정확한 수정 필수로 합치지 않는다.",
+      "reason_en": "The exact upstream split-flush state machine is absent from PHP7, so its one-line fix is not needed here. The advisory separately discusses NUL truncation; legacy strchr/%s logging has related binary-safety limitations. That needs a separate hardening decision rather than treating the newer CVE fix as directly applicable.",
       "source_evidence": [
-        "sapi/fpm/fpm/fpm_stdio.c:116 legacy child_said implementation",
-        "sapi/fpm/fpm/fpm_stdio.c:177 binary-data FIXME",
-        "sapi/fpm/fpm/fpm_stdio.c:189 strchr scans NUL-terminated buffer",
-        "sapi/fpm/fpm/fpm_stdio.c:196 worker output logged via %s",
-        "sapi/fpm/fpm/zlog.c:184 syslog uses %s"
+        "sapi/fpm/fpm/fpm_stdio.c:116",
+        "sapi/fpm/fpm/fpm_stdio.c:177",
+        "sapi/fpm/fpm/fpm_stdio.c:189",
+        "sapi/fpm/fpm/fpm_stdio.c:196",
+        "sapi/fpm/fpm/fpm_stdio.c:215",
+        "sapi/fpm/fpm/zlog.c:184"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-865w-9rf3-2wh5",
-      "planned_action_ko": "주 flush 버그와 기존 NUL 로그 동작을 선행 조사로 분리한다. binary-safe escaping/length 처리 보호를 구현하고 정상 로그·NUL 포함 안전한 고정 문자열·syslog 형식 회귀 검증을 수행한다. flush 기능 자체를 불필요하게 이식하지 않는다.",
-      "planned_action_en": "Separate the absent flush mechanism from legacy NUL handling; implement binary-safe output protection and verify benign fixed-string logging and syslog formatting.",
+      "planned_action_ko": "구형 바이너리 출력·capture·syslog 계약과 별도 NUL 잘림 보완 필요성을 먼저 판단한다. 공식 FLUSH 상태기계 수정은 PHP 7 대응 경로가 없어 필수 이식이 아니다. 독립 근거가 확정된 로깅 변경만 구현한다.",
+      "planned_action_en": "First decide the legacy binary-output/capture/syslog contract and establish any separate NUL-truncation hardening requirement. The official FLUSH state-machine fix has no matching PHP 7 path and is not a mandatory port. Implement only a separately justified logging change.",
       "scope": "Linux FPM; primary flush feature absent, secondary NUL-log protection missing",
       "validation": "not-run",
       "review_method": "exact-source and official-advisory comparison",
       "upstream_comparison": [
         "https://github.com/php/php-src/compare/php-8.3.11...php-8.3.12"
-      ]
+      ],
+      "implementation_gate": "prerequisite-review"
     },
     {
       "ghsa_id": "GHSA-3cr5-j632-f35r",
@@ -1273,11 +1298,12 @@
         "ext/openssl/openssl.c:5052 success-dependent return path"
       ],
       "upstream_url": "https://github.com/php/php-src/security/advisories/GHSA-hh26-4ppw-5864",
-      "planned_action_ko": "선행 조사로 빌드별 OpenSSL 계약·implicit rejection 제공 여부를 고정한다. 호환 가능한 안전 복호화 API 이식 또는 보호할 수 없는 PKCS#1 v1.5 경로 차단 정책을 구현하고 정상 RSA/OAEP 호환성·오류 동작 회귀를 검증한다. timing 공격 실험은 수행하지 않는다.",
-      "planned_action_en": "First verify each supported OpenSSL contract; implement a compatible protected API or block unprotected PKCS#1 v1.5 paths, then validate benign RSA/OAEP and error behavior.",
+      "planned_action_ko": "vendor 패치를 포함한 정확한 RSA 백엔드·padding·implicit-rejection 계약부터 확정한다. 판정 후에만 호환 가능한 보호 경로나 미지원 PKCS#1 v1.5 거부 정책을 선택·검증한다. 버전 문자열이나 정상 왕복 성공을 시간 부채널 보안 근거로 쓰지 않는다.",
+      "planned_action_en": "First establish the exact linked RSA backend/padding and implicit-rejection contract, including vendor patches. Choose and test a compatible protected path or reject unsupported PKCS#1 v1.5 only after that decision; a version string or valid round trip is not timing-security evidence.",
       "scope": "Linux FPM/OpenSSL source; dependency-dependent timing risk, no timing experiment",
       "validation": "not-run",
-      "review_method": "exact-source and official-advisory comparison"
+      "review_method": "exact-source and official-advisory comparison",
+      "implementation_gate": "prerequisite-review"
     },
     {
       "ghsa_id": "GHSA-3qrf-m4j2-pcrr",
@@ -2352,6 +2378,76 @@
       "root": "prepared-source",
       "sha256": "f99c49adbae637d0731ff08e44d2d5859bfa508f40d020b8a536105531e59d53",
       "line_count": 205
+    },
+    "ext/standard/config.m4": {
+      "root": "prepared-source",
+      "sha256": "8473d5d0b3102f5ad130e99614b10234a261b527216c50ba4a68b0c711887113",
+      "line_count": 629
+    },
+    "ext/mysqlnd/config9.m4": {
+      "root": "prepared-source",
+      "sha256": "a8f3c16b8131a753a48254a2019d96b134c0dbcf91f3741d836d8bd0e2e2d475",
+      "line_count": 51
+    },
+    "ext/ldap/config.m4": {
+      "root": "prepared-source",
+      "sha256": "b44fd5722278cec088e123c7effbeb53470877a0368ef2a40867e5acd3f46e36",
+      "line_count": 229
+    },
+    "ext/mysqlnd/mysqlnd_result_meta.c": {
+      "root": "prepared-source",
+      "sha256": "817b6574d230fa070b66923a01d9b996704bdb83c521cadc1e2e999a6b430c8a",
+      "line_count": 415
+    },
+    "ext/mysqlnd/mysqlnd.c": {
+      "root": "prepared-source",
+      "sha256": "f1999af86d0af5499b4bba333bc8a17acf12021abd7fe8642f66ba0159511906",
+      "line_count": 3180
+    },
+    "main/php_content_types.c": {
+      "root": "prepared-source",
+      "sha256": "cd76679822afd78f5984d584a2871488a61f4f241cb737b43214f36a8e212070",
+      "line_count": 77
+    },
+    "ext/dom/config.m4": {
+      "root": "prepared-source",
+      "sha256": "cb71fcb6f6e662a1006d9c1c2e09611f3be38ab59826307e230b047c24342a86",
+      "line_count": 38
+    },
+    "ext/simplexml/config.m4": {
+      "root": "prepared-source",
+      "sha256": "53d61cdbd98bb60920acd3eb2ff4f334b270dc6b753085408f6e7814de8269bc",
+      "line_count": 28
+    },
+    "ext/xsl/xsltprocessor.c": {
+      "root": "prepared-source",
+      "sha256": "b95bae057f8e33faa1e27ce10e02d6e938b8a302bff47e3fda858c5c88a2613b",
+      "line_count": 957
+    },
+    "ext/phar/config.m4": {
+      "root": "prepared-source",
+      "sha256": "5e6e1e50bfbb21eeaedc93fe93c1d758edaddaed66245720cdda0294955f2067",
+      "line_count": 34
+    },
+    "ext/soap/config.m4": {
+      "root": "prepared-source",
+      "sha256": "e9661c71cb9cfd570fe32be45159fb0163799b31cfa7689b945dba99c4fac29c",
+      "line_count": 25
+    },
+    "scripts/build.sh": {
+      "root": "kit",
+      "sha256": "30284720bb87295c1636452484be56fe3074e372cdbc5df035a0af4b4d91e1e9",
+      "line_count": 91
+    },
+    "evidence/xenial-build-20261114.json": {
+      "root": "kit",
+      "sha256": "fe2c5f2f74eb76e14275e525ace7186c2cff0743211a642ed10e2b10273ef264",
+      "line_count": 57
+    },
+    "evidence/xenial-crypt-backend-20261114.json": {
+      "root": "kit",
+      "sha256": "a9757d995a73d1b5c2914920c7528d06e77c59c9737b8bd7f98501fa8d9df875",
+      "line_count": 74
     }
   },
   "vendor_series_sha256": "d700ecc38d395d83ea3c3e68ac36b5454fe25de7048eeb756546f01698cd8d58",

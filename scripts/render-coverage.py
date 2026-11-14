@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from patchkit.coverage import validate
+from patchkit.coverage import validate, validate_necessity
 
 root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
@@ -16,6 +16,9 @@ args = parser.parse_args()
 catalog = json.loads((root / 'provenance/security-advisories-20261114.json').read_text())
 ledger = json.loads((root / 'evidence/security-coverage-20261114.json').read_text())
 counts = validate(catalog, ledger)
+necessity_path = root / 'evidence/implementation-necessity-20261114.json'
+necessity = json.loads(necessity_path.read_text()) if necessity_path.exists() else None
+necessity_counts = validate_necessity(ledger, necessity) if necessity else None
 by_id = {r['ghsa_id']: r for r in catalog['entries']}
 
 
@@ -31,7 +34,7 @@ for lang in ('en', 'ko'):
     ko = lang == 'ko'
     labels = {'RESOLVED': '해결됨 · 수정 구현' if ko else 'Resolved · implemented',
               'NOT_APPLICABLE': '영향 없음 · 해당 결함 경로 부재' if ko else 'Not applicable · mechanism absent',
-              'PLANNED': '미해결 · 구현 예정' if ko else 'Unresolved · implementation planned'}
+              'PLANNED': '미해결 · 검토·구현 예정' if ko else 'Unresolved · review/implementation planned'}
     title = '공식 공개 취약점 대응 현황' if ko else 'Official advisory coverage'
     other = 'SECURITY_COVERAGE.md' if ko else 'SECURITY_COVERAGE.ko.md'
     lines = ['# ' + title, '', '[English / 한국어](' + other + ')', '',
@@ -45,6 +48,10 @@ for lang in ('en', 'ko'):
                   '| Official catalog status | Count |', '|---|---|']
     for status in labels:
         lines.append('| ' + labels[status] + ' | ' + str(counts[status]) + ' |')
+    if necessity_counts:
+        doc = 'IMPLEMENTATION_NECESSITY' + ('.ko' if ko else '') + '.md'
+        lines += ['', (f'기존 51건의 [실제 구현 필요성 판정]({doc}): 공개 Xenial FPM 기준 수정 필요 {necessity_counts["REQUIRED"]} / 조건 확인 후 결정 {necessity_counts["CONDITIONAL"]} / 다른 OS·SAPI 전용 {necessity_counts["OUTSIDE_LINUX_FPM"]} / 해당 결함 경로 없음 {necessity_counts["MECHANISM_ABSENT"]}건입니다. 구현 예정 전체를 현재 FPM의 확정 취약점으로 해석하지 않습니다.' if ko else
+                       f'[Actual implementation necessity]({doc}) for the original 51 items: {necessity_counts["REQUIRED"]} required in the published Xenial FPM scope / {necessity_counts["CONDITIONAL"]} prerequisite-dependent / {necessity_counts["OUTSIDE_LINUX_FPM"]} other OS/SAPI / {necessity_counts["MECHANISM_ABSENT"]} exact mechanism absent. Planned items are not all confirmed vulnerabilities in this FPM artifact.')]
     if ko:
         lines += ['', '## 판정 기준과 대상', '',
                   '- **해결됨:** 이 배포 소스에 해당 수정 구현이 있습니다. 소스 검증과 실제 공격 차단 실증은 별개이며, `source-only`를 보안 시험 통과로 읽으면 안 됩니다.',
@@ -127,10 +134,15 @@ for lang, filename in [('en', 'README.md'), ('ko', 'README.ko.md')]:
                '| ' + ('공식 목록 내 상태 | 건수' if ko else 'Official catalog status | Count') + ' |', '|---|---|',
                '| ' + ('해결됨 · 수정 구현' if ko else 'Resolved · implementation present') + ' | ' + str(counts['RESOLVED']) + ' |',
                '| ' + ('영향 없음 · 해당 결함 경로 부재' if ko else 'Not applicable · reported mechanism absent') + ' | ' + str(counts['NOT_APPLICABLE']) + ' |',
-               '| ' + ('미해결 · 구현 예정' if ko else 'Unresolved · implementation planned') + ' | ' + str(counts['PLANNED']) + ' |', '',
+               '| ' + ('미해결 · 검토·구현 예정' if ko else 'Unresolved · review/implementation planned') + ' | ' + str(counts['PLANNED']) + ' |', '',
                (f'기존 Ubuntu vendor 패치로 포함된 **CVE {counts["VENDOR_RESOLVED"]}건은 별도 집계**합니다. 해결됨은 수정 코드가 존재한다는 뜻이며 모든 공격 차단을 실증했다는 뜻은 아닙니다. 미구현 보호는 통과로 표시하지 않습니다. 이 대응표는 현재 공식 GitHub 목록과 명시한 vendor 패치를 대상으로 하며 모든 시대의 PHP·의존 라이브러리 CVE 전체를 뜻하지 않습니다.' if ko else
                 f'**{counts["VENDOR_RESOLVED"]} existing vendor-patched CVEs are accounted for separately.** Resolved means protection code is present, not that every exploit was validated. Unimplemented protection is not a pass. The matrix exhausts the current official GitHub catalog and named vendor patches, not every historical PHP/dependency CVE.'),
                '<!-- SECURITY_COVERAGE_END -->']
+    if necessity_counts:
+        doc = 'docs/IMPLEMENTATION_NECESSITY' + ('.ko' if ko else '') + '.md'
+        summary.insert(-1, '')
+        summary.insert(-1, (f'기존 51건을 [실제 구현 필요성]({doc})부터 재검토했습니다. 공개 Xenial FPM 기준 **수정 필요 {necessity_counts["REQUIRED"]} / 조건부 {necessity_counts["CONDITIONAL"]} / 다른 OS·SAPI {necessity_counts["OUTSIDE_LINUX_FPM"]} / 해당 경로 없음 {necessity_counts["MECHANISM_ABSENT"]}건**입니다. 먼저 해당 조건을 확인하고 필요한 보호만 구현합니다.' if ko else
+                            f'The original 51 items were [reviewed for actual implementation necessity]({doc}): **{necessity_counts["REQUIRED"]} required / {necessity_counts["CONDITIONAL"]} conditional / {necessity_counts["OUTSIDE_LINUX_FPM"]} other OS/SAPI / {necessity_counts["MECHANISM_ABSENT"]} mechanism absent** in the published Xenial FPM scope. Establish prerequisites before implementing relevant protection.'))
     block = '\n'.join(summary) + '\n'
     path = root / filename
     old = path.read_text()

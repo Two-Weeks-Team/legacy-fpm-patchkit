@@ -15,7 +15,7 @@ Fresh native checks completed on Ubuntu 22.04 x86-64/glibc 2.35 (`portable`) and
 
 ## Complete current official-advisory accounting
 
-The [2026-11-14 coverage matrix](docs/SECURITY_COVERAGE.md) accounts for all 66 published entries in the official PHP repository catalog: **2 implemented backports, 13 specific mechanisms absent in PHP 7.0, and 51 unresolved protections scheduled for implementation**. Another 31 CVEs explicitly named by enabled Ubuntu vendor patches are recorded separately. These figures are not a claim to enumerate every historical PHP or dependency CVE. All source-level implementation decisions remain separate from security runtime acceptance; a planned item receives no fixed credit.
+The [2026-11-14 coverage matrix](docs/SECURITY_COVERAGE.md) accounts for all 66 published entries in the official PHP repository catalog: **2 implemented backports, 14 specific mechanisms absent in PHP 7.0, and 50 review-or-implementation planned items**. The [necessity review of the original 51 items](docs/IMPLEMENTATION_NECESSITY.md) distinguishes 22 required in the published Xenial FPM scope, 23 prerequisite-dependent, 5 other OS/SAPI and 1 exact mechanism absent. Establish applicability before implementation. Another 31 CVEs explicitly named by enabled Ubuntu vendor patches are recorded separately. These figures do not enumerate every historical PHP/dependency CVE or establish live application exposure. A planned item receives no fixed credit.
 
 ## Intentional change
 

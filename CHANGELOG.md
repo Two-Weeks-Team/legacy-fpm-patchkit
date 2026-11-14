@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — implementation necessity before patching
+
+- Reviewed the original 51 planned items against official fixes and the pinned source: 22 required in the published Xenial FPM scope, 23 prerequisite-dependent, 5 other OS/SAPI, and 1 exact mechanism absent.
+- Corrected current catalog counts to 2 implementations / 14 mechanism-absent / 50 review-or-implementation planned; preserved the prior JPEG assessment and separate short-read follow-up.
+- Added explicit prerequisite gates for conditional source work, source-bound assessment validation, reproducible bilingual tables and exact Xenial crypt-backend evidence.
+- The engine patch and historical release artifacts remain unchanged. The 0.1.1 figures below are the earlier assessment, superseded by the current [necessity review](docs/IMPLEMENTATION_NECESSITY.md).
+
 ## 0.1.1 — official advisory coverage
 
 - Complete 2026-11-14 official repository catalog snapshot: 66 advisories, including four without CVE IDs.

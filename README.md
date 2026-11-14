@@ -20,10 +20,12 @@ All **66 published official PHP repository advisories** were compared with the p
 | Official catalog status | Count |
 |---|---|
 | Resolved · implementation present | 2 |
-| Not applicable · reported mechanism absent | 13 |
-| Unresolved · implementation planned | 51 |
+| Not applicable · reported mechanism absent | 14 |
+| Unresolved · review/implementation planned | 50 |
 
 **31 existing vendor-patched CVEs are accounted for separately.** Resolved means protection code is present, not that every exploit was validated. Unimplemented protection is not a pass. The matrix exhausts the current official GitHub catalog and named vendor patches, not every historical PHP/dependency CVE.
+
+The original 51 items were [reviewed for actual implementation necessity](docs/IMPLEMENTATION_NECESSITY.md): **22 required / 23 conditional / 5 other OS/SAPI / 1 mechanism absent** in the published Xenial FPM scope. Establish prerequisites before implementing relevant protection.
 <!-- SECURITY_COVERAGE_END -->
 
 Official advisories can also be [collected hourly with Cloudflare Workers or a local batch script](docs/ADVISORY_AUTOMATION.md); new and revised items become separate implementation work.
@@ -56,7 +58,7 @@ The port also anticipates related failure modes in PHP 7.0. These are concrete p
 | Official-source reconstruction | 84 vendor patches, 46 changed-file pre/post hashes and both full normalized source digests match | The published cumulative patch reconstructs the intended source; this is not exploit validation |
 | Native FPM on Ubuntu 16.04.7 and 22.04 x86-64 | **36 named benign checks per environment**: three session codecs × progress On/Off | Plain session persistence, codec policy, small upload content/cleanup and same-worker continuity |
 | Stock/candidate comparison on Xenial | **Policy difference observed** with hashed binaries | A real intentional behavior change, not two tests that both pass unchanged |
-| Toolkit and public download | **57 unit tests** on current source; v0.1.0 download passed 45 tests, checksum and GitHub provenance verification | Tooling regressions and source-package integrity, not a site's deployment readiness |
+| Toolkit and public download | **66 unit tests** on current source; v0.1.0 download passed 45 tests, checksum and GitHub provenance verification | Tooling regressions and source-package integrity, not a site's deployment readiness |
 
 [Exact records and failure history](docs/VERIFICATION.md) are published. Historical msgpack failures and a candidate-only PHPT failure remain documented. This release does not fix third-party modules, prevent scraping/DDoS, repair an existing compromise, or certify application compatibility. Its core claim is **the two targeted engine backports plus the stated PHP 7.0 protective adaptations, with evidence separated from expected effects**. Read [behavior changes](docs/BEHAVIOR_CHANGES.md) and [support limits](SUPPORT.md) before use.
 

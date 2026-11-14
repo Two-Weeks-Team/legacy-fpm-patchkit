@@ -8,7 +8,7 @@ import re
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from patchkit.coverage import validate
+from patchkit.coverage import validate, validate_necessity
 from patchkit.sources import tree_digest
 
 root = Path(__file__).resolve().parents[1]
@@ -18,6 +18,9 @@ args = parser.parse_args()
 catalog = json.loads((root / 'provenance/security-advisories-20261114.json').read_text())
 ledger = json.loads((root / 'evidence/security-coverage-20261114.json').read_text())
 counts = validate(catalog, ledger)
+necessity_path = root / 'evidence/implementation-necessity-20261114.json'
+necessity = json.loads(necessity_path.read_text()) if necessity_path.exists() else None
+necessity_counts = validate_necessity(ledger, necessity) if necessity else None
 if len(catalog['entries']) != catalog['published_advisory_count']:
     raise ValueError('catalog count differs')
 if ledger['catalog_sha256'] != hashlib.sha256((root / 'provenance/security-advisories-20261114.json').read_bytes()).hexdigest():
@@ -62,4 +65,5 @@ if args.source:
                 raise ValueError('vendor patch hash differs: ' + patch['name'])
 print(json.dumps({'result': 'COVERAGE_ACCOUNTING_VERIFIED', 'catalog_advisories': len(catalog['entries']),
                   'counts': counts, 'source_hashes_rechecked': bool(args.source),
+                  'necessity_counts': necessity_counts,
                   'security_runtime_pass_inferred': False}, indent=2))

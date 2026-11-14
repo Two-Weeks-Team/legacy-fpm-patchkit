@@ -5,6 +5,7 @@
 | First safe run | [Getting started](GETTING_STARTED.md) · [한글 시작 가이드](GETTING_STARTED.ko.md) |
 | Understand the patch | [Scope and origins](PATCH_SCOPE.md) · [Behavior changes](BEHAVIOR_CHANGES.md) |
 | Check all official advisories and planned fixes | [Coverage matrix](SECURITY_COVERAGE.md) · [한글 대응표](SECURITY_COVERAGE.ko.md) |
+| Decide whether an item actually needs a patch | [Implementation necessity](IMPLEMENTATION_NECESSITY.md) · [실제 수정 필요성](IMPLEMENTATION_NECESSITY.ko.md) |
 | Build a candidate | [Build profiles and dependencies](BUILDING.md) |
 | Track new official advisories automatically | [Hourly Worker and local batch](ADVISORY_AUTOMATION.md) · [한글 자동 수집](ADVISORY_AUTOMATION.ko.md) |
 | Inspect, back up and transition | [Installation and rollback](INSTALLATION.md) |

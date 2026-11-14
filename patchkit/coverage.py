@@ -4,6 +4,68 @@ from pathlib import PurePosixPath
 import re
 
 STATUSES = ('RESOLVED', 'NOT_APPLICABLE', 'PLANNED')
+NECESSITY = ('REQUIRED', 'CONDITIONAL', 'OUTSIDE_LINUX_FPM', 'MECHANISM_ABSENT', 'ALREADY_COVERED')
+
+
+def validate_necessity(ledger, review):
+    """Check source-bound review completeness without granting fixed credit."""
+    if review.get('schema') != 1:
+        raise ValueError('unsupported necessity schema')
+    if review.get('candidate_source_sha256') != ledger.get('candidate_source_sha256'):
+        raise ValueError('necessity source identity differs')
+    expected = {r['ghsa_id']: r.get('cve_id') for r in ledger['entries']
+                if r['status'] == 'PLANNED' or r.get('prior_assessment', {}).get('status') == 'PLANNED'}
+    seen = set()
+    counts = Counter({decision: 0 for decision in NECESSITY})
+    source_counts = Counter({action: 0 for action in ('REQUIRED', 'CONDITIONAL', 'NONE')})
+    ledger_rows = {row['ghsa_id']: row for row in ledger['entries']}
+    for row in review['entries']:
+        key = row.get('id')
+        if key in seen:
+            raise ValueError('duplicate necessity identity: ' + str(key))
+        if key not in expected or row.get('cve_id') != expected[key]:
+            raise ValueError('necessity identity differs: ' + str(key))
+        seen.add(key)
+        decision = row.get('decision')
+        if decision not in NECESSITY:
+            raise ValueError('invalid necessity decision: ' + str(key))
+        action = row.get('shipped_source_action')
+        if action not in ('REQUIRED', 'CONDITIONAL', 'NONE'):
+            raise ValueError('invalid shipped source action: ' + str(key))
+        if action == 'CONDITIONAL' and ledger_rows[key].get('implementation_gate') != 'prerequisite-review':
+            raise ValueError('conditional source action needs a prerequisite gate: ' + str(key))
+        if decision in ('MECHANISM_ABSENT', 'ALREADY_COVERED') and action != 'NONE':
+            raise ValueError('absence/coverage conflicts with source action: ' + str(key))
+        for field in ('component', 'reason_en', 'reason_ko', 'official_fix_comparison', 'next_verification'):
+            if not isinstance(row.get(field), str) or not row[field].strip():
+                raise ValueError('missing necessity explanation: ' + str(key))
+        prerequisites = row.get('prerequisites')
+        if not isinstance(prerequisites, list) or not all(isinstance(p, str) and p.strip() for p in prerequisites):
+            raise ValueError('invalid necessity prerequisites: ' + str(key))
+        if decision == 'CONDITIONAL' and not prerequisites:
+            raise ValueError('conditional verdict needs a prerequisite: ' + str(key))
+        evidence = row.get('candidate_evidence')
+        if not evidence or not all(isinstance(ref, str) and re.match(r'[^: ]+:\d+', ref) for ref in evidence):
+            raise ValueError('missing necessity source evidence: ' + str(key))
+        for reference in evidence:
+            match = re.match(r'([^: ]+):(\d+)', reference)
+            proof = ledger.get('source_files', {}).get(match[1])
+            if not proof or not 1 <= int(match[2]) <= proof['line_count']:
+                raise ValueError('unbacked necessity source reference: ' + str(key))
+        urls = row.get('official_sources')
+        if not urls or not all(isinstance(url, str) and url.startswith('https://') for url in urls):
+            raise ValueError('missing necessity official source: ' + str(key))
+        if row.get('priority') not in ('P1', 'P2', 'P3'):
+            raise ValueError('invalid necessity priority: ' + str(key))
+        counts[decision] += 1
+        source_counts[action] += 1
+    if seen != set(expected):
+        raise ValueError('necessity coverage does not match planned catalog')
+    if review.get('counts') and any(review['counts'].get(key, 0) != counts[key] for key in NECESSITY):
+        raise ValueError('necessity counts differ from reviewed rows')
+    if review.get('shipped_source_counts') and any(review['shipped_source_counts'].get(key, 0) != source_counts[key] for key in source_counts):
+        raise ValueError('shipped source counts differ from reviewed rows')
+    return dict(counts)
 
 
 def validate(catalog, ledger):

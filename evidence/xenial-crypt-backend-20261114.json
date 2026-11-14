@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "method": "Nonexecuting ELF64 little-endian symbol-table inspection, plus source conditional-compilation and dispatch comparison. No binary execution.",
+  "candidate_source_sha256": "f083ff0d68398c4fa51da84efdb901ab917b0c04f28fdd47d1c039b28ea836f9",
+  "artifacts": {
+    "php": {
+      "sha256": "e0e3457f426d9516aca091f866be41666c64c93db32ba18f69c30ba710fb03af",
+      "defined_symbols": [
+        {
+          "symbol": "php_crypt_blowfish_rn",
+          "section": 13,
+          "address": "0x17fa60",
+          "size": 846
+        },
+        {
+          "symbol": "php_crypt",
+          "section": 13,
+          "address": "0x19a010",
+          "size": 915
+        },
+        {
+          "symbol": "php_crypt",
+          "section": 13,
+          "address": "0x19a010",
+          "size": 915
+        },
+        {
+          "symbol": "php_crypt_blowfish_rn",
+          "section": 13,
+          "address": "0x17fa60",
+          "size": 846
+        }
+      ]
+    },
+    "php-fpm": {
+      "sha256": "47f253738f5c1efe9834d5a5700e83ff5dd599aa05ef8dad51bc05becb6f8da9",
+      "defined_symbols": [
+        {
+          "symbol": "php_crypt_blowfish_rn",
+          "section": 13,
+          "address": "0x178120",
+          "size": 846
+        },
+        {
+          "symbol": "php_crypt",
+          "section": 13,
+          "address": "0x1926d0",
+          "size": 915
+        },
+        {
+          "symbol": "php_crypt",
+          "section": 13,
+          "address": "0x1926d0",
+          "size": 915
+        },
+        {
+          "symbol": "php_crypt_blowfish_rn",
+          "section": 13,
+          "address": "0x178120",
+          "size": 846
+        }
+      ]
+    }
+  },
+  "public_build_record": "evidence/xenial-build-20261114.json",
+  "source_basis": [
+    "ext/standard/config.m4:245",
+    "ext/standard/config.m4:280",
+    "ext/standard/config.m4:288",
+    "ext/standard/crypt.c:160",
+    "ext/standard/crypt.c:210"
+  ],
+  "conclusion": "Bundled Blowfish is compiled and selected by the public Xenial artifact source path. This is applicability evidence, not exploit or arbitrary deployed-server validation."
+}
