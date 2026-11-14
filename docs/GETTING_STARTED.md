@@ -51,6 +51,8 @@ python3 scripts/native-check.py \
 
 The small native harness supports Python 3.5+ for the legacy guest. It launches its own temporary FPM with a private config/socket and no external modules or production INI. It tests all three built-in session codecs with upload progress On and Off. A different-codec runtime switch must be rejected; ordinary sessions/uploads and the same worker must continue working. The command fails if a request, assertion, startup or cleanup fails. Run it normally, never with Python's `-O` mode.
 
+Choose a new report filename for every run. An existing file or symlink is rejected before execution; earlier FAIL records are preserved.
+
 Expected: `BENIGN_RUNTIME_PASS`. That establishes the named benign behaviors for **this binary**; it does not certify application or exploit resistance.
 
 ## 5. Inspect and practice recovery

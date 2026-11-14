@@ -15,7 +15,7 @@ import time
 import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from patchkit import fcgi
+from patchkit import fcgi, reporting
 
 FIXTURE = r'''<?php
 ob_start();
@@ -182,6 +182,10 @@ def main():
     parser.add_argument('--cli', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args()
+    try:
+        reporting.require_new(args.output)
+    except ValueError as error:
+        parser.error(str(error))
     report = {'schema': 1, 'scope': 'benign isolated local regression; not exploit or application acceptance',
               'machine': platform.machine(), 'libc': list(platform.libc_ver()), 'campaigns': [],
               'external_modules': 'NOT_TESTED', 'production': 'NOT_ACCESSED'}
@@ -203,8 +207,7 @@ def main():
     except Exception as error:
         report['result'] = 'FAIL'
         report['error'] = type(error).__name__ + ': ' + str(error)
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
+    reporting.write_new(args.output, report)
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0 if report['result'] == 'BENIGN_RUNTIME_PASS' else 1
 

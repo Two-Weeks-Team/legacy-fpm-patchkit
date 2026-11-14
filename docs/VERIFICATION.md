@@ -22,6 +22,21 @@ Earlier CI runs [43551910076](https://github.com/Two-Weeks-Team/legacy-fpm-patch
 
 The recorded portable binary is **not** claimed compatible with Xenial or external modules. A later tag reruns its own CI; compare the relevant run and binary identity rather than assuming a previous binary hash is the new output.
 
+## Optional benign policy comparison
+
+In an isolated environment with two trusted **copied** binaries and the required libraries:
+
+```sh
+python3 scripts/policy-diff.py \
+  --stock-fpm /path/to/trusted-stock-copy \
+  --candidate-fpm .work/build/php-fpm \
+  --output .work/policy-difference.json
+```
+
+The probe starts separate private FPM instances and uses a fresh empty session, so a data-decoding failure cannot stand in for the policy difference. It requires all of: stock permits `php` → `php_binary`, candidate rejects it and retains `php`, and both can start a normal session. Two rejections are not a distinguishing control and yield `FAIL`.
+
+`POLICY_DIFF_OBSERVED` establishes this deliberate benign behavior change only, not exploit resistance or closure of every vulnerability. A stock executable is not included in the distribution. Both native-report CLIs require a new output filename and preserve earlier reports.
+
 The Linux checker exercises the three built-in session codecs, progress On/Off, same-handler assignment, different-handler rejection, plain session round trips, small multipart upload/digest/temp cleanup and same-worker continuity. It uses no production INI, external modules, user accounts, database or remote site.
 
 ## Historical evidence and limits
