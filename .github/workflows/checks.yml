@@ -10,6 +10,29 @@ permissions:
   contents: read
 
 jobs:
+  advisory-sync:
+    name: Advisory batch / Worker runtime
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: automation/advisory-sync
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: automation/advisory-sync/package-lock.json
+      - run: npm ci
+      - run: npm run seed
+      - name: Generated reviewed seed must be current
+        run: git diff --exit-code -- src/seed.ts
+      - run: npx wrangler types --include-runtime=false --include-main-module=false --check
+      - run: npm run check
+      - run: npm test
+      - run: npm audit --audit-level=high
+
   unit:
     name: Unit / Python ${{ matrix.python }}
     runs-on: ubuntu-24.04

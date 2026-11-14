@@ -26,6 +26,8 @@ All **66 published official PHP repository advisories** were compared with the p
 **31 existing vendor-patched CVEs are accounted for separately.** Resolved means protection code is present, not that every exploit was validated. Unimplemented protection is not a pass. The matrix exhausts the current official GitHub catalog and named vendor patches, not every historical PHP/dependency CVE.
 <!-- SECURITY_COVERAGE_END -->
 
+Official advisories can also be [collected hourly with Cloudflare Workers or a local batch script](docs/ADVISORY_AUTOMATION.md); new and revised items become separate implementation work.
+
 ## What was wrong, and what is addressed
 
 **The purpose is to address two disclosed PHP engine vulnerability classes in a pinned PHP 7.0 FPM source tree, including the request/session boundaries needed by that port.** The source changes are included and their identities verified; fresh tests establish the specific runtime behaviors listed below. They are not a demonstration that every exploit of either CVE is blocked on PHP 7.0.

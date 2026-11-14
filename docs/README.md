@@ -6,6 +6,7 @@
 | Understand the patch | [Scope and origins](PATCH_SCOPE.md) · [Behavior changes](BEHAVIOR_CHANGES.md) |
 | Check all official advisories and planned fixes | [Coverage matrix](SECURITY_COVERAGE.md) · [한글 대응표](SECURITY_COVERAGE.ko.md) |
 | Build a candidate | [Build profiles and dependencies](BUILDING.md) |
+| Track new official advisories automatically | [Hourly Worker and local batch](ADVISORY_AUTOMATION.md) · [한글 자동 수집](ADVISORY_AUTOMATION.ko.md) |
 | Inspect, back up and transition | [Installation and rollback](INSTALLATION.md) |
 | Assess actual evidence | [Verification](VERIFICATION.md) · [Support matrix](../SUPPORT.md) |
 | Understand the tools | [Architecture](ARCHITECTURE.md) · [Troubleshooting](TROUBLESHOOTING.md) |

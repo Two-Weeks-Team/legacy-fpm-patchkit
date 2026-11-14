@@ -18,7 +18,7 @@ for path in files:
     if path.is_symlink():
         failures.append(str(path.relative_to(root)) + ': symlink not allowed')
         continue
-    if path.suffix in ['.py', '.md', '.json', '.yml', '.svg', '.patch', '.txt'] or path.name in ['LICENSE', '.gitignore']:
+    if path.suffix in ['.py', '.ts', '.jsonc', '.md', '.json', '.yml', '.svg', '.patch', '.txt'] or path.name in ['LICENSE', '.gitignore']:
         text = path.read_text()
         # The privacy checker contains detection expressions, not operational data.
         if path != Path(__file__).resolve():
