@@ -43,7 +43,15 @@ export async function collectGithub(fetcher: Fetcher = (url, init) => fetch(url,
       seenUrls.add(url);
       const response = await within(fetcher(url, { headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'legacy-fpm-advisory-sync' },
         redirect: 'manual', signal: abort.signal }));
-      if (!response.ok) { void response.body?.cancel().catch(() => {}); throw new Error('GitHub HTTP ' + response.status); }
+      if (!response.ok) {
+        void response.body?.cancel().catch(() => {});
+        const fields = [['x-ratelimit-remaining','remaining'], ['x-ratelimit-reset','reset'], ['retry-after','retry-after']];
+        const diagnostics = fields.flatMap(([header,label]) => {
+          const value = response.headers.get(header);
+          return value && /^\d{1,16}$/.test(value) ? [label + '=' + value] : [];
+        });
+        throw new Error('GitHub HTTP ' + response.status + (diagnostics.length ? ' (' + diagnostics.join(', ') + ')' : ''));
+      }
       const length = Number(response.headers.get('content-length'));
       if (Number.isFinite(length) && length > maxPage) { void response.body?.cancel().catch(() => {}); throw new Error('Response byte budget exceeded'); }
       if (!response.body) throw new Error('Missing JSON body');

@@ -70,6 +70,8 @@ After deployment, POST once to `/internal/sync` with a Bearer token read from lo
 
 Public GET/HEAD never trigger collection. Authenticated POST `/internal/sync` returns 200 on success, 409 when busy, 502 on collection failure and 503 when storage/control is unavailable. Public reads permit cross-origin access. Structured run logs exclude the control token and upstream response bodies.
 
+Cloudflare can reject a client's default library signature with **1010 before the Worker executes**. Its [official guidance](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1010/) recommends a descriptive User-Agent identifying the actual application. Do not impersonate a browser or disable protections to hide a failed test. A 1010 response is edge rejection, not the Worker's authentication result or a collection attempt; keep these outcomes separate. Newly registered `workers.dev` addresses may also need initial DNS/TLS propagation time.
+
 Health is `NEVER_SYNCED` for seed-only data, `HEALTHY`, `STALE` after 150 minutes without success, or `FAILED` when the latest attempt failed. Catalog/backlog remain readable with explicit health metadata after collection failure. Storage corruption fails closed with HTTP 503 instead of silently presenting seed data as a live result.
 
 ## Reviewed updates and verification

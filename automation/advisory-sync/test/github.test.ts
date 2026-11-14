@@ -49,3 +49,22 @@ test('non-JSON and malformed advisory data are rejected', async () => {
   await assert.rejects(collectGithub(async () => new Response('not json')), /JSON/);
   await assert.rejects(collectGithub(async () => page([{ ...raw(), ghsa_id: 'bad' }])), /GHSA/);
 });
+
+
+test('upstream refusal preserves bounded rate-limit diagnostics and makes no retry', async () => {
+  let calls=0;
+  await assert.rejects(collectGithub(async()=>{
+    calls++;
+    return new Response('untrusted response body must not be reported', {status:403,headers:{
+      'x-ratelimit-remaining':'0', 'x-ratelimit-reset':'1794645000', 'retry-after':'60',
+    }});
+  }), error=>{
+    assert.ok(error instanceof Error);
+    assert.match(error.message,/remaining=0/);
+    assert.match(error.message,/reset=1794645000/);
+    assert.match(error.message,/retry-after=60/);
+    assert.doesNotMatch(error.message,/untrusted/);
+    return true;
+  });
+  assert.equal(calls,1);
+});
