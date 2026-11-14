@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build-baseline/php-fpm",
+    "-n",
+    "-y",
+    "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/advisory-result/baseline/A3/fpm.conf",
+    "-F"
+  ],
+  "forced_cleanup": false,
+  "logs_after_cleanup": "[14-Nov-2026 12:03:46] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n[14-Nov-2026 12:03:46] NOTICE: fpm is running, pid 89560\n[14-Nov-2026 12:03:46] NOTICE: ready to handle connections\n[14-Nov-2026 12:03:46] NOTICE: Terminating ...\n[14-Nov-2026 12:03:46] NOTICE: exiting, bye-bye!\n\n[14-Nov-2026 12:03:46] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n",
+  "pid": 89560,
+  "reaped": true,
+  "returncode": 0,
+  "returncode_before_stop": null
+}

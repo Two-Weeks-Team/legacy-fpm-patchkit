@@ -16,6 +16,16 @@ The new variant has a fixed repository manifest and patch, with a manifest diges
 pinned in `patchkit/variants.py`. No arbitrary manifest path or expected-hash
 override is accepted. Preparation verifies and publishes a new **whole tree**.
 
+The [behavior changes](BEHAVIOR_CHANGES.md#optional-aclfilter-variant) explain the narrower IPv6 admission rule, mapped-address distinction and byte-filter semantics. The verified portable configuration uses `--disable-all` and explicitly enables `filter`, `hash`, `session` and `json`, alongside core functionality. It does not represent every PHP extension configuration.
+
+Binary hashes identify the exact artifacts from each recorded build. The paired baseline's hashes differ from the standalone default build record; source identity does not promise bit-identical recompilation. Build paths embedded in debug information can affect bytes, but the cause of this particular difference was not established by a binary comparison. Use the hashes belonging to the run being checked.
+
+## Permanent raw evidence
+
+The [retained raw files](../evidence/acl-filter-20261114/README.md) include the complete paired result JSON, both original Valgrind XML files, both build records and all 12 process cleanup records. The five previously published raw-file hashes still match these byte-for-byte copies. They remain available in repository history after the original GitHub artifact's recorded expiry of 2027-02-12. Executables and private operational or agent logs are not included.
+
+## Reproduce on isolated Linux
+
 ```sh
 python3 -m patchkit fetch
 python3 -m patchkit prepare --output .work/source-baseline

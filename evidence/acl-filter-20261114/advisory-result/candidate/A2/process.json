@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/build-candidate/php-fpm",
+    "-n",
+    "-y",
+    "/home/runner/work/legacy-fpm-patchkit/legacy-fpm-patchkit/.work/advisory-result/candidate/A2/fpm.conf",
+    "-F"
+  ],
+  "forced_cleanup": false,
+  "logs_after_cleanup": "[14-Nov-2026 12:03:50] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n[14-Nov-2026 12:03:50] NOTICE: fpm is running, pid 89625\n[14-Nov-2026 12:03:50] NOTICE: ready to handle connections\n[14-Nov-2026 12:03:50] WARNING: [pool proof] child 89626 said into stderr: \"ERROR: Connection disallowed: IP address '::1' has been dropped.\"\n[14-Nov-2026 12:03:50] NOTICE: Terminating ...\n[14-Nov-2026 12:03:50] NOTICE: exiting, bye-bye!\n\n[14-Nov-2026 12:03:50] NOTICE: [pool proof] 'user' directive is ignored when FPM is not running as root\n",
+  "pid": 89625,
+  "reaped": true,
+  "returncode": 0,
+  "returncode_before_stop": null
+}

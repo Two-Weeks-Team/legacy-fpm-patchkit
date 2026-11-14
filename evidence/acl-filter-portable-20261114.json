@@ -303,6 +303,29 @@
     "build-baseline/build.json": "a866bf3edf77b7dde15817f3348fbf7b930e5506460a6eb004272afe49998e16",
     "build-candidate/build.json": "9b2f23fff56b58f4d57805f516037aed5f79046640162e4671849fd0cedcc76b"
   },
+  "retained_raw": {
+    "directory": "evidence/acl-filter-20261114",
+    "artifact_expires_at": "2027-02-12",
+    "file_sha256": {
+      "advisory-result/baseline/A1/process.json": "f4f7302d00cb41df997b6d6ebf9c519693451ca4aed3c4c72f05b7fa63d90b39",
+      "advisory-result/baseline/A2/process.json": "3e2477a646d95c7a5ff33ce8a102c450aa959ef0f7b372358f1f67d5bc8265d0",
+      "advisory-result/baseline/A3/process.json": "f2e938d68ef9d720de29a90361dfeb71823948973e3c5c7b41be27e1a4ee0c34",
+      "advisory-result/baseline/A4/process.json": "f52c4afca603a2bb99f41fe8e06e313c61773b7aee6352560045614024ed3065",
+      "advisory-result/baseline/A5/process.json": "49076accdfc33e52186e72eafd4c8bbe4f4c4d6a7995fd7dcfd4fb7d09e9671c",
+      "advisory-result/baseline/filter-fpm/process.json": "83840cbdfa5bbb0067a829d849aabca75f5094bd88efa89c4bfc0dbdb1268c46",
+      "advisory-result/baseline/memcheck.xml": "ec7cac37ba3a390c94f67d65f030cf040c07413b42699b1726aec78b29aec4ad",
+      "advisory-result/candidate/A1/process.json": "de8977f80fc79c6809c70ce337dd2767d6694544c10980821d192fb66f3927c0",
+      "advisory-result/candidate/A2/process.json": "adabd03607e1c719ebd44531a7b55032a93ce976aecf3c2fdc7ad4263c30bca0",
+      "advisory-result/candidate/A3/process.json": "0d3849c2427f48aa12a6b72e06923f5b8850817b52f1171fc80859c31c2816fb",
+      "advisory-result/candidate/A4/process.json": "cd192f66c8b3a40bb3e15aaa440a5f95c8852fc7dffc22d2e1f6c7e453d82019",
+      "advisory-result/candidate/A5/process.json": "872024de8f21c648b4bc4f7aff3e407a77803901e55f5e23cd755f1c81e674ee",
+      "advisory-result/candidate/filter-fpm/process.json": "b55f997a37f50766fe4de4a1de193e414129487143243fe7c69762f6dc6b0d29",
+      "advisory-result/candidate/memcheck.xml": "c5c0301bba8c0d787dc23d0a30d120f1edc2cb0e8884ab068b8d4818b4f8dfc7",
+      "advisory-result/result.json": "24cb72ddd3cb6cb111841ab2bb190eb5f22c87bd6253e27f7721d84e422c11cf",
+      "build-baseline/build.json": "a866bf3edf77b7dde15817f3348fbf7b930e5506460a6eb004272afe49998e16",
+      "build-candidate/build.json": "9b2f23fff56b58f4d57805f516037aed5f79046640162e4671849fd0cedcc76b"
+    }
+  },
   "cleanup": {
     "fpm_instances": 12,
     "forced_cleanup": 0,
