@@ -42,7 +42,7 @@ export async function collectGithub(fetcher: Fetcher = (url, init) => fetch(url,
       if (seenUrls.size >= maxPages) throw new Error('Pagination page budget exceeded');
       seenUrls.add(url);
       const response = await within(fetcher(url, { headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'legacy-fpm-advisory-sync' },
-        redirect: 'error', signal: abort.signal }));
+        redirect: 'manual', signal: abort.signal }));
       if (!response.ok) { void response.body?.cancel().catch(() => {}); throw new Error('GitHub HTTP ' + response.status); }
       const length = Number(response.headers.get('content-length'));
       if (Number.isFinite(length) && length > maxPage) { void response.body?.cancel().catch(() => {}); throw new Error('Response byte budget exceeded'); }

@@ -18,6 +18,7 @@ export class D1Store implements Store {
         current_revision: string | null; last_success_at: string | null; payload: string | null; report: string | null; success_report: string | null;
       }>();
     if (!row) throw new Error('D1 migrations have not initialized sync control');
+    if (row.current_revision && !row.payload) throw new Error('D1 current snapshot is missing');
     const snapshot = row.payload ? await decodeSnapshot(row.payload) : null;
     if (snapshot && snapshot.revision !== row.current_revision) throw new Error('D1 snapshot identity mismatch');
     return { snapshot, lastSuccessAt: row.last_success_at, lastAttempt: decodeReport(row.report), lastSuccessReport: decodeReport(row.success_report), origin: snapshot ? 'collected' : 'seed' };

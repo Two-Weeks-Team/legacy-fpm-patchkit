@@ -99,7 +99,7 @@ export function markdown(snapshot: Snapshot): string {
     'Source identity: `' + snapshot.sourceHash + '`', 'Snapshot: `' + snapshot.revision + '`', '',
     'Automated collection does not implement patches or grant a security pass. New, revised, withdrawn or missing advisories require source review.', '',
     '| Advisory | Status | Component | Work / evidence |', '|---|---|---|---|'];
-  for (const row of snapshot.assessments) {
+  for (const row of snapshot.assessments.filter(row => row.status === 'PLANNED')) {
     const a = byId.get(row.id)!;
     lines.push(`| [${row.id}](${a.html_url}) ${escapeMarkdown(a.cve_id ?? 'No CVE assigned')}: ${escapeMarkdown(a.summary)} | ${row.status} | ${escapeMarkdown(row.component)} | ${escapeMarkdown(row.reason)} ${escapeMarkdown(row.action)} |`);
   }

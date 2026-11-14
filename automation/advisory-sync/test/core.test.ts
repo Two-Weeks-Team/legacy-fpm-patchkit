@@ -83,3 +83,13 @@ test('stored snapshots require matching content identity and complete assessment
   assert.equal((await decodeSnapshot(JSON.stringify(r.snapshot))).revision, r.snapshot.revision);
   await assert.rejects(decodeSnapshot(JSON.stringify({ ...r.snapshot, counts: { RESOLVED: 999, NOT_APPLICABLE: 0, PLANNED: 0 } })), /identity|counts/);
 });
+
+
+test('Markdown worklist includes planned work only, matching the JSON backlog', async () => {
+  const seed = await fixture();
+  const next = normalize(raw('GHSA-dddd-eeee-ffff'));
+  const result = await buildSnapshot(seed, undefined, [...seed.catalog, next]);
+  const out = markdown(result.snapshot);
+  assert.match(out, /GHSA-dddd-eeee-ffff/);
+  assert.doesNotMatch(out, new RegExp(seed.catalog[0].ghsa_id));
+});

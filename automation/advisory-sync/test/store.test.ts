@@ -13,7 +13,7 @@ const report = (id: string, status: 'SUCCESS' | 'FAILED' = 'SUCCESS'): BatchRepo
   runId: id, status, trigger: 'test', startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(),
 });
 before(async () => {
-  mf = new Miniflare(convertV4MiniflareOptions({ modules: true, script: 'export default { fetch() { return new Response("ok") } }',
+  mf = new Miniflare(convertV4MiniflareOptions({ cf:false, modules: true, script: 'export default { fetch() { return new Response("ok") } }',
     compatibilityDate: '2026-11-14', d1Databases: { DB: 'test-advisory-sync' }, d1Persist: false }));
   const db = await mf.getD1Database('DB');
   await db.exec((await readFile('migrations/0001_init.sql', 'utf8')).replace(/\n/g, ' '));
@@ -71,4 +71,12 @@ test('stale lease owner cannot publish and the transaction rolls back its attemp
   await assert.rejects(store.commit('old', newer.snapshot, report('old')), /CHECK|fence|lease/);
   assert.equal((await store.load())?.snapshot?.revision, original.revision);
   assert.equal((await db.prepare('SELECT count(*) AS n FROM snapshots').first<{n:number}>())?.n, 1);
+});
+
+
+test('a dangling D1 current revision fails closed instead of silently serving the seed', async () => {
+  await committed();
+  const db = await mf.getD1Database('DB');
+  await db.prepare('DELETE FROM snapshots').run();
+  await assert.rejects(store.load(), /missing|incomplete/i);
 });

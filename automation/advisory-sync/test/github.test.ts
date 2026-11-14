@@ -10,7 +10,7 @@ const page = (rows: unknown[], link?: string) => new Response(JSON.stringify(row
 test('follows all official next-page links and returns complete sorted identities', async () => {
   const urls: string[] = [];
   const result = await collectGithub(async (url, init) => {
-    urls.push(url); assert.equal(init.redirect, 'error');
+    urls.push(url); assert.equal(init.redirect, 'manual');
     return urls.length === 1 ? page([raw()], `<${API_URL}&after=cursor>; rel="next"`) : page([raw('GHSA-dddd-eeee-ffff')]);
   });
   assert.equal(result.length, 2); assert.equal(urls.length, 2);
