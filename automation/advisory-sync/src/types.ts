@@ -30,7 +30,7 @@ export interface BatchReport {
   startedAt: string; finishedAt: string; revision?: string; changed?: boolean;
   observedCount?: number; retainedCount?: number; changes?: Changes; error?: string;
 }
-export interface StoredView { snapshot: Snapshot; lastSuccessAt: string | null; lastAttempt: BatchReport | null; origin: 'seed' | 'collected' }
+export interface StoredView { snapshot: Snapshot | null; lastSuccessAt: string | null; lastAttempt: BatchReport | null; lastSuccessReport?: BatchReport | null; origin: 'seed' | 'collected' }
 export interface Store {
   acquire(runId: string, now: number, until: number): Promise<boolean>;
   begin(runId: string, trigger: string, startedAt: string): Promise<void>;

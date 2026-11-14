@@ -105,3 +105,28 @@ export function markdown(snapshot: Snapshot): string {
   }
   return lines.join('\n') + '\n';
 }
+
+function status(value: unknown): value is Status { return value === 'RESOLVED' || value === 'NOT_APPLICABLE' || value === 'PLANNED'; }
+function assessment(value: unknown): value is Assessment {
+  return record(value) && typeof value.id === 'string' && status(value.status) &&
+    ['component', 'reason', 'action', 'validation', 'upstreamHash'].every(k => typeof value[k] === 'string') &&
+    (value.presence === 'present' || value.presence === 'missing') &&
+    (value.reviewedStatus === undefined || status(value.reviewedStatus)) &&
+    ['reviewedUpstreamHash', 'reviewedSourceHash'].every(k => value[k] === undefined || typeof value[k] === 'string');
+}
+export async function decodeSnapshot(encoded: string): Promise<Snapshot> {
+  const value: unknown = JSON.parse(encoded);
+  if (!record(value) || value.schema !== 1 || !Array.isArray(value.catalog) || !Array.isArray(value.assessments) ||
+      !value.assessments.every(assessment) || !record(value.counts)) throw new Error('Invalid stored snapshot');
+  const catalog = value.catalog.map(normalize); const assessments = value.assessments;
+  const sourceHash = text(value.sourceHash, 'sourceHash', 64); const revision = text(value.revision, 'revision', 64);
+  if (!/^[a-f0-9]{64}$/.test(sourceHash) || !/^[a-f0-9]{64}$/.test(revision)) throw new Error('Invalid stored source identity');
+  const counts: Record<Status, number> = { RESOLVED: 0, NOT_APPLICABLE: 0, PLANNED: 0 };
+  const ids = new Set(catalog.map(a => a.ghsa_id));
+  if (ids.size !== catalog.length || assessments.length !== catalog.length || new Set(assessments.map(r => r.id)).size !== ids.size) throw new Error('Incomplete stored assessment rows');
+  for (const row of assessments) { if (!ids.has(row.id)) throw new Error('Stored assessment identity mismatch'); counts[row.status]++; }
+  for (const key of Object.keys(counts) as Status[]) if (counts[key] !== value.counts[key]) throw new Error('Stored counts mismatch');
+  const body = { schema: 1 as const, sourceHash, catalog, assessments, counts };
+  if (await fingerprint(body) !== revision) throw new Error('Stored snapshot content identity mismatch');
+  return { ...body, revision };
+}

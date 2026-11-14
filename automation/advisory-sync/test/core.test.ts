@@ -76,3 +76,10 @@ test('Markdown output escapes advisory-supplied formatting and HTML', async () =
   const out = markdown(r.snapshot);
   assert.doesNotMatch(out, /<img|\]\(javascript:/); assert.match(out, /&lt;img/);
 });
+
+test('stored snapshots require matching content identity and complete assessment rows', async () => {
+  const { decodeSnapshot } = await import('../src/core.ts');
+  const seed = await fixture(); const r = await buildSnapshot(seed, undefined, seed.catalog);
+  assert.equal((await decodeSnapshot(JSON.stringify(r.snapshot))).revision, r.snapshot.revision);
+  await assert.rejects(decodeSnapshot(JSON.stringify({ ...r.snapshot, counts: { RESOLVED: 999, NOT_APPLICABLE: 0, PLANNED: 0 } })), /identity|counts/);
+});
