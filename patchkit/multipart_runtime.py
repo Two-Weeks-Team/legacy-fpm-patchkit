@@ -247,8 +247,15 @@ def main(argv=None):
                             common.write_new(actual/('warnings-'+str(trial)+'.json'),request_channels)
                             per_request_warnings.append(check_warnings(request_channels,case[side+'_warnings']))
                         if observations[0]['PID']!=observations[1]['PID']:raise ValueError('worker changed; counter reset was not tested in the same worker')
+                tail_channels={}
                 for name in ('php.log','fpm.log','process.log'):
-                    if (work/name).exists():channels[name]=(work/name).read_text(errors='replace')
+                    data=(work/name).read_bytes() if (work/name).exists() else b''
+                    offset=offsets.get(name,0)
+                    if len(data)<offset:raise ValueError('owned diagnostic log was truncated')
+                    channels[name]=data.decode(errors='replace')
+                    tail_channels[name]=data[offset:].decode(errors='replace')
+                common.write_new(work/'shutdown-warnings.json',tail_channels)
+                check_warnings(tail_channels,{})
                 # Keep the whole-case/shutdown check as well, so late or extra
                 # diagnostics cannot disappear after the per-request checks.
                 warn=check_warnings(channels,{k:v*2 for k,v in case[side+'_warnings'].items()})

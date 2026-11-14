@@ -72,8 +72,9 @@ class MultipartRuntimeTests(unittest.TestCase):
         code=compile(ast.fix_missing_locations(ast.Module(body=[copy.deepcopy(loop)],type_ignores=[])),'actual-case-loop','exec')
         case=next(c for c in runtime.cases() if c['name']=='parts-four')
         warning='PHP Warning: Multipart body parts limit exceeded 3. To increase the limit change max_multipart_body_parts in php.ini.\n'
-        for counts in ((1,1),(2,0),(0,2)):
-            with self.subTest(counts=counts), tempfile.TemporaryDirectory() as temporary:
+        scenarios=(((1,1),None),((2,0),None),((0,2),None),((1,1),'fpm.log'),((1,1),'process.log'))
+        for counts,late_log in scenarios:
+            with self.subTest(counts=counts,late_log=late_log), tempfile.TemporaryDirectory() as temporary:
                 directory=Path(temporary);pending=iter(counts)
                 @contextmanager
                 def workspace(output):
@@ -82,6 +83,8 @@ class MultipartRuntimeTests(unittest.TestCase):
                 def instance(binary,root,case,budget,candidate):
                     root.mkdir();(root/'uploads').mkdir();(root/'php.log').write_text('')
                     yield
+                    if late_log:
+                        with (root/late_log).open('a') as stream:stream.write(warning)
                 def request(socket_path,script,case,sid,budget):
                     with (script.parent/'php.log').open('a') as stream:stream.write(warning*next(pending))
                     want=case['candidate'];body='PID=123\nLIMIT='+want['limit']+'\n'
@@ -92,7 +95,7 @@ class MultipartRuntimeTests(unittest.TestCase):
                 report={'candidate':{'cases':{}}}
                 namespace=dict(runtime.__dict__,directory=directory,all_cases=[case],side='candidate',report=report,
                                fpm=Path('NOT_EXECUTED'),budget=lambda:30,case_workspace=workspace,instance=instance,request=request)
-                if counts==(1,1):
+                if counts==(1,1) and late_log is None:
                     exec(code,namespace)
                     self.assertEqual(report['candidate']['cases'][case['name']],'PASS')
                 else:
