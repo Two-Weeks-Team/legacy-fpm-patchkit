@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "observed_at": "2026-11-14T07:22:00.173956+00:00",
+  "implementation_commit": "f21d7f1b7d08e7ca8e86f331cbf29f1f8ef7fa65",
+  "scope": "Official public PHP advisory collection and implementation worklists; no PHP patch implementation or production-server action.",
+  "worker": {
+    "url": "https://legacy-fpm-advisory-sync.legacy-fpm-advisory-sync.workers.dev",
+    "version_id": "c1d38023-e289-410b-b9ff-30eec93eb37c",
+    "deployment": "confirmed",
+    "cron": "0 * * * *",
+    "cron_registered": true,
+    "actual_scheduled_run_observed": false
+  },
+  "local_evidence": {
+    "node_tests_passed": 46,
+    "python_tests_passed": 57,
+    "typecheck": "PASS",
+    "seed_and_generated_types": "PASS",
+    "npm_audit_findings": 0,
+    "workerd_and_d1": "Actual local runtime with simulated upstream, not deployed collection proof.",
+    "local_public_api_batch": "Actual API collection returned 66 entries before cloud deployment."
+  },
+  "initial_cloud_validation": {
+    "tls_initial_propagation": "Initial TLS handshake failure; later successful TLS connection.",
+    "default_client_signature": "Cloudflare edge 403/1010; no upstream collection attempt.",
+    "normal_resolution": "Descriptive actual verifier User-Agent, applied only after explicit user authorization. No browser impersonation or protection changes.",
+    "unauthenticated_sync_http": 401,
+    "authorized_sync_http": 502,
+    "last_attempt": {
+      "runId": "a01c7114-8a46-4d9d-a34e-d1563dabce11",
+      "status": "FAILED",
+      "trigger": "manual",
+      "startedAt": "2026-11-14T07:16:21.908Z",
+      "finishedAt": "2026-11-14T07:16:22.670Z",
+      "error": "GitHub HTTP 403 (remaining=0, reset=1794643324)"
+    },
+    "upstream_refusal": "remaining=0; anonymous GitHub quota exhausted",
+    "retry_reset_utc": "2026-11-14T08:02:04Z",
+    "retry_reset_kst": "2026-11-14T17:02:04+09:00"
+  },
+  "public_readback": {
+    "status_http": 503,
+    "state": "FAILED",
+    "origin": "seed",
+    "successful_cloud_collection": false,
+    "catalog_http": 200,
+    "catalog_entries": 66,
+    "backlog_http": 200,
+    "planned_entries": 51,
+    "counts": {
+      "RESOLVED": 2,
+      "NOT_APPLICABLE": 13,
+      "PLANNED": 51
+    }
+  },
+  "acceptance": {
+    "deployment_and_cron_registration": "CONFIRMED",
+    "public_read_and_auth_boundary": "CONFIRMED",
+    "real_cloud_upstream_collection": "FAILED_QUOTA",
+    "actual_scheduled_run": "NOT_OBSERVED",
+    "security_patch_execution": "OUT_OF_SCOPE"
+  },
+  "next_required_action": "Connect a dedicated public-read GitHub credential with explicit authority, then verify actual cloud collection. Keep current failed runs and original reviewed ledger."
+}

@@ -92,4 +92,6 @@ After implementation or a source-based non-applicability decision, record eviden
 
 Tests cover complete pagination, bounded responses/deadlines, revision-bound verdicts, retained history, local directory ownership, actual Miniflare D1 transactions and the bundled Worker HTTP/scheduled handlers. Runtime tests use a simulated upstream; actual GitHub API and deployed-service receipts are separate evidence. CI checks generated seed/types, strict TypeScript, dependency advisories and these tests without deployment credentials.
 
+The [initial deployment receipt](../evidence/advisory-automation-20261114.json) records both successful deployment/readback and the real upstream quota failure. It does not claim that a scheduled collection has already succeeded.
+
 This feed covers the public `php/php-src` advisory API, not all historical PHP, OS or library CVEs. It does not discover unreported vulnerabilities. History is append-only: observe D1 growth and quotas rather than silently deleting evidence. A failed collection does not establish that no new advisories exist.
