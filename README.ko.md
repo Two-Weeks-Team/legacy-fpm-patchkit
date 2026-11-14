@@ -6,6 +6,8 @@
 
 [English](README.md) · [시작하기](docs/GETTING_STARTED.ko.md) · [지원 범위](SUPPORT.md) · [검증 기록](docs/VERIFICATION.md) · [전체 문서](docs/README.md)
 
+소스 릴리스에는 SHA-256 체크섬과 GitHub 출처 증명이 포함됩니다. [다운로드 검증 방법](docs/RELEASE_NOTES.md)을 확인하세요.
+
 ![원본 확인부터 적용 판단까지](docs/media/flow.svg)
 
 > **지원이 종료된 런타임을 위한 소스 배포판입니다.** Ubuntu `7.0.33-0ubuntu0.16.04.16` 소스에 특정 보안 변경을 이식합니다. PHP 7.0 전체의 보안 지원을 복구하거나 모든 확장 모듈·사이트의 호환성을 보장하지 않습니다. 가능하면 공식 지원 중인 PHP로 이전하세요.

@@ -1,0 +1,46 @@
+name: Verified source release
+on:
+  push:
+    tags: ['v[0-9]*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: source-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
+    permissions:
+      contents: read
+
+  source-release:
+    name: Package and attest source
+    needs: checks
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Package the exact tested tag
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          case "$RELEASE_TAG" in v[0-9]*.[0-9]*.[0-9]*) ;; *) exit 2 ;; esac
+          version="${RELEASE_TAG#v}"
+          mkdir dist
+          git archive --format=tar --prefix="legacy-fpm-patchkit-${version}/" "$RELEASE_TAG" | gzip -n > "dist/legacy-fpm-patchkit-${version}.tar.gz"
+          (cd dist && sha256sum *.tar.gz > SHA256SUMS)
+      - name: Attest source archive and checksum manifest
+        uses: actions/attest-build-provenance@43d14bc2b83dec42d39ecae14e916627a18bb661 # v3
+        with:
+          subject-path: dist/*
+      - name: Publish the verified source release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/* --verify-tag --title "Legacy FPM Patchkit $RELEASE_TAG" --notes-file docs/RELEASE_NOTES.md

@@ -8,6 +8,8 @@ Reconstruct the source. Inspect the patch. Build in isolation. Verify your own e
 
 [![Checks](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/workflows/checks.yml/badge.svg)](https://github.com/Two-Weeks-Team/legacy-fpm-patchkit/actions/workflows/checks.yml)
 
+Source release archives include SHA-256 checksums and GitHub provenance attestations. See [release verification](docs/RELEASE_NOTES.md).
+
 > **Source release for a legacy runtime.** This independent project backports selected security changes to Ubuntu's `7.0.33-0ubuntu0.16.04.16` source baseline. It does not restore upstream support, repair every PHP vulnerability, or certify arbitrary extensions and applications. Prefer a supported PHP release. Read the [exact support boundary](SUPPORT.md) before building or changing a service.
 
 ![Source-to-deployment decision flow](docs/media/flow.svg)

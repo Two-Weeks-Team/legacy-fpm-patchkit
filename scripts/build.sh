@@ -22,6 +22,18 @@ esac
 python3 "$kit/scripts/check-build-source.py" "$source_dir"
 mkdir -p "$output"
 output=$(cd "$output" && pwd)
+failure_logs() {
+  rc=$?
+  trap - ERR
+  for name in buildconf configure make; do
+    if [ -f "$output/$name.log" ]; then
+      echo "$name.log (failure tail)" >&2
+      tail -n 40 "$output/$name.log" >&2
+    fi
+  done
+  exit "$rc"
+}
+trap failure_logs ERR
 # The prepared input remains immutable. All generators/buildconf run on this copy.
 cp -R "$source_dir" "$output/source"
 src="$output/source"
