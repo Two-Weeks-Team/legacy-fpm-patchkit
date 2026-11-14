@@ -1,0 +1,84 @@
+diff --git a/sapi/fpm/fpm/fpm_stdio.c b/sapi/fpm/fpm/fpm_stdio.c
+--- a/sapi/fpm/fpm/fpm_stdio.c
++++ b/sapi/fpm/fpm/fpm_stdio.c
+@@ -113,9 +113,51 @@
+ }
+ /* }}} */
+ 
++/* Keep escaped worker data below the legacy zlog 1024-byte final record cap.
++ * With a pool label of at most 128 bytes (+ an explicit ellipsis), a 512-byte
++ * payload leaves room for the child wrapper, close suffix and debug header.
++ * No allocation or binary data is passed to the printf-formatting logger. */
++static void fpm_stdio_log(struct fpm_child_s *child, int is_stdout, const char *data, size_t len, int is_last_message)
++{
++	enum { max_payload = 512, max_pool_name = 128 };
++	static const char hex[] = "0123456789abcdef";
++	size_t offset = 0;
++	const char *pool_suffix = strlen(child->wp->config->name) > max_pool_name ? "..." : "";
++
++	do {
++		char escaped[max_payload + 1];
++		size_t used = 0;
++
++		while (offset < len) {
++			unsigned char c = (unsigned char) data[offset];
++			size_t need = c == '\\' ? 2 : (c < 0x20 || c == 0x7f ? 4 : 1);
++
++			if (used + need > max_payload) {
++				break;
++			}
++			if (c == '\\') {
++				escaped[used++] = '\\';
++				escaped[used++] = '\\';
++			} else if (c < 0x20 || c == 0x7f) {
++				escaped[used++] = '\\';
++				escaped[used++] = 'x';
++				escaped[used++] = hex[c >> 4];
++				escaped[used++] = hex[c & 0xf];
++			} else {
++				escaped[used++] = c;
++			}
++			offset++;
++		}
++		escaped[used] = '\0';
++		zlog(ZLOG_WARNING, "[pool %.*s%s] child %d said into %s: \"%s\"%s", max_pool_name,
++		  child->wp->config->name, pool_suffix, (int) child->pid, is_stdout ? "stdout" : "stderr",
++		  escaped, is_last_message ? ", pipe is closed" : "");
++	} while (offset < len);
++}
++
+ static void fpm_stdio_child_said(struct fpm_event_s *ev, short which, void *arg) /* {{{ */
+ {
+-	static const int max_buf_size = 1024;
++	enum { max_buf_size = 1024 };
+ 	int fd = ev->fd;
+ 	char buf[max_buf_size];
+ 	struct fpm_child_s *child;
+@@ -172,9 +214,6 @@
+ 			} else {
+ 				char *nl;
+ 				int should_print = 0;
+-				buf[in_buf] = '\0';
+-
+-				/* FIXME: there might be binary data */
+ 
+ 				/* we should print if no more space in the buffer */
+ 				if (in_buf == max_buf_size - 1) {
+@@ -186,15 +225,10 @@
+ 					should_print = 1;
+ 				}
+ 
+-				nl = strchr(buf, '\n');
++				nl = memchr(buf, '\n', in_buf);
+ 				if (nl || should_print) {
+ 
+-					if (nl) {
+-						*nl = '\0';
+-					}
+-
+-					zlog(ZLOG_WARNING, "[pool %s] child %d said into %s: \"%s\"%s", child->wp->config->name,
+-					  (int) child->pid, is_stdout ? "stdout" : "stderr", buf, is_last_message ? ", pipe is closed" : "");
++					fpm_stdio_log(child, is_stdout, buf, nl ? (size_t) (nl - buf) : (size_t) in_buf, is_last_message);
+ 
+ 					if (nl) {
+ 						int out_buf = 1 + nl - buf;

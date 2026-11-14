@@ -1,0 +1,15 @@
+{
+  "base_variant": "cookie-20261114",
+  "baseline_patch_sha256": "f72477d7b5183622fa8b785175dcc1bac9cd53fb1e869559fbdfbfa30b7f61f4",
+  "baseline_source_sha256": "f5f6b9f4263bce9e4de03b7fba315490e6d08bcc9862cd7d048a52929f756fe5",
+  "candidate_source_sha256": "8333986efe3729d072ea4330c34a329eb7d3585fc8d86aabaca265fd98ba65cc",
+  "changed": {
+    "sapi/fpm/fpm/fpm_stdio.c": {
+      "after": "0bc33e15470153082e740e466e7a7e33cbb07482418dc1131590173b9256134f",
+      "before": "38357eeaf12995026277e3ee1ad580d98901371c8661887fbdb4762d14adccc2"
+    }
+  },
+  "patch_sha256": "7d14a93cad6c8bb85d2e7f9072811fdaee6ed2206662f6eb373f3324ce6bd342",
+  "schema": 1,
+  "variant": "fpm-log-20261114"
+}
