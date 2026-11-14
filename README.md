@@ -12,6 +12,38 @@ Source release archives include SHA-256 checksums and GitHub provenance attestat
 
 > **Source release for a legacy runtime.** This independent project backports selected security changes to Ubuntu's `7.0.33-0ubuntu0.16.04.16` source baseline. It does not restore upstream support, repair every PHP vulnerability, or certify arbitrary extensions and applications. Prefer a supported PHP release. Read the [exact support boundary](SUPPORT.md) before building or changing a service.
 
+## What was wrong, and what is addressed
+
+**The purpose is to address two disclosed PHP engine vulnerability classes in a pinned PHP 7.0 FPM source tree, including the request/session boundaries needed by that port.** The source changes are included and their identities verified; fresh tests establish the specific runtime behaviors listed below. They are not a demonstration that every exploit of either CVE is blocked on PHP 7.0.
+
+| Disclosed problem | Why it matters | What this backport changes |
+|---|---|---|
+| **[CVE-2026-109618 — OOM state corruption](https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w)** | An abrupt out-of-memory bailout can leave partially updated structures that shutdown later consumes. Upstream reports remote code execution; the demonstrated pre-application path is on mod_php. Its FPM analysis identifies a post-startup risk but does not demonstrate a complete FPM exploit. | Ports delayed soft-OOM handling to VM safe points, allocation-failure propagation and consistent cleanup; an unrecoverable hard OOM terminates the process. The goal is to avoid continuing cleanup with half-updated engine state. |
+| **[CVE-2026-109619 — stale request state](https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp)** | A persistent worker can retain pointers into a completed request, then use freed memory before the next request is fully initialized. Upstream reports memory disclosure/RCE and demonstrates the session-lifecycle path on FPM as well as mod_php. | Resets executor/error/superglobal state at request boundaries, initializes relevant state before early input handling, and isolates early upload-progress session decoding from normal user-class handling. |
+
+These are **independent PHP 7.0 adaptations**, not official PHP 7.0 fixes. Upstream's supported-branch advisories establish the original issues; their affected-version tables do not establish this port's completeness or make every newer-version example applicable to PHP 7.0. [Source mapping and provenance](docs/PATCH_SCOPE.md) explain the implementation.
+
+## Additional failure paths addressed by the port
+
+The port also anticipates related failure modes in PHP 7.0. These are concrete protective changes, **not claims to fix unknown future CVEs**.
+
+| Failure mode | Protective change and expected effect | Evidence level |
+|---|---|---|
+| Request parsing uses one session codec, then application code switches to another | Reject different-codec runtime changes even if upload progress is currently Off; both phases retain one format. Initial codec selection and same-codec assignment remain supported. | **Observed:** the stock copy allows a switch, the candidate blocks it, and both start a normal session. [Paired result](evidence/xenial-policy-difference-20261114.json). This is a deliberate compatibility change. |
+| Upload-progress handling reaches session objects before ordinary request initialization | Use a scoped early-decoding mode that avoids resolving user classes at this stage, restore that mode, then let ordinary initialization decode normally. This targets premature callback/state access. | **Implemented in source.** Fresh public tests cover ordinary plain-data uploads/sessions, not object-callback security cases or every extension. |
+| A pending OOM is followed by more result processing or a new call | Add checks at VM/call boundaries and allocation-failure paths so a pending failure is handled before later code consumes an invalid result. Request teardown clears temporary OOM/early-mode state. | **Implemented in source.** Fresh public tests do not inject OOM or establish all failure-path outcomes. |
+
+## What has actually been verified
+
+| Check | Completed result | What it establishes |
+|---|---|---|
+| Official-source reconstruction | 84 vendor patches, 46 changed-file pre/post hashes and both full normalized source digests match | The published cumulative patch reconstructs the intended source; this is not exploit validation |
+| Native FPM on Ubuntu 16.04.7 and 22.04 x86-64 | **36 named benign checks per environment**: three session codecs × progress On/Off | Plain session persistence, codec policy, small upload content/cleanup and same-worker continuity |
+| Stock/candidate comparison on Xenial | **Policy difference observed** with hashed binaries | A real intentional behavior change, not two tests that both pass unchanged |
+| Toolkit and public download | **45 unit tests**; release CI, downloaded archive checksum and GitHub provenance verified | Tooling regressions and source-package integrity, not a site's deployment readiness |
+
+[Exact records and failure history](docs/VERIFICATION.md) are published. Historical msgpack failures and a candidate-only PHPT failure remain documented. This release does not fix third-party modules, prevent scraping/DDoS, repair an existing compromise, or certify application compatibility. Its core claim is **the two targeted engine backports plus the stated PHP 7.0 protective adaptations, with evidence separated from expected effects**. Read [behavior changes](docs/BEHAVIOR_CHANGES.md) and [support limits](SUPPORT.md) before use.
+
 ![Source-to-deployment decision flow](docs/media/flow.svg)
 
 ## Why this exists
