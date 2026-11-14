@@ -1,0 +1,15 @@
+{
+  "base_variant": "multipart-20261114",
+  "baseline_patch_sha256": "7425b8dea681c404399a97d8267c926298131612ec21187cb9aa9be00a75c71b",
+  "baseline_source_sha256": "01ea416605986b1169674caf904bb51ef7a7626456f8e259fd7653c436fefb85",
+  "candidate_source_sha256": "f5f6b9f4263bce9e4de03b7fba315490e6d08bcc9862cd7d048a52929f756fe5",
+  "changed": {
+    "main/php_variables.c": {
+      "after": "ae0f7038a2dbb395c126f26cd269827169617595f04d44847163aca6a77ff365",
+      "before": "e006666300c59e3aa0c46ce272f2b1af836b51bf3ce1547927d6064ea36b35a6"
+    }
+  },
+  "patch_sha256": "f72477d7b5183622fa8b785175dcc1bac9cd53fb1e869559fbdfbfa30b7f61f4",
+  "schema": 1,
+  "variant": "cookie-20261114"
+}
